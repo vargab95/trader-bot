@@ -1,0 +1,7 @@
+market:
+    name: "GEMINI:BTCUSD"
+    period: "1m"
+
+exchange:
+    api_key: ""
+    api_secret: ""
