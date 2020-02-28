@@ -6,6 +6,9 @@ import requests
 class InvalidConfigurationException(Exception):
     pass
 
+class CannotFetchDataException(Exception):
+    pass
+
 class TradingViewSpider:
     url = "https://scanner.tradingview.com/crypto/scan"
 
@@ -61,13 +64,18 @@ class TradingViewSpider:
         self.period_time = self.period_map[period]["period"]
 
     def fetch_technical_summary(self):
-        self.response = requests.post(self.url, json=self.request)
+        try:
+            self.response = requests.post(self.url, json=self.request, timeout=5)
+        except requests.exceptions.ConnectionError:
+            print("Connection error")
+            raise CannotFetchDataException
+        except requests.exceptions.Timeout:
+            print("Connection timeout")
+            raise CannotFetchDataException
         if self.response.json()["totalCount"] != 1:
             raise InvalidConfigurationException
 
     def get_technical_summary(self):
-        if not self.response:
-            self.fetch_technical_summary()
         return self.response.json()["data"][0]["d"][0]
 
     def sleep_until_next_data(self):

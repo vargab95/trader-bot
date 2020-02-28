@@ -3,7 +3,7 @@
 import sys
 import yaml
 
-from spider import TradingViewSpider
+import spider
 
 def read_configuration():
     if len(sys.argv) != 2:
@@ -13,20 +13,36 @@ def read_configuration():
     with open(sys.argv[1], "r") as config_file:
         return yaml.safe_load(config_file)
 
-def watch_trading_view(spider, bullish_callback, bearish_callback):
-    previous_summary = 0.0
+def watch_trading_view(tv_spider, bullish_callback, bearish_callback):
+    while True:
+        try:
+            tv_spider.fetch_technical_summary()
+            break
+        except spider.CannotFetchDataException:
+            continue
+
+    previous_summary = tv_spider.get_technical_summary()
     current_summary = 0.0
     try:
         while True:
-            spider.fetch_technical_summary()
-            current_summary = spider.get_technical_summary()
+            try:
+                tv_spider.fetch_technical_summary()
+            except spider.CannotFetchDataException:
+                continue
+
+            current_summary = tv_spider.get_technical_summary()
+
             print(current_summary)
-            if current_summary > 0.0 and previous_summary < 0.0:
+            if current_summary == 0.0 and previous_summary == 0.0:
+                pass
+            if current_summary >= 0.0 and previous_summary <= 0.0:
                 bullish_callback()
-            elif current_summary < 0.0 and previous_summary > 0.0:
+            elif current_summary <= 0.0 and previous_summary >= 0.0:
                 bearish_callback()
+
             previous_summary = current_summary
-            spider.sleep_until_next_data()
+
+            tv_spider.sleep_until_next_data()
     except KeyboardInterrupt:
         return
 
@@ -38,8 +54,8 @@ def handle_change_to_bearish():
 
 def main():
     configuration = read_configuration()
-    spider = TradingViewSpider(configuration["market"]["name"], configuration["market"]["period"])
-    watch_trading_view(spider, handle_change_to_bullish, handle_change_to_bearish)
+    tv_spider = spider.TradingViewSpider(configuration["market"]["name"], configuration["market"]["period"])
+    watch_trading_view(tv_spider, handle_change_to_bullish, handle_change_to_bearish)
 
 if __name__ == "__main__":
     main()
