@@ -3,7 +3,7 @@ logging:
     path: "binance_1m.log"
 
 testing:
-    enabled: true
+    enabled: false
 
     # In USD
     start_money: 100
@@ -12,7 +12,7 @@ market:
     name: "GEMINI:BTCUSD"
     candle_size: "1m"
 
-    # In seconds
+    # In second
     check_interval: 10
 
 exchange:

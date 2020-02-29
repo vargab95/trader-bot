@@ -10,4 +10,4 @@ class ExchangeControllerFactory:
     def create(cls, configuration: config.TraderConfig) -> exchange.interface.ExchangeInterface:
         if configuration.testing.enabled:
             return exchange.mock.BinanceMock(configuration.testing.start_money)
-        return exchange.controller.BinanceController()
+        return exchange.controller.BinanceController(configuration.exchange)

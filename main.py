@@ -10,7 +10,7 @@ import detector
 import config
 import exchange.factory
 
-def watch_trading_view(tv_spider, crossover_detector):
+def watch_trading_view(tv_spider, crossover_detector, controller):
     tv_spider.safe_fetch()
     previous_summary = tv_spider.get_technical_summary()
     current_summary = 0.0
@@ -19,6 +19,7 @@ def watch_trading_view(tv_spider, crossover_detector):
             tv_spider.safe_fetch()
             current_summary = tv_spider.get_technical_summary()
             crossover_detector.check_crossover(current_summary)
+            logging.info("Current price: %f", controller.get_price(""))
             tv_spider.sleep_until_next_data()
     except KeyboardInterrupt:
         return
@@ -31,7 +32,8 @@ def handle_change_to_bearish():
 
 def configure_logging(config: config.LoggingConfig):
     logging.basicConfig(level=config.level,
-                        filename=config.path)
+                        filename=config.path,
+                        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 def main():
     if len(sys.argv) != 2:
@@ -49,7 +51,7 @@ def main():
     tv_spider = spider.TradingViewSpider(parser.configuration.market)
     crossover_detector = detector.CrossOverDetector(bullish=handle_change_to_bullish,
                                                     bearish=handle_change_to_bearish)
-    watch_trading_view(tv_spider, crossover_detector)
+    watch_trading_view(tv_spider, crossover_detector, controller)
 
 if __name__ == "__main__":
     main()
