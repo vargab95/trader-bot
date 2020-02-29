@@ -11,6 +11,8 @@ testing:
 market:
     name: "GEMINI:BTCUSD"
     candle_size: "1m"
+
+    # In seconds
     check_interval: 10
 
 exchange:
