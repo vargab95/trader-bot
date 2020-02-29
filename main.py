@@ -7,6 +7,7 @@ import json
 import config
 import spider
 import detector
+import exchange.factory
 
 def watch_trading_view(tv_spider, crossover_detector):
     tv_spider.safe_fetch()
@@ -34,6 +35,8 @@ def main():
 
     parser = config.ConfigurationParser()
     parser.read(sys.argv[1])
+
+    controller = exchange.factory.ExchangeControllerFactory.create(parser.configuration.testing)
 
     logging.basicConfig(level=parser.configuration.log_level)
     logging.debug(str(parser.configuration))
