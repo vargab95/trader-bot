@@ -29,11 +29,13 @@ class MarketConfig:
 class TraderConfig:
     def __init__(self):
         self.log_level: int = 0
+        self.testing: bool = False
         self.market: MarketConfig = MarketConfig()
         self.exchange: ExchangeConfig = ExchangeConfig()
 
     def __str__(self):
         return "\nGlobal:" + \
+               "\n    Test mode: " + str(self.testing) + \
                "\n    Log level: " + str(self.log_level) + \
                str(self.market) + str(self.exchange)
 
