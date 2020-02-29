@@ -7,6 +7,7 @@ import json
 import config
 import spider
 import detector
+import config
 import exchange.factory
 
 def watch_trading_view(tv_spider, crossover_detector):
@@ -28,6 +29,10 @@ def handle_change_to_bullish():
 def handle_change_to_bearish():
     logging.info("Buy bear")
 
+def configure_logging(config: config.LoggingConfig):
+    logging.basicConfig(level=config.level,
+                        filename=config.path)
+
 def main():
     if len(sys.argv) != 2:
         print("Usage:", sys.argv[0], "<configuration file>")
@@ -36,9 +41,9 @@ def main():
     parser = config.ConfigurationParser()
     parser.read(sys.argv[1])
 
-    controller = exchange.factory.ExchangeControllerFactory.create(parser.configuration.testing)
+    controller = exchange.factory.ExchangeControllerFactory.create(parser.configuration)
 
-    logging.basicConfig(level=parser.configuration.log_level)
+    configure_logging(parser.configuration.logging)
     logging.debug(str(parser.configuration))
 
     tv_spider = spider.TradingViewSpider(parser.configuration.market)
