@@ -3,7 +3,7 @@
 import exchange.interface
 
 class BinanceMock(exchange.interface.ExchangeInterface):
-    def __init__(self, start_money):
+    def __init__(self, start_money: float):
         self.current_money = start_money
 
     def buy(market_name: str, amount: float) -> bool:
