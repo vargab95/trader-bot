@@ -31,7 +31,8 @@ def handle_change_to_bearish():
 
 def configure_logging(config: config.LoggingConfig):
     logging.basicConfig(level=config.level,
-                        filename=config.path)
+                        filename=config.path,
+                        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 def main():
     if len(sys.argv) != 2:
