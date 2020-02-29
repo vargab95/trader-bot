@@ -1,6 +1,7 @@
 market:
     name: "GEMINI:BTCUSD"
-    period: "1m"
+    candle_size: "1m"
+    check_interval: 10
 
 exchange:
     api_key: ""

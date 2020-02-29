@@ -13,38 +13,16 @@ class TradingViewSpider:
     url = "https://scanner.tradingview.com/crypto/scan"
 
     period_map = {
-        "1m": {
-            "column": "Recommend.All|1",
-            "period": 60
-        },
-        "5m": {
-            "column": "Recommend.All|5",
-            "period": 5 * 60
-        },
-        "1h": {
-            "column": "Recommend.All|60",
-            "period": 1 * 60 * 60
-        },
-        "4h": {
-            "column": "Recommend.All|240",
-            "period": 4 * 60 * 60
-        },
-        "1d": {
-            "column": "Recommend.All",
-            "period": 24 * 60 * 60
-        },
-        "1W": {
-            "column": "Recommend.All|1W",
-            "period": 7 * 24 * 60 * 60
-        },
-        # TODO 
-        "1M": {
-            "column": "Recommend.All|1M",
-            "period": 31 * 24 * 60 * 60
-        }
+        "1m": "Recommend.All|1",
+        "5m": "Recommend.All|5",
+        "1h": "Recommend.All|60",
+        "4h": "Recommend.All|240",
+        "1d": "Recommend.All",
+        "1W": "Recommend.All|1W",
+        "1M": "Recommend.All|1M"
     }
 
-    def __init__(self, market_name, period):
+    def __init__(self, market_name, period, interval):
         if period not in list(self.period_map.keys()):
             raise InvalidConfigurationException
         self.request = {
@@ -57,11 +35,11 @@ class TradingViewSpider:
                 }
             },
             "columns": [
-                self.period_map[period]["column"]
+                self.period_map[period]
             ]
         }
         self.response = None
-        self.period_time = self.period_map[period]["period"]
+        self.check_interval = interval
 
     def fetch_technical_summary(self):
         try:
@@ -79,4 +57,4 @@ class TradingViewSpider:
         return self.response.json()["data"][0]["d"][0]
 
     def sleep_until_next_data(self):
-        time.sleep(self.period_time)
+        time.sleep(self.check_interval)

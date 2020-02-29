@@ -54,7 +54,9 @@ def handle_change_to_bearish():
 
 def main():
     configuration = read_configuration()
-    tv_spider = spider.TradingViewSpider(configuration["market"]["name"], configuration["market"]["period"])
+    tv_spider = spider.TradingViewSpider(configuration["market"]["name"],
+                                         configuration["market"]["candle_size"],
+                                         configuration["market"]["check_interval"])
     watch_trading_view(tv_spider, handle_change_to_bullish, handle_change_to_bearish)
 
 if __name__ == "__main__":
