@@ -4,13 +4,14 @@ logging:
 
 testing:
     enabled: false
+    realtime: true
 
     # In USD
     start_money: 100
 
 market:
     name: "GEMINI:BTCUSD"
-    candle_size: "1m"
+    candle_size: "1h"
 
     # In second
     check_interval: 10

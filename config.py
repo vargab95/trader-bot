@@ -69,15 +69,19 @@ class ConfigurationParser:
         with open(path, "r") as config_file:
             configuration = yaml.safe_load(config_file)
 
-            self.configuration.logging.level = configuration["logging"]["level"]
-            self.configuration.logging.path = configuration["logging"]["path"]
+            logging_config = configuration.get("logging", {})
+            self.configuration.logging.level = logging_config.get("level", 31)
+            self.configuration.logging.path = logging_config.get("path", "")
 
-            self.configuration.testing.enabled = configuration["testing"]["enabled"]
-            self.configuration.testing.start_money = configuration["testing"]["start_money"]
+            testing_config = configuration.get("testing", {})
+            self.configuration.testing.enabled = testing_config.get("enabled", False)
+            self.configuration.testing.start_money = testing_config.get("start_money", 100.0)
 
-            self.configuration.market.name = configuration["market"]["name"]
-            self.configuration.market.check_interval = configuration["market"]["check_interval"]
-            self.configuration.market.candle_size = configuration["market"]["candle_size"]
+            market_config = configuration.get("market", {})
+            self.configuration.market.name = market_config.get("name", "GEMINI:BTCUSD")
+            self.configuration.market.check_interval = market_config.get("check_interval", 60)
+            self.configuration.market.candle_size = market_config.get("candle_size", "1h")
 
-            self.configuration.exchange.public_key = configuration["exchange"]["api_key"]
-            self.configuration.exchange.private_key = configuration["exchange"]["api_secret"]
+            exchange_config = configuration.get("exchange", {})
+            self.configuration.exchange.public_key = exchange_config.get("api_key", "")
+            self.configuration.exchange.private_key = exchange_config.get("api_secret", "")
