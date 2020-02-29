@@ -1,63 +1,47 @@
 #!/usr/bin/python
 
 import sys
-import yaml
+import logging
+import json
 
+import config
 import spider
+import detector
 
-def read_configuration():
-    if len(sys.argv) != 2:
-        print("Usage:", sys.argv[0], "<configuration file>")
-        sys.exit(1)
-
-    with open(sys.argv[1], "r") as config_file:
-        return yaml.safe_load(config_file)
-
-def watch_trading_view(tv_spider, bullish_callback, bearish_callback):
-    while True:
-        try:
-            tv_spider.fetch_technical_summary()
-            break
-        except spider.CannotFetchDataException:
-            continue
-
+def watch_trading_view(tv_spider, crossover_detector):
+    tv_spider.safe_fetch()
     previous_summary = tv_spider.get_technical_summary()
     current_summary = 0.0
     try:
         while True:
-            try:
-                tv_spider.fetch_technical_summary()
-            except spider.CannotFetchDataException:
-                continue
-
+            tv_spider.safe_fetch()
             current_summary = tv_spider.get_technical_summary()
-
-            print(current_summary)
-            if current_summary == 0.0 and previous_summary == 0.0:
-                pass
-            if current_summary >= 0.0 and previous_summary <= 0.0:
-                bullish_callback()
-            elif current_summary <= 0.0 and previous_summary >= 0.0:
-                bearish_callback()
-
-            previous_summary = current_summary
-
+            crossover_detector.check_crossover(current_summary)
             tv_spider.sleep_until_next_data()
     except KeyboardInterrupt:
         return
 
 def handle_change_to_bullish():
-    print("Buy bull")
+    logging.info("Buy bull")
 
 def handle_change_to_bearish():
-    print("Buy bear")
+    logging.info("Buy bear")
 
 def main():
-    configuration = read_configuration()
-    tv_spider = spider.TradingViewSpider(configuration["market"]["name"],
-                                         configuration["market"]["candle_size"],
-                                         configuration["market"]["check_interval"])
-    watch_trading_view(tv_spider, handle_change_to_bullish, handle_change_to_bearish)
+    if len(sys.argv) != 2:
+        print("Usage:", sys.argv[0], "<configuration file>")
+        sys.exit(1)
+
+    parser = config.ConfigurationParser()
+    parser.read(sys.argv[1])
+
+    logging.basicConfig(level=parser.configuration.log_level)
+    logging.debug(str(parser.configuration))
+
+    tv_spider = spider.TradingViewSpider(parser.configuration.market)
+    crossover_detector = detector.CrossOverDetector(bullish=handle_change_to_bullish,
+                                                    bearish=handle_change_to_bearish)
+    watch_trading_view(tv_spider, crossover_detector)
 
 if __name__ == "__main__":
     main()

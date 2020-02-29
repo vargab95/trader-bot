@@ -3,6 +3,8 @@
 import time
 import requests
 
+import config
+
 class InvalidConfigurationException(Exception):
     pass
 
@@ -12,7 +14,7 @@ class CannotFetchDataException(Exception):
 class TradingViewSpider:
     url = "https://scanner.tradingview.com/crypto/scan"
 
-    period_map = {
+    candle_size_map = {
         "1m": "Recommend.All|1",
         "5m": "Recommend.All|5",
         "1h": "Recommend.All|60",
@@ -22,24 +24,32 @@ class TradingViewSpider:
         "1M": "Recommend.All|1M"
     }
 
-    def __init__(self, market_name, period, interval):
-        if period not in list(self.period_map.keys()):
+    def __init__(self, market: config.MarketConfig):
+        if market.candle_size not in list(self.candle_size_map.keys()):
             raise InvalidConfigurationException
         self.request = {
             "symbols": {
                 "tickers": [
-                    market_name
+                    market.name
                 ],
                 "query": {
                     "types": []
                 }
             },
             "columns": [
-                self.period_map[period]
+                self.candle_size_map[market.candle_size]
             ]
         }
         self.response = None
-        self.check_interval = interval
+        self.check_interval = market.check_interval
+
+    def safe_fetch(self):
+        while True:
+            try:
+                self.fetch_technical_summary()
+                break
+            except CannotFetchDataException:
+                continue
 
     def fetch_technical_summary(self):
         try:
