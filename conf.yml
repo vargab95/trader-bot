@@ -17,7 +17,8 @@ market:
     check_interval: 10
 
 exchange:
-    bullish_market: ""
-    bearish_market: ""
+    watched_market: "BTCUSDT"
+    bullish_market: "BULLUSDT"
+    bearish_market: "BEARUSDT"
     api_key: ""
     api_secret: ""
