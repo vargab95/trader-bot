@@ -28,6 +28,7 @@ class ExchangeConfig:
     def __init__(self):
         self.public_key: str = ""
         self.private_key: str = ""
+        self.watched_market: str = ""
         self.bullish_market: str = ""
         self.bearish_market: str = ""
 
@@ -35,6 +36,7 @@ class ExchangeConfig:
         return "\nExchange:" + \
                "\n    Public key:          " + self.public_key + \
                "\n    Private key:         " + "*" * len(self.private_key) + \
+               "\n    Watched market name: " + self.watched_market + \
                "\n    Bullish market name: " + self.bullish_market + \
                "\n    Bearish market name: " + self.bearish_market
 
@@ -85,3 +87,6 @@ class ConfigurationParser:
             exchange_config = configuration.get("exchange", {})
             self.configuration.exchange.public_key = exchange_config.get("api_key", "")
             self.configuration.exchange.private_key = exchange_config.get("api_secret", "")
+            self.configuration.exchange.watched_market = exchange_config.get("watched_market", "BTCUSDT")
+            self.configuration.exchange.bearish_market = exchange_config.get("bearish_market", "BEARUSDT")
+            self.configuration.exchange.bull_market = exchange_config.get("bullish_market", "BULLUSDT")
