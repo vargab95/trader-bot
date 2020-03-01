@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import time
+import logging
 import requests
 
 import config
@@ -55,10 +56,10 @@ class TradingViewSpider:
         try:
             self.response = requests.post(self.url, json=self.request, timeout=5)
         except requests.exceptions.ConnectionError:
-            print("Connection error")
+            logging.error("Connection error")
             raise CannotFetchDataException
         except requests.exceptions.Timeout:
-            print("Connection timeout")
+            logging.error("Connection timeout")
             raise CannotFetchDataException
         if self.response.json()["totalCount"] != 1:
             raise InvalidConfigurationException
