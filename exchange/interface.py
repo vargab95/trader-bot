@@ -22,12 +22,19 @@ class Market:
     def __str__(self):
         return self.target + '-' + self.base
 
+# TODO use this in mock too
 class Balances:
     def __init__(self):
         self.__store: typing.Dict[str, float] = {}
 
     def __getitem__(self, key):
         return self.__store[key]
+
+    def __str__(self):
+        return "\nBalances:" + \
+               "\n   ".join([
+                    "{}: {}".format(name, value) for name, value in self.__store.items()
+               ])
 
 class ExchangeInterface(metaclass=abc.ABCMeta):
 
@@ -41,6 +48,10 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def get_balances(self) -> Balances:
+        pass
+
+    @abc.abstractmethod
+    def get_balance(self, balance: str) -> float:
         pass
 
     @abc.abstractmethod
