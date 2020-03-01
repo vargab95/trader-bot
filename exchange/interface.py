@@ -44,5 +44,9 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_price(self, market: Market):
+    def get_price(self, market: Market) -> float:
+        pass
+
+    @abc.abstractmethod
+    def get_money(self, base: str) -> float:
         pass

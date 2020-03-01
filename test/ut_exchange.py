@@ -100,3 +100,27 @@ class ExchangeControllerTest(unittest.TestCase):
         balance = self.controller.get_balances()
         self.assertEqual(balance["USDT"], 80.0)
         self.assertEqual(balance["BULL"], 0.0)
+
+    def test_get_money_default(self):
+        self.assertEqual(self.controller.get_money("USDT"), 100.0)
+
+    def test_get_money_without_change(self):
+        self.controller.buy(exchange.interface.Market.create_from_string("BULL-USDT"), 2.0)
+        self.controller.buy(exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0)
+        self.assertEqual(self.controller.get_money("USDT"), 100.0)
+
+    def test_get_money_with_higher_price(self):
+        self.controller.buy(exchange.interface.Market.create_from_string("BULL-USDT"), 2.0)
+        self.controller.buy(exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0)
+
+        self.controller.price_mock["BULLUSDT"] = 10.0
+
+        self.assertEqual(self.controller.get_money("USDT"), 110.0)
+
+    def test_get_money_with_lower_price(self):
+        self.controller.buy(exchange.interface.Market.create_from_string("BULL-USDT"), 2.0)
+        self.controller.buy(exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0)
+
+        self.controller.price_mock["BEARUSDT"] = 1.0
+
+        self.assertEqual(self.controller.get_money("USDT"), 55.0)

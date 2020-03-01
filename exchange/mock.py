@@ -90,10 +90,18 @@ class BinanceMock(exchange.interface.ExchangeInterface):
     def get_balances(self) -> exchange.interface.Balances:
         return self.__balances
 
-    def get_price(self, market: exchange.interface.Market):
+    def get_price(self, market: exchange.interface.Market) -> float:
         if self.__is_real_time:
             return float(self.__client.get_ticker(symbol=market.key)["lastPrice"])
         return self.price_mock[market.key]
 
-    def __handle_balance_change(self, market: exchange.interface.Market, trade: Trade):
-        pass
+    def get_money(self, base: str) -> float:
+        all_money: float = 0.0
+        for name, balance in self.__balances.items():
+            if base == name:
+                all_money += balance
+            else:
+                market = exchange.interface.Market(base, name)
+                price = self.get_price(market)
+                all_money += balance * price
+        return all_money

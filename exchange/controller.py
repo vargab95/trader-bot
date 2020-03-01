@@ -20,3 +20,6 @@ class BinanceController(exchange.interface.ExchangeInterface):
 
     def get_price(self, market: exchange.interface.Market) -> float:
         return float(self.client.get_ticker(symbol=market.key)["lastPrice"])
+
+    def get_money(self, base: str) -> float:
+        pass
