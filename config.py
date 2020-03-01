@@ -5,6 +5,7 @@ import json
 import yaml
 
 import typing
+import exchange.interface
 
 class LoggingConfig:
     def __init__(self, config: typing.Dict):
@@ -19,28 +20,33 @@ class LoggingConfig:
 class TestingConfig:
     def __init__(self, config: typing.Dict):
         self.enabled: bool = config.get("enabled", False)
+        self.real_time: bool = config.get("real_time", False)
         self.start_money: float = config.get("start_money", 100.0)
 
     def __str__(self):
         return "\nTesting:" + \
                "\n    Enabled:     " + str(self.enabled) + \
+               "\n    Real time:   " + str(self.real_time) + \
                "\n    Start money: " + str(self.start_money)
 
 class ExchangeConfig:
     def __init__(self, config: typing.Dict):
         self.public_key = config.get("api_key", "")
         self.private_key = config.get("api_secret", "")
-        self.watched_market = config.get("watched_market", "BTCUSDT")
-        self.bearish_market = config.get("bearish_market", "BEARUSDT")
-        self.bullish_market = config.get("bullish_market", "BULLUSDT")
+        self.watched_market: exchange.interface.Market = \
+                exchange.interface.Market.create_from_string(config.get("watched_market", "BTC-USDT"))
+        self.bearish_market: exchange.interface.Market = \
+                exchange.interface.Market.create_from_string(config.get("bearish_market", "BEAR-USDT"))
+        self.bullish_market: exchange.interface.Market = \
+                exchange.interface.Market.create_from_string(config.get("bullish_market", "BULL-USDT"))
 
     def __str__(self):
         return "\nExchange:" + \
                "\n    Public key:          " + self.public_key + \
                "\n    Private key:         " + "*" * len(self.private_key) + \
-               "\n    Watched market name: " + self.watched_market + \
-               "\n    Bullish market name: " + self.bullish_market + \
-               "\n    Bearish market name: " + self.bearish_market
+               "\n    Watched market name: " + str(self.watched_market) + \
+               "\n    Bullish market name: " + str(self.bullish_market) + \
+               "\n    Bearish market name: " + str(self.bearish_market)
 
 class MarketConfig:
     def __init__(self, config: typing.Dict):
@@ -55,24 +61,20 @@ class MarketConfig:
                "\n    Check interval: " + str(self.check_interval)
 
 class TraderConfig:
-    def __init__(self):
-        self.logging: LoggingConfig = None
-        self.market: MarketConfig = None
-        self.exchange: ExchangeConfig = None
-        self.testing: TestingConfig = None
+    def __init__(self, configuration: typing.Dict = {}):
+        self.logging = LoggingConfig(configuration.get("logging", {}))
+        self.testing = TestingConfig(configuration.get("testing", {}))
+        self.market = MarketConfig(configuration.get("market", {}))
+        self.exchange = ExchangeConfig(configuration.get("exchange", {}))
 
     def __str__(self):
         return ''.join([str(attribute) for attribute in self.__dict__.values()])
 
 class ConfigurationParser:
     def __init__(self):
-        self.configuration = TraderConfig()
+        self.configuration: TraderConfig = None
 
     def read(self, path):
         with open(path, "r") as config_file:
             configuration = yaml.safe_load(config_file)
-
-            self.configuration.logging = LoggingConfig(configuration.get("logging", {}))
-            self.configuration.testing = TestingConfig(configuration.get("testing", {}))
-            self.configuration.market = MarketConfig(configuration.get("market", {}))
-            self.configuration.exchange = ExchangeConfig(configuration.get("exchange", {}))
+            self.configuration = TraderConfig(configuration)
