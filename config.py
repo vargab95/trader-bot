@@ -4,10 +4,12 @@ import sys
 import json
 import yaml
 
+import typing
+
 class LoggingConfig:
-    def __init__(self):
-        self.level: int = 10
-        self.path: str = ""
+    def __init__(self, config: typing.Dict):
+        self.level: int = config.get("level", 31)
+        self.path: str = config.get("path", "")
 
     def __str__(self):
         return "\nLogging:" + \
@@ -15,9 +17,9 @@ class LoggingConfig:
                "\n    Path:  " + str(self.path)
 
 class TestingConfig:
-    def __init__(self):
-        self.enabled: bool = False
-        self.start_money: float = 0.0
+    def __init__(self, config: typing.Dict):
+        self.enabled: bool = config.get("enabled", False)
+        self.start_money: float = config.get("start_money", 100.0)
 
     def __str__(self):
         return "\nTesting:" + \
@@ -25,12 +27,12 @@ class TestingConfig:
                "\n    Start money: " + str(self.start_money)
 
 class ExchangeConfig:
-    def __init__(self):
-        self.public_key: str = ""
-        self.private_key: str = ""
-        self.watched_market: str = ""
-        self.bullish_market: str = ""
-        self.bearish_market: str = ""
+    def __init__(self, config: typing.Dict):
+        self.public_key = config.get("api_key", "")
+        self.private_key = config.get("api_secret", "")
+        self.watched_market = config.get("watched_market", "BTCUSDT")
+        self.bearish_market = config.get("bearish_market", "BEARUSDT")
+        self.bullish_market = config.get("bullish_market", "BULLUSDT")
 
     def __str__(self):
         return "\nExchange:" + \
@@ -41,10 +43,10 @@ class ExchangeConfig:
                "\n    Bearish market name: " + self.bearish_market
 
 class MarketConfig:
-    def __init__(self):
-        self.name: str = ""
-        self.candle_size: str = ""
-        self.check_interval: int = 0
+    def __init__(self, config: typing.Dict):
+        self.name = config.get("name", "GEMINI:BTCUSD")
+        self.check_interval = config.get("check_interval", 60)
+        self.candle_size = config.get("candle_size", "1h")
 
     def __str__(self):
         return "\nMarket:" + \
@@ -54,14 +56,13 @@ class MarketConfig:
 
 class TraderConfig:
     def __init__(self):
-        self.logging: LoggingConfig = LoggingConfig()
-        self.market: MarketConfig = MarketConfig()
-        self.exchange: ExchangeConfig = ExchangeConfig()
-        self.testing: TestingConfig = TestingConfig()
+        self.logging: LoggingConfig = None
+        self.market: MarketConfig = None
+        self.exchange: ExchangeConfig = None
+        self.testing: TestingConfig = None
 
     def __str__(self):
-        return str(self.logging) + str(self.market) + \
-               str(self.exchange) + str(self.testing)
+        return ''.join([str(attribute) for attribute in self.__dict__.values()])
 
 class ConfigurationParser:
     def __init__(self):
@@ -71,22 +72,7 @@ class ConfigurationParser:
         with open(path, "r") as config_file:
             configuration = yaml.safe_load(config_file)
 
-            logging_config = configuration.get("logging", {})
-            self.configuration.logging.level = logging_config.get("level", 31)
-            self.configuration.logging.path = logging_config.get("path", "")
-
-            testing_config = configuration.get("testing", {})
-            self.configuration.testing.enabled = testing_config.get("enabled", False)
-            self.configuration.testing.start_money = testing_config.get("start_money", 100.0)
-
-            market_config = configuration.get("market", {})
-            self.configuration.market.name = market_config.get("name", "GEMINI:BTCUSD")
-            self.configuration.market.check_interval = market_config.get("check_interval", 60)
-            self.configuration.market.candle_size = market_config.get("candle_size", "1h")
-
-            exchange_config = configuration.get("exchange", {})
-            self.configuration.exchange.public_key = exchange_config.get("api_key", "")
-            self.configuration.exchange.private_key = exchange_config.get("api_secret", "")
-            self.configuration.exchange.watched_market = exchange_config.get("watched_market", "BTCUSDT")
-            self.configuration.exchange.bearish_market = exchange_config.get("bearish_market", "BEARUSDT")
-            self.configuration.exchange.bull_market = exchange_config.get("bullish_market", "BULLUSDT")
+            self.configuration.logging = LoggingConfig(configuration.get("logging", {}))
+            self.configuration.testing = TestingConfig(configuration.get("testing", {}))
+            self.configuration.market = MarketConfig(configuration.get("market", {}))
+            self.configuration.exchange = ExchangeConfig(configuration.get("exchange", {}))
