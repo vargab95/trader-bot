@@ -19,7 +19,8 @@ def watch_trading_view(tv_spider, crossover_detector, controller):
             tv_spider.safe_fetch()
             current_summary = tv_spider.get_technical_summary()
             crossover_detector.check_crossover(current_summary)
-            logging.info("Current price: %f", controller.get_price(""))
+            logging.info("Current price: %f",
+                         controller.get_price(exchange.interface.Market.create_from_string("BTC-USDT")))
             tv_spider.sleep_until_next_data()
     except KeyboardInterrupt:
         return
