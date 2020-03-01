@@ -16,6 +16,9 @@ market:
     # In second
     check_interval: 10
 
+    bullish_threshold: 0.0
+    bearish_threshold: 0.0
+
 exchange:
     watched_market: "BTCUSDT"
     bullish_market: "BULLUSDT"

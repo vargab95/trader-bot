@@ -7,10 +7,10 @@ from typing import Callable
 import actions
 
 class CrossOverDetector:
-    def __init__(self):
+    def __init__(self, bullish_threshold: float = 0.0, bearish_threshold: float = 0.0):
         self.previous_summary: float = 0.0
-        self.bullish_threshold: float = 0.0
-        self.bearish_threshold: float = 0.0
+        self.bullish_threshold: float = bullish_threshold
+        self.bearish_threshold: float = bearish_threshold
 
     def check_crossover(self, summary: float) -> actions.TradingAction:
         result = actions.TradingAction.HOLD
