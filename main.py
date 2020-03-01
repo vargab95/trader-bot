@@ -85,7 +85,8 @@ def main():
     logging.debug(str(parser.configuration))
 
     tv_spider = spider.TradingViewSpider(parser.configuration.market)
-    crossover_detector = detector.CrossOverDetector()
+    crossover_detector = detector.CrossOverDetector(parser.configuration.market.bullish_threshold,
+                                                    parser.configuration.market.bearish_threshold)
     watch_trading_view(tv_spider, crossover_detector, controller, parser.configuration.exchange)
 
 if __name__ == "__main__":
