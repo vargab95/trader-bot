@@ -44,7 +44,7 @@ class Trade:
     def profit(self):
         if self.state != TradeState.FINISHED:
             raise InvalidTradeResultRequestException
-        return (self.final_price - self.entry_price) * self.amount
+        return (self.final_price - self.entry_price) / self.entry_price * 100.0
 
 class BinanceMock(exchange.interface.ExchangeInterface):
     base_coin = "USDT"
@@ -57,6 +57,7 @@ class BinanceMock(exchange.interface.ExchangeInterface):
 
         self.__trade: Trade = None
         self.__is_real_time: bool = testing_config.real_time
+        self.__fee: float = testing_config.fee
 
         if testing_config.enabled and not self.__is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
@@ -72,7 +73,7 @@ class BinanceMock(exchange.interface.ExchangeInterface):
             self.__balances[market.base] -= amount * price
             if market.target not in self.__balances.keys():
                 self.__balances[market.target] = 0.0
-            self.__balances[market.target] += amount
+            self.__balances[market.target] += amount * (1 - self.__fee)
             logging.info("%f %s from %s was bought for %f", amount, market.target, market.base, price)
             return True
         else:
@@ -85,7 +86,7 @@ class BinanceMock(exchange.interface.ExchangeInterface):
         if self.__balances[market.target] >= amount:
             self.__trade.finish(price)
             self.__balances[market.target] -= amount
-            self.__balances[market.base] += amount * price
+            self.__balances[market.base] += amount * price * (1 - self.__fee)
             logging.info("%f %s was sold for %f %s", amount, market.base, market.target, price)
             logging.info("Trade was finished profit: %f", self.__trade.profit)
             return True
