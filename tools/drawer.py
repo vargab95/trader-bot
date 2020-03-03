@@ -11,15 +11,16 @@ def main():
     currentPrice = 0
 
     stateMA = []
-    stateMAperiod = 1500
+    stateMAperiod = 500
     
     stateMA2 = []
     stateMAperiod2 = 1000
 
     priceMultiplyState = []
 
-    f = open("./binance_5m.log", "r")
+    f = open("./binance_1h.log", "r")
     for i, x in enumerate(f):
+        
         if "price" in x:
             currentPrice = float(x.split("price: ", 1)[1].rstrip())
             price.append(currentPrice)
@@ -64,19 +65,19 @@ def main():
     
     print("choosenBearPrices", choosenBearPrice)
             
-    plt.plot(price)
-    plt.ylabel('Price')
-    plt.show()
+    #plt.plot(price)
+    #plt.ylabel('Price')
+    #plt.show()
 
-    plt.plot(state)
-    plt.ylabel('State')
-    plt.plot(stateMA)
-    plt.ylabel('stateMA')
-    plt.plot(stateMA2)
-    plt.ylabel('stateMA2')
-    plt.show()
+    #plt.plot(state)
+    #plt.ylabel('State')
+    #plt.plot(stateMA)
+    #plt.ylabel('stateMA')
+    #plt.plot(stateMA2)
+    #plt.ylabel('stateMA2')
+    #plt.show()
 
-    print("HELLO")
+    #print("HELLO")
     
     price.append(price[len(price)-1])
 
@@ -84,18 +85,20 @@ def main():
     y1 = np.array(price)
     y2 = np.array(state)
 
-    
-    print(len(x), len(y1), len(y2))
-
     fig, ax1 = plt.subplots()
 
     ax2 = ax1.twinx()
     ax1.plot(x, y1, 'g-')
-    ax2.plot(x, y2, 'b-')
+    ax2.plot(x, y2, 'r-')
 
     ax1.set_xlabel('X data')
     ax1.set_ylabel('Price', color='g')
-    ax2.set_ylabel('State', color='b')
+    ax2.set_ylabel('State', color='r')
+    
+    plt.plot(stateMA)
+    plt.ylabel('stateMA')
+    plt.plot(stateMA2)
+    plt.ylabel('stateMA2')
 
     plt.show()
 
