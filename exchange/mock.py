@@ -87,7 +87,7 @@ class BinanceMock(exchange.interface.ExchangeInterface):
             self.__trade.finish(price)
             self.__balances[market.target] -= amount
             self.__balances[market.base] += amount * price * (1 - self.__fee)
-            logging.info("%f %s was sold for %f %s", amount, market.base, market.target, price)
+            logging.info("%f %s was sold for %f %s", amount, market.base, price, market.target)
             logging.info("Trade was finished profit: %f", self.__trade.profit)
             return True
         else:
