@@ -6,7 +6,7 @@ import actions
 import detector.common
 
 class ReverseCrossOverDetector:
-    def __init__(self, bearish_threshold: float = 0.0, bullish_threshold: float = 0.0):
+    def __init__(self, bearish_threshold: float, bullish_threshold: float):
         self.current_state: detector.common.CurrentState = detector.common.CurrentState.NONE
         self.bullish_threshold: float = bullish_threshold
         self.bearish_threshold: float = bearish_threshold

@@ -64,7 +64,7 @@ class TradingViewSpider:
         if self.response.json()["totalCount"] != 1:
             raise InvalidConfigurationException
 
-    def get_technical_summary(self):
+    def get_technical_summary(self) -> float:
         return self.response.json()["data"][0]["d"][0]
 
     def sleep_until_next_data(self):

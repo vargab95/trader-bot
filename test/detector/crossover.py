@@ -1,5 +1,4 @@
 import unittest
-import enum
 
 import detector.crossover
 import actions
