@@ -22,7 +22,6 @@ class CrossOverDetector:
     def check_crossover(self, summary: float) -> actions.TradingAction:
         result = actions.TradingAction.HOLD
         logging.info("Current state: %f", summary)
-        print (summary, self.bearish_threshold, self.previous_summary, self.current_state)
         if summary > self.bullish_threshold and \
                 self.previous_summary <= self.bullish_threshold and \
                 self.current_state != CurrentState.BULL:
