@@ -1,7 +1,7 @@
 import unittest
 import enum
 
-import detector
+import detector.crossover
 import actions
 
 class CurrencyState(enum.Enum):
@@ -11,7 +11,7 @@ class CurrencyState(enum.Enum):
 
 class CrossOverDetectorTest(unittest.TestCase):
     def test_quick_fall_down(self):
-        test_detector = detector.CrossOverDetector(0.0, 0.0)
+        test_detector = detector.crossover.CrossOverDetector(0.0, 0.0)
         test_data = [
             [-0.066667, actions.TradingAction.SWITCH_TO_BEARISH],
             [-0.066668, actions.TradingAction.HOLD],
@@ -22,10 +22,10 @@ class CrossOverDetectorTest(unittest.TestCase):
             [-0.378789, actions.TradingAction.HOLD]
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check_crossover(line[0]), line[1], str(line))
+            self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_slow_up_trend(self):
-        test_detector = detector.CrossOverDetector(0.0, 0.0)
+        test_detector = detector.crossover.CrossOverDetector(0.0, 0.0)
         test_data = [
             [-0.045455, actions.TradingAction.SWITCH_TO_BEARISH],
             [-0.045456, actions.TradingAction.HOLD],
@@ -36,10 +36,10 @@ class CrossOverDetectorTest(unittest.TestCase):
             [0.02, actions.TradingAction.HOLD]
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check_crossover(line[0]), line[1], str(line))
+            self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_up_trend_with_same_but_modified_threshold(self):
-        test_detector = detector.CrossOverDetector(0.1, 0.1)
+        test_detector = detector.crossover.CrossOverDetector(0.1, 0.1)
         test_data = [
             [-0.145455, actions.TradingAction.SWITCH_TO_BEARISH],
             [-0.145456, actions.TradingAction.HOLD],
@@ -50,10 +50,10 @@ class CrossOverDetectorTest(unittest.TestCase):
             [0.12, actions.TradingAction.HOLD]
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check_crossover(line[0]), line[1], str(line))
+            self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_quick_fall_down_with_same_but_modified_threshold(self):
-        test_detector = detector.CrossOverDetector(-0.1, -0.1)
+        test_detector = detector.crossover.CrossOverDetector(-0.1, -0.1)
         test_data = [
             [-0.166667, actions.TradingAction.SWITCH_TO_BEARISH],
             [-0.166668, actions.TradingAction.HOLD],
@@ -64,10 +64,10 @@ class CrossOverDetectorTest(unittest.TestCase):
             [-0.478789, actions.TradingAction.HOLD]
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check_crossover(line[0]), line[1], str(line))
+            self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_up_trend_with_different_and_modified_threshold(self):
-        test_detector = detector.CrossOverDetector(-0.1, 0.1)
+        test_detector = detector.crossover.CrossOverDetector(-0.1, 0.1)
         test_data = [
             [-0.15, actions.TradingAction.SWITCH_TO_BEARISH],
             [-0.1, actions.TradingAction.HOLD],
@@ -81,10 +81,10 @@ class CrossOverDetectorTest(unittest.TestCase):
             [0.12, actions.TradingAction.HOLD]
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check_crossover(line[0]), line[1], str(line))
+            self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_quick_fall_down_with_different_and_modified_threshold(self):
-        test_detector = detector.CrossOverDetector(-0.33, 0.33)
+        test_detector = detector.crossover.CrossOverDetector(-0.33, 0.33)
         test_data = [
             [-0.166667, actions.TradingAction.HOLD],
             [-0.166668, actions.TradingAction.HOLD],
@@ -95,10 +95,10 @@ class CrossOverDetectorTest(unittest.TestCase):
             [-0.478789, actions.TradingAction.HOLD]
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check_crossover(line[0]), line[1], str(line))
+            self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_up_and_down_with_different_and_modified_threshold(self):
-        test_detector = detector.CrossOverDetector(-0.33, 0.33)
+        test_detector = detector.crossover.CrossOverDetector(-0.33, 0.33)
         test_data = [
             [0.0, actions.TradingAction.HOLD],
             [0.15, actions.TradingAction.HOLD],
@@ -119,4 +119,4 @@ class CrossOverDetectorTest(unittest.TestCase):
             [0.0, actions.TradingAction.HOLD],
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check_crossover(line[0]), line[1], str(line))
+            self.assertEqual(test_detector.check(line[0]), line[1], str(line))

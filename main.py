@@ -27,7 +27,7 @@ def watch_trading_view(tv_spider, crossover_detector, controller, exchange_confi
         while True:
             tv_spider.safe_fetch()
             current_summary = tv_spider.get_technical_summary()
-            action = crossover_detector.check_crossover(current_summary)
+            action = crossover_detector.check(current_summary)
             if action == actions.TradingAction.SWITCH_TO_BULLISH:
                 available_amount = controller.get_balance(exchange_config.bearish_market.target)
                 if available_amount > 0.0:
