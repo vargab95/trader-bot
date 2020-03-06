@@ -1,13 +1,15 @@
+#!/usr/bin/python3
+
 import unittest
 import json
 
-import config
+import config.trader
 import exchange.factory
 import exchange.interface
 
 class ExchangeControllerTest(unittest.TestCase):
     def setUp(self):
-        self.config: config.TraderConfig = config.TraderConfig()
+        self.config: config.trader.TraderConfig = config.trader.TraderConfig()
         self.config.testing.enabled = True
         self.config.testing.real_time = False
         self.config.testing.start_money = 100.0

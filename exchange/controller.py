@@ -2,11 +2,11 @@
 
 import binance.client
 
-import config
+import config.exchange
 import exchange.interface
 
 class BinanceController(exchange.interface.ExchangeInterface):
-    def __init__(self, config: config.ExchangeConfig):
+    def __init__(self, config: config.exchange.ExchangeConfig):
         self.client = binance.client.Client(config.public_key, config.private_key)
 
     def buy(market: exchange.interface.Market, amount: float) -> bool:

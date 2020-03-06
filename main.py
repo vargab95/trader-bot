@@ -4,10 +4,10 @@ import sys
 import logging
 import json
 
-import config
+import config.parser
+import config.logging
 import spider
-import detector
-import config
+import detector.crossover
 import actions
 import exchange.factory
 import exchange.interface
@@ -66,7 +66,7 @@ def watch_trading_view(tv_spider, crossover_detector, controller, exchange_confi
     except KeyboardInterrupt:
         return
 
-def configure_logging(config: config.LoggingConfig):
+def configure_logging(config: config.logging.LoggingConfig):
     logging.basicConfig(level=config.level,
                         filename=config.path,
                         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -76,7 +76,7 @@ def main():
         print("Usage:", sys.argv[0], "<configuration file>")
         sys.exit(1)
 
-    parser = config.ConfigurationParser()
+    parser = config.parser.ConfigurationParser()
     parser.read(sys.argv[1])
 
     controller = exchange.factory.ExchangeControllerFactory.create(parser.configuration)
@@ -85,8 +85,9 @@ def main():
     logging.debug(str(parser.configuration))
 
     tv_spider = spider.TradingViewSpider(parser.configuration.market)
-    crossover_detector = detector.CrossOverDetector(parser.configuration.market.bearish_threshold,
-                                                    parser.configuration.market.bullish_threshold)
+    crossover_detector = detector.crossover.CrossOverDetector(
+        parser.configuration.market.bearish_threshold,
+        parser.configuration.market.bullish_threshold)
     watch_trading_view(tv_spider, crossover_detector, controller, parser.configuration.exchange)
 
 if __name__ == "__main__":

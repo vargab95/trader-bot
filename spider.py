@@ -4,7 +4,7 @@ import time
 import logging
 import requests
 
-import config
+import config.market
 
 class InvalidConfigurationException(Exception):
     pass
@@ -25,7 +25,7 @@ class TradingViewSpider:
         "1M": "Recommend.All|1M"
     }
 
-    def __init__(self, market: config.MarketConfig):
+    def __init__(self, market: config.market.MarketConfig):
         if market.candle_size not in list(self.candle_size_map.keys()):
             raise InvalidConfigurationException
         self.request = {

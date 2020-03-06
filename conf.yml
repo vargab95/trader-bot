@@ -1,10 +1,10 @@
 logging:
-    level: 11
+    level: 0
     path: "binance_1m.log"
 
 testing:
-    enabled: false
-    realtime: true
+    enabled: true
+    real_time: true
 
     # In USD
     start_money: 100

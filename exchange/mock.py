@@ -6,7 +6,8 @@ import enum
 
 import binance
 
-import config
+import config.exchange
+import config.testing
 import exchange.interface
 
 class TradeState(enum.Enum):
@@ -50,8 +51,8 @@ class BinanceMock(exchange.interface.ExchangeInterface):
     base_coin = "USDT"
 
     def __init__(self,
-                 exchange_config: config.ExchangeConfig,
-                 testing_config: config.TestingConfig):
+                 exchange_config: config.exchange.ExchangeConfig,
+                 testing_config: config.testing.TestingConfig):
         self.__balances: typing.Dict[str, float] = {}
         self.__balances["USDT"] = testing_config.start_money
 
