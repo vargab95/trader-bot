@@ -13,6 +13,7 @@ class TraderConfig:
         self.testing = TestingConfig(configuration.get("testing", {}))
         self.market = MarketConfig(configuration.get("market", {}))
         self.exchange = ExchangeConfig(configuration.get("exchange", {}))
+        self.follower_detector: bool = configuration.get("follower_mode", False)
 
     def __str__(self):
         return ''.join([str(attribute) for attribute in self.__dict__.values()])

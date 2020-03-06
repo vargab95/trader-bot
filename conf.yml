@@ -30,3 +30,5 @@ exchange:
     bearish_market: "BEAR-USDT"
     api_key: ""
     api_secret: ""
+
+follower_mode: false
