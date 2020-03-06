@@ -25,8 +25,8 @@ market:
     bearish_threshold: 0.0
 
 exchange:
-    watched_market: "BTCUSDT"
-    bullish_market: "BULLUSDT"
-    bearish_market: "BEARUSDT"
+    watched_market: "BTC-USDT"
+    bullish_market: "BULL-USDT"
+    bearish_market: "BEAR-USDT"
     api_key: ""
     api_secret: ""
