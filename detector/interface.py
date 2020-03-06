@@ -3,7 +3,6 @@
 import abc
 import typing
 
-
 class DetectorInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod

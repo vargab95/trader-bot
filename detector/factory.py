@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import config
+import config.market
 import spider
 import detector.interface
 import detector.crossover
@@ -10,7 +10,7 @@ import detector.moving_threshold
 class DetectorFactory:
     @classmethod
     def create(cls,
-               configuration: config.MarketConfig,
+               configuration: config.market.MarketConfig,
                spider: spider.TradingViewSpider = None) -> detector.interface.DetectorInterface:
         if spider:
             return detector.moving_threshold.MovingThresholdCrossOverDetector(configuration.bearish_threshold,
