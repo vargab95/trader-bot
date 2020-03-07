@@ -32,3 +32,4 @@ exchange:
     api_secret: ""
 
 follower_mode: false
+follower_candle_size: "1D"
