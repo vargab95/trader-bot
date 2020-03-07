@@ -23,13 +23,13 @@ class TradingViewSpider:
         "5m": "Recommend.All|5",
         "1h": "Recommend.All|60",
         "4h": "Recommend.All|240",
-        "1d": "Recommend.All",
+        "1D": "Recommend.All",
         "1W": "Recommend.All|1W",
         "1M": "Recommend.All|1M"
     }
 
-    def __init__(self, market: config.market.MarketConfig):
-        if market.candle_size not in list(self.candle_size_map.keys()):
+    def __init__(self, market: config.market.MarketConfig, candle_size: float):
+        if candle_size not in list(self.candle_size_map.keys()):
             raise InvalidConfigurationException
         self.request = {
             "symbols": {
@@ -38,7 +38,7 @@ class TradingViewSpider:
                     "types": []
                 }
             },
-            "columns": [self.candle_size_map[market.candle_size]]
+            "columns": [self.candle_size_map[candle_size]]
         }
         self.response = None
         self.check_interval = market.check_interval

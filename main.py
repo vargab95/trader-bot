@@ -104,13 +104,15 @@ def main():
     controller = exchange.factory.ExchangeControllerFactory.create(
         parser.configuration)
 
-    tv_spider = spider.TradingViewSpider(parser.configuration.market)
+    tv_spider = spider.TradingViewSpider(parser.configuration.market,
+                                         parser.configuration.market.candle_size)
     long_term_spider = None
-    if parser.configuration.follower_detector:
+    if parser.configuration.market.follower_enabled:
         long_term_spider = spider.TradingViewSpider(
-            parser.configuration.follower_candle_size)
+            parser.configuration.market,
+            parser.configuration.market.follower_candle_size)
 
-    crossover_detector = detector.factory.DetectorFactory(
+    crossover_detector = detector.factory.DetectorFactory.create(
         parser.configuration.market, long_term_spider)
 
     watch_trading_view(tv_spider, crossover_detector, controller,
