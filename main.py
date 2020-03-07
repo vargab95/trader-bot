@@ -98,12 +98,11 @@ def main():
 
     parser = config.parser.ConfigurationParser()
     parser.read(sys.argv[1])
+    configure_logging(parser.configuration.logging)
+    logging.debug(str(parser.configuration))
 
     controller = exchange.factory.ExchangeControllerFactory.create(
         parser.configuration)
-
-    configure_logging(parser.configuration.logging)
-    logging.debug(str(parser.configuration))
 
     tv_spider = spider.TradingViewSpider(parser.configuration.market)
     crossover_detector = detector.crossover.CrossOverDetector(
