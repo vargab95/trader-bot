@@ -17,6 +17,7 @@ testing:
 market:
     name: "GEMINI:BTCUSD"
     candle_size: "1h"
+    follower_candle_size: "1D"
 
     # In second
     check_interval: 10
@@ -32,4 +33,3 @@ exchange:
     api_secret: ""
 
 follower_mode: false
-follower_candle_size: "1D"

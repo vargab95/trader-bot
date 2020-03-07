@@ -14,10 +14,6 @@ class TraderConfig:
         self.testing = TestingConfig(configuration.get("testing", {}))
         self.market = MarketConfig(configuration.get("market", {}))
         self.exchange = ExchangeConfig(configuration.get("exchange", {}))
-        self.follower_detector: bool = configuration.get(
-            "follower_mode", False)
-        self.follower_candle_size: str = configuration.get(
-            "follower_candle_size", "1D")
 
     def __str__(self):
         return ''.join(
