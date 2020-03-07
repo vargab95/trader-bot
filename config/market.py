@@ -2,6 +2,7 @@
 
 import typing
 
+
 class MarketConfig:
     def __init__(self, config: typing.Dict):
         self.name = config.get("name", "GEMINI:BTCUSD")

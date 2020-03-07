@@ -3,6 +3,7 @@
 import abc
 import typing
 
+
 class Market:
     def __init__(self, base: str, target: str):
         self.base: str = base
@@ -22,6 +23,7 @@ class Market:
     def __str__(self):
         return self.target + '-' + self.base
 
+
 # TODO use this in mock too
 class Balances:
     def __init__(self):
@@ -33,11 +35,13 @@ class Balances:
     def __str__(self):
         return "\nBalances:" + \
                "\n   ".join([
-                    "{}: {}".format(name, value) for name, value in self.__store.items()
+                   "{}: {}".format(name, value)
+                   for name, value
+                   in self.__store.items()
                ])
 
-class ExchangeInterface(metaclass=abc.ABCMeta):
 
+class ExchangeInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def buy(self, market: Market, amount: float) -> bool:
         pass

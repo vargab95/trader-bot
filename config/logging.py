@@ -2,6 +2,7 @@
 
 import typing
 
+
 class LoggingConfig:
     def __init__(self, config: typing.Dict):
         self.level: int = config.get("level", 31)
