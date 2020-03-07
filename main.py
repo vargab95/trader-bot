@@ -6,7 +6,7 @@ import logging
 import config.parser
 import config.logging
 import spider
-import detector.crossover
+import detector.factory
 import actions
 import exchange.factory
 import exchange.interface
@@ -105,9 +105,14 @@ def main():
         parser.configuration)
 
     tv_spider = spider.TradingViewSpider(parser.configuration.market)
-    crossover_detector = detector.crossover.CrossOverDetector(
-        parser.configuration.market.bearish_threshold,
-        parser.configuration.market.bullish_threshold)
+    long_term_spider = None
+    if parser.configuration.follower_detector:
+        long_term_spider = spider.TradingViewSpider(
+            parser.configuration.follower_candle_size)
+
+    crossover_detector = detector.factory.DetectorFactory(
+        parser.configuration.market, long_term_spider)
+
     watch_trading_view(tv_spider, crossover_detector, controller,
                        parser.configuration.exchange)
 
