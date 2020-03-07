@@ -2,6 +2,7 @@
 
 import typing
 
+
 class TestingConfig:
     def __init__(self, config: typing.Dict):
         self.enabled: bool = config.get("enabled", False)

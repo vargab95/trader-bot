@@ -5,12 +5,15 @@ import logging
 import actions
 import detector.common
 
+
 class CrossOverDetector:
     def __init__(self, bearish_threshold: float, bullish_threshold: float):
-        self.current_state: detector.common.CurrentState = detector.common.CurrentState.NONE
+        self.current_state: detector.common.CurrentState = \
+            detector.common.CurrentState.NONE
         self.bullish_threshold: float = bullish_threshold
         self.bearish_threshold: float = bearish_threshold
-        self.previous_summary: float = (bullish_threshold + bearish_threshold) / 2
+        self.previous_summary: float = (bullish_threshold +
+                                        bearish_threshold) / 2
 
     def check(self, summary: float) -> actions.TradingAction:
         result = actions.TradingAction.HOLD

@@ -4,6 +4,7 @@ import yaml
 
 from config.trader import TraderConfig
 
+
 class ConfigurationParser:
     def __init__(self):
         self.configuration: TraderConfig = None

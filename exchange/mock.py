@@ -10,13 +10,16 @@ import config.exchange
 import config.testing
 import exchange.interface
 
+
 class TradeState(enum.Enum):
     NOT_STARTED = 0
     ON_GOING = 1
     FINISHED = 2
 
+
 class InvalidTradeResultRequestException(Exception):
     pass
+
 
 class Trade:
     def __init__(self, market: exchange.interface.Market):
@@ -47,11 +50,11 @@ class Trade:
             raise InvalidTradeResultRequestException
         return (self.final_price - self.entry_price) / self.entry_price * 100.0
 
+
 class BinanceMock(exchange.interface.ExchangeInterface):
     base_coin = "USDT"
 
-    def __init__(self,
-                 exchange_config: config.exchange.ExchangeConfig,
+    def __init__(self, exchange_config: config.exchange.ExchangeConfig,
                  testing_config: config.testing.TestingConfig):
         self.__balances: typing.Dict[str, float] = {}
         self.__balances["USDT"] = testing_config.start_money
@@ -63,7 +66,8 @@ class BinanceMock(exchange.interface.ExchangeInterface):
         if testing_config.enabled and not self.__is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
         else:
-            self.__client = binance.client.Client(exchange_config.public_key, exchange_config.private_key)
+            self.__client = binance.client.Client(exchange_config.public_key,
+                                                  exchange_config.private_key)
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         logging.debug("Trying to buy %f of %s", amount, str(market))
@@ -75,10 +79,11 @@ class BinanceMock(exchange.interface.ExchangeInterface):
             if market.target not in self.__balances.keys():
                 self.__balances[market.target] = 0.0
             self.__balances[market.target] += amount * (1 - self.__fee)
-            logging.info("%f %s from %s was bought for %f", amount, market.target, market.base, price)
+            logging.info("%f %s from %s was bought for %f", amount,
+                         market.target, market.base, price)
             return True
-        else:
-            logging.error("Could not complete buy %f %s for %f", amount, market.base, price)
+        logging.error("Could not complete buy %f %s for %f", amount,
+                      market.base, price)
         return False
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
@@ -88,11 +93,11 @@ class BinanceMock(exchange.interface.ExchangeInterface):
             self.__trade.finish(price)
             self.__balances[market.target] -= amount
             self.__balances[market.base] += amount * price * (1 - self.__fee)
-            logging.info("%f %s was sold for %f %s", amount, market.base, price, market.target)
+            logging.info("%f %s was sold for %f %s", amount, market.base,
+                         price, market.target)
             logging.info("Trade was finished profit: %f", self.__trade.profit)
             return True
-        else:
-            logging.error("Could not complete sell %f %s", amount, market.target)
+        logging.error("Could not complete sell %f %s", amount, market.target)
         return False
 
     def get_balance(self, balance: str) -> float:
@@ -105,7 +110,8 @@ class BinanceMock(exchange.interface.ExchangeInterface):
 
     def get_price(self, market: exchange.interface.Market) -> float:
         if self.__is_real_time:
-            return float(self.__client.get_ticker(symbol=market.key)["lastPrice"])
+            return float(
+                self.__client.get_ticker(symbol=market.key)["lastPrice"])
         return self.price_mock[market.key]
 
     def get_money(self, base: str) -> float:

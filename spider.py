@@ -6,11 +6,14 @@ import requests
 
 import config.market
 
+
 class InvalidConfigurationException(Exception):
     pass
 
+
 class CannotFetchDataException(Exception):
     pass
+
 
 class TradingViewSpider:
     url = "https://scanner.tradingview.com/crypto/scan"
@@ -30,16 +33,12 @@ class TradingViewSpider:
             raise InvalidConfigurationException
         self.request = {
             "symbols": {
-                "tickers": [
-                    market.name
-                ],
+                "tickers": [market.name],
                 "query": {
                     "types": []
                 }
             },
-            "columns": [
-                self.candle_size_map[market.candle_size]
-            ]
+            "columns": [self.candle_size_map[market.candle_size]]
         }
         self.response = None
         self.check_interval = market.check_interval
@@ -54,7 +53,9 @@ class TradingViewSpider:
 
     def fetch_technical_summary(self):
         try:
-            self.response = requests.post(self.url, json=self.request, timeout=5)
+            self.response = requests.post(self.url,
+                                          json=self.request,
+                                          timeout=5)
         except requests.exceptions.ConnectionError:
             logging.error("Connection error")
             raise CannotFetchDataException
