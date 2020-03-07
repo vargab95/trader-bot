@@ -32,13 +32,21 @@ class Balances:
     def __getitem__(self, key):
         return self.__store[key]
 
+    def __setitem__(self, key, value):
+        self.__store[key] = value
+
     def __str__(self):
         return "\nBalances:" + \
+               "\n   " + \
                "\n   ".join([
                    "{}: {}".format(name, value)
                    for name, value
                    in self.__store.items()
                ])
+
+    def items(self):
+        for name, balance in self.__store.items():
+            yield name, balance
 
 
 class ExchangeInterface(metaclass=abc.ABCMeta):
