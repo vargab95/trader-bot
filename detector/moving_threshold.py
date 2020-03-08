@@ -15,6 +15,7 @@ class MovingThresholdCrossOverDetector(detector.crossover.CrossOverDetector):
         self.original_bearish_threshold = bearish_threshold
         self.original_bullish_threshold = bullish_threshold
         self.gatherer = gatherer
+        self.first_signal_returned: bool = False
 
     @staticmethod
     def __saturate(value: float, threshold: float) -> float:
@@ -38,4 +39,20 @@ class MovingThresholdCrossOverDetector(detector.crossover.CrossOverDetector):
                      self.bearish_threshold,
                      self.bullish_threshold)
 
-        return super().check(summary)
+        result = super().check(summary)
+        logging.debug("New state of the moving threshold detector: %s", str(result))
+
+        if self.first_signal_returned:
+            return result
+
+        self.first_signal_returned = True
+        if summary <= self.bearish_threshold:
+            logging.debug("Initial state was overwritten by bearish")
+            return actions.TradingAction.SWITCH_TO_BEARISH
+
+        if summary >= self.bullish_threshold:
+            logging.debug("Initial state was overwritten by bullish")
+            return actions.TradingAction.SWITCH_TO_BULLISH
+
+        logging.debug("Initial state was overwritten by hold")
+        return actions.TradingAction.HOLD
