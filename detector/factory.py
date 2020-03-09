@@ -19,7 +19,7 @@ class DetectorFactory:
             return detector.moving_threshold.MovingThresholdCrossOverDetector(
                 configuration.bearish_threshold,
                 configuration.bullish_threshold, gatherer)
-        if configuration.bullish_threshold > configuration.bearish_threshold:
+        if configuration.bullish_threshold >= configuration.bearish_threshold:
             return detector.crossover.CrossOverDetector(
                 configuration.bearish_threshold,
                 configuration.bullish_threshold)
