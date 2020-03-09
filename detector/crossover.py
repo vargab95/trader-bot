@@ -27,5 +27,4 @@ class CrossOverDetector:
             result = actions.TradingAction.SWITCH_TO_BEARISH
             self.current_state = detector.common.CurrentState.BEAR
 
-        self.previous_summary = summary
         return result
