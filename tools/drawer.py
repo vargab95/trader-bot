@@ -6,6 +6,9 @@ def main():
     file = "./trading_view_bot.log"
     price = []
     state = []
+    amount = []
+    bullTrigger = -0.2
+    bearTrigger = 0.2
     choosenBullPrice = []
     choosenBearPrice = []
     isBull = True
@@ -14,14 +17,15 @@ def main():
     btc = 0
 
     stateMA = []
-    stateMAperiod = 500
+    stateMAperiod = 1200
     
     stateMA2 = []
-    stateMAperiod2 = 1200
+    stateMAperiod2 = 900
 
     avgState = 0
     avgState2 = 0
     num_lines = sum(1 for line in open(file))
+    
 
     f = open(file, "r")
     for i, x in enumerate(f):
@@ -54,20 +58,19 @@ def main():
             else:
                 stateMA2.append(0)
 
-            if not isBull and (currentPrice > 0 and stateMA2[-2] <= -0.3 and stateMA2[-1] >= - 0.3 or i > num_lines - 4):
+            if not isBull and (currentPrice > 0 and stateMA2[-2] <= bullTrigger and stateMA2[-1] >= bullTrigger or i > num_lines - 4):
                 isBull = True
                 choosenBullPrice.append(currentPrice)
-                print("bull", i/2, currentPrice)
+                print("bull", i/3, currentPrice)
                 if len(choosenBearPrice) > 0:
                     money = money + money - (money / choosenBearPrice[-1] * 0.999) * currentPrice * 0.999
             
-            if isBull and (currentPrice > 0 and stateMA2[-2] >= 0.3 and stateMA2[-1] <= 0.3 or i > num_lines - 4):
+            if isBull and (currentPrice > 0 and stateMA2[-2] >= bearTrigger and stateMA2[-1] <= bearTrigger or i > num_lines - 4):
                 isBull = False
                 choosenBearPrice.append(currentPrice)
-                print("bear", i/2, currentPrice)
+                print("bear", i/3, currentPrice)
                 if len(choosenBullPrice) > 0:
                     money = (money / choosenBullPrice[-1] * 0.999) * currentPrice * 0.999
-
 
     print("choosenBullPrices", choosenBullPrice)
     print("choosenBearPrices", choosenBearPrice)
@@ -95,8 +98,8 @@ def main():
     ax1.set_ylabel('Price')
     # ax2.set_ylabel('State')
     
-    # plt.plot(stateMA)
-    # plt.ylabel('stateMA')
+    plt.plot(stateMA)
+    plt.ylabel('stateMA')
     plt.plot(stateMA2)
     plt.ylabel('stateMA2')
 
