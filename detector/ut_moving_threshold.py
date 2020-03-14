@@ -8,13 +8,13 @@ import actions
 
 class FetcherMock:
     def __init__(self):
-        self.summary = 0.0
+        self.indicator = 0.0
 
-    def fetch_technical_summary(self):
+    def fetch_technical_indicator(self):
         pass
 
-    def get_technical_summary(self) -> float:
-        return self.summary
+    def get_technical_indicator(self) -> float:
+        return self.indicator
 
 
 class CrossOverDetectorTest(unittest.TestCase):
@@ -47,7 +47,7 @@ class CrossOverDetectorTest(unittest.TestCase):
                      [-0.378788, actions.TradingAction.HOLD],
                      [-0.378789, actions.TradingAction.HOLD]]
 
-        self.gatherer.summary = -0.1
+        self.gatherer.indicator = -0.1
 
         for line in test_data:
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
@@ -64,7 +64,7 @@ class CrossOverDetectorTest(unittest.TestCase):
                      [-0.378788, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.378789, actions.TradingAction.HOLD]]
 
-        self.gatherer.summary = 0.1
+        self.gatherer.indicator = 0.1
 
         for line in test_data:
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
@@ -81,7 +81,7 @@ class CrossOverDetectorTest(unittest.TestCase):
                      [-0.3, 0.466667, actions.TradingAction.HOLD]]
 
         for line in test_data:
-            self.gatherer.summary = line[0]
+            self.gatherer.indicator = line[0]
             self.assertEqual(test_detector.check(line[1]), line[2], str(line))
 
     def test_move_threshold_below_bearish_while_in_bull(self):
@@ -96,5 +96,5 @@ class CrossOverDetectorTest(unittest.TestCase):
                      [0.3, -0.466667, actions.TradingAction.HOLD]]
 
         for line in test_data:
-            self.gatherer.summary = line[0]
+            self.gatherer.indicator = line[0]
             self.assertEqual(test_detector.check(line[1]), line[2], str(line))

@@ -25,20 +25,21 @@ class MovingThresholdCrossOverDetector(detector.crossover.CrossOverDetector):
             return threshold * -1
         return value
 
-    def check(self, summary: float) -> actions.TradingAction:
-        self.gatherer.fetch_technical_summary()
-        long_term_summary = self.gatherer.get_technical_summary()
+    def check(self, indicator: float) -> actions.TradingAction:
+        self.gatherer.fetch_technical_indicator()
+        long_term_indicator = self.gatherer.get_technical_indicator()
 
         self.bearish_threshold = self.__saturate(
-            self.original_bearish_threshold - long_term_summary, 1.0)
+            self.original_bearish_threshold - long_term_indicator, 1.0)
         self.bullish_threshold = self.__saturate(
-            self.original_bullish_threshold - long_term_summary, 1.0)
+            self.original_bullish_threshold - long_term_indicator, 1.0)
 
         logging.info(
             "New moving threshold: Long term = %f, Bearish = %f, Bullish = %f",
-            long_term_summary, self.bearish_threshold, self.bullish_threshold)
+            long_term_indicator, self.bearish_threshold,
+            self.bullish_threshold)
 
-        result = super().check(summary)
+        result = super().check(indicator)
         logging.debug("New state of the moving threshold detector: %s",
                       str(result))
 
@@ -46,11 +47,11 @@ class MovingThresholdCrossOverDetector(detector.crossover.CrossOverDetector):
             return result
 
         self.first_signal_returned = True
-        if summary <= self.bearish_threshold:
+        if indicator <= self.bearish_threshold:
             logging.debug("Initial state was overwritten by bearish")
             return actions.TradingAction.SWITCH_TO_BEARISH
 
-        if summary >= self.bullish_threshold:
+        if indicator >= self.bullish_threshold:
             logging.debug("Initial state was overwritten by bullish")
             return actions.TradingAction.SWITCH_TO_BULLISH
 

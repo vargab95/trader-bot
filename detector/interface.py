@@ -6,7 +6,7 @@ import actions
 
 class DetectorInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def check(self, summary: float) -> actions.TradingAction:
+    def check(self, indicator: float) -> actions.TradingAction:
         pass
 
     @abc.abstractmethod

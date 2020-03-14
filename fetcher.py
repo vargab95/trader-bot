@@ -47,12 +47,12 @@ class TradingViewFetcher:
     def safe_fetch(self):
         while True:
             try:
-                self.fetch_technical_summary()
+                self.fetch_technical_indicator()
                 break
             except CannotFetchDataException:
                 continue
 
-    def fetch_technical_summary(self):
+    def fetch_technical_indicator(self):
         try:
             self.response = requests.post(self.url,
                                           json=self.request,
@@ -66,7 +66,7 @@ class TradingViewFetcher:
         if self.response.json()["totalCount"] != 1:
             raise InvalidConfigurationException
 
-    def get_technical_summary(self) -> float:
+    def get_technical_indicator(self) -> float:
         return self.response.json()["data"][0]["d"][0]
 
     def sleep_until_next_data(self):
