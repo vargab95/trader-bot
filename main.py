@@ -32,14 +32,14 @@ def handle_change_to_bearish():
 def watch_trading_view(tv_fetcher, crossover_detector, controller,
                        exchange_config, sma_length):
     tv_fetcher.safe_fetch()
-    current_summary = 0.0
+    current_indicator = 0.0
     state = BuyState.NONE
     sma = list()
     try:
         while True:
             tv_fetcher.safe_fetch()
-            current_summary = tv_fetcher.get_technical_summary()
-            sma.append(current_summary)
+            current_indicator = tv_fetcher.get_technical_indicator()
+            sma.append(current_indicator)
 
             if len(sma) <= sma_length:
                 logging.info(
@@ -48,8 +48,8 @@ def watch_trading_view(tv_fetcher, crossover_detector, controller,
                     "Final length: %d ", len(sma), sma_length)
             else:
                 sma.pop(0)
-                current_summary = sum(sma) / sma_length
-                action = crossover_detector.check(current_summary)
+                current_indicator = sum(sma) / sma_length
+                action = crossover_detector.check(current_indicator)
 
                 logging.debug("Detector has returned %s", str(action))
                 logging.debug("Current state is %s", str(state))
@@ -158,7 +158,7 @@ def main():
 
     watch_trading_view(tv_fetcher, crossover_detector, controller,
                        parser.configuration.exchange,
-                       parser.configuration.market.summary_sma)
+                       parser.configuration.market.indicator_sma)
 
 
 if __name__ == "__main__":

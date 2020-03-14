@@ -13,15 +13,15 @@ class CrossOverDetector:
         self.bullish_threshold: float = bullish_threshold
         self.bearish_threshold: float = bearish_threshold
 
-    def check(self, summary: float) -> actions.TradingAction:
+    def check(self, indicator: float) -> actions.TradingAction:
         result = actions.TradingAction.HOLD
-        logging.info("Current state: %f", summary)
-        if summary > self.bullish_threshold and \
+        logging.info("Current state: %f", indicator)
+        if indicator > self.bullish_threshold and \
                 self.current_state != detector.common.CurrentState.BULL:
             logging.debug("Bullish trade was detected.")
             result = actions.TradingAction.SWITCH_TO_BULLISH
             self.current_state = detector.common.CurrentState.BULL
-        elif summary < self.bearish_threshold and \
+        elif indicator < self.bearish_threshold and \
                 self.current_state != detector.common.CurrentState.BEAR:
             logging.debug("Bearish trade was detected.")
             result = actions.TradingAction.SWITCH_TO_BEARISH

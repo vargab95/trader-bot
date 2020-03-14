@@ -17,7 +17,7 @@ testing:
 market:
     name: "GEMINI:BTCUSD"
     candle_size: "1h"
-    summary_sma: 1200
+    indicator_sma: 1
     follower_enabled: true
     follower_candle_size: "1D"
 
