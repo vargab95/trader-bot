@@ -3,7 +3,7 @@
 import logging
 
 import config.market
-import spider
+import fetcher
 import detector.interface
 import detector.crossover
 import detector.reverse_crossover
@@ -16,7 +16,7 @@ class DetectorFactory:
     def create(
         cls,
         configuration: config.market.MarketConfig,
-        gatherer: spider.TradingViewSpider = None
+        gatherer: fetcher.TradingViewFetcher = None
     ) -> detector.interface.DetectorInterface:
         if configuration.falling_edge_detection:
             logging.info("Falling edge detector has been created.")

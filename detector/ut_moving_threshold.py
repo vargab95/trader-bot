@@ -6,7 +6,7 @@ import detector.moving_threshold
 import actions
 
 
-class SpiderMock:
+class FetcherMock:
     def __init__(self):
         self.summary = 0.0
 
@@ -19,7 +19,7 @@ class SpiderMock:
 
 class CrossOverDetectorTest(unittest.TestCase):
     def setUp(self):
-        self.gatherer = SpiderMock()
+        self.gatherer = FetcherMock()
 
     def test_quick_fall_down_zero_threshold(self):
         test_detector = \

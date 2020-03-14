@@ -2,7 +2,7 @@
 
 import logging
 
-import spider
+import fetcher
 import actions
 import detector.common
 import detector.crossover
@@ -10,7 +10,7 @@ import detector.crossover
 
 class MovingThresholdCrossOverDetector(detector.crossover.CrossOverDetector):
     def __init__(self, bearish_threshold: float, bullish_threshold: float,
-                 gatherer: spider.TradingViewSpider):
+                 gatherer: fetcher.TradingViewFetcher):
         super().__init__(bearish_threshold, bullish_threshold)
         self.original_bearish_threshold = bearish_threshold
         self.original_bullish_threshold = bullish_threshold
@@ -34,13 +34,13 @@ class MovingThresholdCrossOverDetector(detector.crossover.CrossOverDetector):
         self.bullish_threshold = self.__saturate(
             self.original_bullish_threshold - long_term_summary, 1.0)
 
-        logging.info("New moving threshold: Long term = %f, Bearish = %f, Bullish = %f",
-                     long_term_summary,
-                     self.bearish_threshold,
-                     self.bullish_threshold)
+        logging.info(
+            "New moving threshold: Long term = %f, Bearish = %f, Bullish = %f",
+            long_term_summary, self.bearish_threshold, self.bullish_threshold)
 
         result = super().check(summary)
-        logging.debug("New state of the moving threshold detector: %s", str(result))
+        logging.debug("New state of the moving threshold detector: %s",
+                      str(result))
 
         if self.first_signal_returned:
             return result
