@@ -17,11 +17,14 @@ testing:
 market:
     name: "GEMINI:BTCUSD"
     candle_size: "1h"
+    summary_sma: 1200
+    follower_enabled: False
     follower_candle_size: "1D"
 
     # In second
     check_interval: 10
 
+    falling_edge_detection: False
     bullish_threshold: 0.0
     bearish_threshold: 0.0
 
@@ -31,5 +34,3 @@ exchange:
     bearish_market: "BEAR-USDT"
     api_key: ""
     api_secret: ""
-
-follower_mode: false

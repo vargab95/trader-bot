@@ -10,6 +10,9 @@ class SpiderMock:
     def __init__(self):
         self.summary = 0.0
 
+    def fetch_technical_summary(self):
+        pass
+
     def get_technical_summary(self) -> float:
         return self.summary
 
@@ -36,7 +39,7 @@ class CrossOverDetectorTest(unittest.TestCase):
         test_detector = \
                 detector.moving_threshold.MovingThresholdCrossOverDetector(
                     0.0, 0.0, self.gatherer)
-        test_data = [[-0.066667, actions.TradingAction.HOLD],
+        test_data = [[-0.066667, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.066668, actions.TradingAction.HOLD],
                      [-0.021212, actions.TradingAction.HOLD],
                      [0.0, actions.TradingAction.HOLD],
@@ -53,7 +56,7 @@ class CrossOverDetectorTest(unittest.TestCase):
         test_detector = \
                 detector.moving_threshold.MovingThresholdCrossOverDetector(
                     0.0, 0.0, self.gatherer)
-        test_data = [[-0.066667, actions.TradingAction.HOLD],
+        test_data = [[-0.066667, actions.TradingAction.SWITCH_TO_BULLISH],
                      [-0.066668, actions.TradingAction.HOLD],
                      [-0.021212, actions.TradingAction.HOLD],
                      [0.0, actions.TradingAction.HOLD],
@@ -65,3 +68,33 @@ class CrossOverDetectorTest(unittest.TestCase):
 
         for line in test_data:
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
+
+    def test_move_threshold_above_bullish_while_in_bear(self):
+        test_detector = \
+                detector.moving_threshold.MovingThresholdCrossOverDetector(
+                    0.0, 0.0, self.gatherer)
+        test_data = [[0.0, 0.066667, actions.TradingAction.SWITCH_TO_BULLISH],
+                     [0.0, 0.166667, actions.TradingAction.HOLD],
+                     [-0.3, 0.266667, actions.TradingAction.SWITCH_TO_BEARISH],
+                     [-0.3, 0.276667, actions.TradingAction.HOLD],
+                     [-0.3, 0.366667, actions.TradingAction.SWITCH_TO_BULLISH],
+                     [-0.3, 0.466667, actions.TradingAction.HOLD]]
+
+        for line in test_data:
+            self.gatherer.summary = line[0]
+            self.assertEqual(test_detector.check(line[1]), line[2], str(line))
+
+    def test_move_threshold_below_bearish_while_in_bull(self):
+        test_detector = \
+                detector.moving_threshold.MovingThresholdCrossOverDetector(
+                    0.0, 0.0, self.gatherer)
+        test_data = [[0.0, -0.066667, actions.TradingAction.SWITCH_TO_BEARISH],
+                     [0.0, -0.166667, actions.TradingAction.HOLD],
+                     [0.3, -0.266667, actions.TradingAction.SWITCH_TO_BULLISH],
+                     [0.3, -0.276667, actions.TradingAction.HOLD],
+                     [0.3, -0.366667, actions.TradingAction.SWITCH_TO_BEARISH],
+                     [0.3, -0.466667, actions.TradingAction.HOLD]]
+
+        for line in test_data:
+            self.gatherer.summary = line[0]
+            self.assertEqual(test_detector.check(line[1]), line[2], str(line))
