@@ -15,7 +15,7 @@ class CannotFetchDataException(Exception):
     pass
 
 
-class TradingViewSpider:
+class TradingViewFetcher:
     url = "https://scanner.tradingview.com/crypto/scan"
 
     candle_size_map = {
