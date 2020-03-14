@@ -7,6 +7,7 @@ import binance.client
 
 import config.exchange
 import exchange.interface
+import exchange.guard
 
 
 class BinanceController(exchange.interface.ExchangeInterface):
@@ -24,6 +25,7 @@ class BinanceController(exchange.interface.ExchangeInterface):
             self.__min_amount[symbol] = min_quantity
             logging.debug("    %s: %f", symbol, min_quantity)
 
+    @exchange.guard.exchange_guard
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         corrected_amount = self.__floor(amount, self.__min_amount[market.key])
         logging.info("Trying to buy %.10f %s", corrected_amount, market.key)
@@ -33,21 +35,15 @@ class BinanceController(exchange.interface.ExchangeInterface):
             logging.warning("Buy failed due to insufficient resources.")
             return False
 
-        try:
-            self.client.create_order(
-                symbol=market.key,
-                side=binance.client.Client.SIDE_BUY,
-                type=binance.client.Client.ORDER_TYPE_MARKET,
-                quantity=str(corrected_amount))
-            logging.info("%.10f %s was successfully bought", corrected_amount,
-                         market.key)
-            return True
-        except binance.exceptions.BinanceAPIException as api_exception:
-            logging.error("Buying %.10f %s was failed", corrected_amount,
-                          market.key)
-            logging.exception(api_exception)
-            return False
+        self.client.create_order(symbol=market.key,
+                                 side=binance.client.Client.SIDE_BUY,
+                                 type=binance.client.Client.ORDER_TYPE_MARKET,
+                                 quantity=str(corrected_amount))
+        logging.info("%.10f %s was successfully bought", corrected_amount,
+                     market.key)
+        return True
 
+    @exchange.guard.exchange_guard
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
         corrected_amount = self.__floor(amount, self.__min_amount[market.key])
         logging.info("Trying to sell %.10f %s", corrected_amount, market.key)
@@ -57,21 +53,15 @@ class BinanceController(exchange.interface.ExchangeInterface):
             logging.warning("Sell failed due to insufficient resources.")
             return False
 
-        try:
-            self.client.create_order(
-                symbol=market.key,
-                side=binance.client.Client.SIDE_SELL,
-                type=binance.client.Client.ORDER_TYPE_MARKET,
-                quantity=str(corrected_amount))
-            logging.info("%.10f %s was successfully sold", corrected_amount,
-                         market.key)
-            return True
-        except binance.exceptions.BinanceAPIException as api_exception:
-            logging.error("Selling %.10f %s was failed", corrected_amount,
-                          market.key)
-            logging.exception(api_exception)
-            return False
+        self.client.create_order(symbol=market.key,
+                                 side=binance.client.Client.SIDE_SELL,
+                                 type=binance.client.Client.ORDER_TYPE_MARKET,
+                                 quantity=str(corrected_amount))
+        logging.info("%.10f %s was successfully sold", corrected_amount,
+                     market.key)
+        return True
 
+    @exchange.guard.exchange_guard
     def get_balances(self) -> exchange.interface.Balances:
         account_information = self.client.get_account()
         binance_balances = account_information["balances"]
@@ -84,9 +74,11 @@ class BinanceController(exchange.interface.ExchangeInterface):
 
         return balances
 
+    @exchange.guard.exchange_guard
     def get_balance(self, balance: str) -> float:
         return float(self.client.get_asset_balance(asset=balance)["free"])
 
+    @exchange.guard.exchange_guard
     def get_price(self, market: exchange.interface.Market) -> float:
         return float(self.client.get_ticker(symbol=market.key)["lastPrice"])
 
