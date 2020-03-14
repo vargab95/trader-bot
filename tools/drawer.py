@@ -7,11 +7,15 @@ def main():
     price = []
     state = []
     amount = []
-    bullTrigger = -0.2
-    bearTrigger = 0.2
-    choosenBullPrice = []
-    choosenBearPrice = []
-    isBull = True
+    bullBuyTrigger = -0.2
+    bullSellTrigger = 0.1
+    bearBuyTrigger = 0.2
+    bearSellTrigger = -0.1
+    choosenBullBuyPrice = []
+    choosenBearBuyPrice = []
+    choosenBullSellPrice = []
+    choosenBearSellPrice = []
+    token = "usd"
     currentPrice = 0
     money = 100
     btc = 0
@@ -21,6 +25,8 @@ def main():
     
     stateMA2 = []
     stateMAperiod2 = 900
+
+    maChange = []
 
     avgState = 0
     avgState2 = 0
@@ -58,22 +64,35 @@ def main():
             else:
                 stateMA2.append(0)
 
-            if not isBull and (currentPrice > 0 and stateMA2[-2] <= bullTrigger and stateMA2[-1] >= bullTrigger or i > num_lines - 4):
-                isBull = True
-                choosenBullPrice.append(currentPrice)
-                print("bull", i/3, currentPrice)
-                if len(choosenBearPrice) > 0:
-                    money = money + money - (money / choosenBearPrice[-1] * 0.999) * currentPrice * 0.999
-            
-            if isBull and (currentPrice > 0 and stateMA2[-2] >= bearTrigger and stateMA2[-1] <= bearTrigger or i > num_lines - 4):
-                isBull = False
-                choosenBearPrice.append(currentPrice)
-                print("bear", i/3, currentPrice)
-                if len(choosenBullPrice) > 0:
-                    money = (money / choosenBullPrice[-1] * 0.999) * currentPrice * 0.999
+            if token == "usd" and currentPrice > 0 and stateMA2[-2] <= bullBuyTrigger and stateMA2[-1] >= bullBuyTrigger:
+                token = "bull"
+                choosenBullBuyPrice.append(currentPrice)
+                print(token, i/3, currentPrice)
 
-    print("choosenBullPrices", choosenBullPrice)
-    print("choosenBearPrices", choosenBearPrice)
+            if token == "bull" and (currentPrice > 0 and stateMA2[-2] >= bullSellTrigger and stateMA2[-1] <= bullSellTrigger or i > num_lines - 4):
+                token = "usd"
+                choosenBullSellPrice.append(currentPrice)
+                if len(choosenBullBuyPrice) > 0:
+                    money = money  * 0.998 * currentPrice/ choosenBullBuyPrice[-1]
+                    print(token, i/3, currentPrice, currentPrice/ choosenBullBuyPrice[-1] * 0.998) 
+            
+            if token == "usd" and currentPrice > 0 and stateMA2[-2] >= bearBuyTrigger and stateMA2[-1] <= bearBuyTrigger:
+                token = "bear"
+                choosenBearBuyPrice.append(currentPrice)
+                print(token, i/3, currentPrice)
+
+            if token == "bear" and (currentPrice > 0 and stateMA2[-2] <= bearSellTrigger and stateMA2[-1] >= bearSellTrigger or i > num_lines - 4):
+                token = "usd"
+                choosenBearSellPrice.append(currentPrice)
+                if len(choosenBearBuyPrice) > 0:
+                    money = money * 0.998 * choosenBearBuyPrice[-1] / currentPrice
+                    print(token, i/3, currentPrice, choosenBearBuyPrice[-1], choosenBearBuyPrice[-1] / currentPrice * 0.998 )
+                    
+
+    print("choosenBullBuyPrice", choosenBullBuyPrice)
+    print("choosenBullSellPrice", choosenBullSellPrice)
+    print("choosenBearBuyPrice", choosenBearBuyPrice)
+    print("choosenBearSellPrice", choosenBearSellPrice)
 
     print("BTC", btc)
     print("money", money)
