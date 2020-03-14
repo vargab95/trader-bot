@@ -34,3 +34,7 @@ exchange:
     bearish_market: "BEAR-USDT"
     api_key: ""
     api_secret: ""
+
+mail:
+    receiver: "vargab95@gmail.com"
+    password: "Asguto95"
