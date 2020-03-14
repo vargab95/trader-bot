@@ -10,16 +10,16 @@ class InvalidMessageException(Exception):
 
 class Message(metaclass=abc.ABCMeta):
     def __init__(self):
-        self.__message = None
+        self._message = None
 
     @abc.abstractmethod
     def compose(self, data: typing.Dict) -> bool:
         pass
 
     def get(self) -> str:
-        if not self.__message:
+        if not self._message:
             raise InvalidMessageException()
-        return self.__message
+        return self._message
 
     def reset(self):
-        self.__message = None
+        self._message = None
