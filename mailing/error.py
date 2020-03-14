@@ -20,4 +20,4 @@ The bot...
 
 class ErrorMessage(mailing.message.Message):
     def compose(self, data: typing.Dict) -> bool:
-        self.__message = MESSAGE % data["error"]
+        self._message = MESSAGE % data["error"]

@@ -16,4 +16,4 @@ The bot...
 
 class StatisticsMessage(mailing.message.Message):
     def compose(self, data: typing.Dict) -> bool:
-        self.__message = MESSAGE % data["all_money"]
+        self._message = MESSAGE % data["all_money"]
