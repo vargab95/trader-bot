@@ -43,6 +43,8 @@ class TradingViewFetcher:
         }
         self.response = None
         self.check_interval = market.check_interval
+        self.market_name = market.name
+        self.candle_size = candle_size
 
     def safe_fetch(self):
         while True:

@@ -1,6 +1,6 @@
 logging:
     level: 0
-    path: "binance_1m.log"
+    path: "trading_view_bot.log"
 
 testing:
     enabled: true
@@ -36,5 +36,11 @@ exchange:
     api_secret: ""
 
 mail:
-    receiver: "vargab95@gmail.com"
-    password: "Asguto95"
+    name: "TradingViewBot"
+    receiver: ""
+    password: ""
+
+database:
+    url: ""
+    user: ""
+    password: ""
