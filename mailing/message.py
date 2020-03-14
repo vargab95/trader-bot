@@ -11,6 +11,7 @@ class InvalidMessageException(Exception):
 class Message(metaclass=abc.ABCMeta):
     def __init__(self):
         self._message = None
+        self.subject = ""
 
     @abc.abstractmethod
     def compose(self, data: typing.Dict) -> bool:
