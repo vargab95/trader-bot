@@ -169,6 +169,7 @@ def main():
     rising_edge_detector = detector.factory.DetectorFactory.create(
         parser.configuration.market, long_term_fetcher)
 
+    mailing.message.Message.bot_name = parser.configuration.mail.name
     postman = mailing.postman.Postman(parser.configuration.mail)
     postman.connect()
 

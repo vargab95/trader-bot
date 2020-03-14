@@ -9,6 +9,8 @@ class InvalidMessageException(Exception):
 
 
 class Message(metaclass=abc.ABCMeta):
+    bot_name: str = "TradingViewBot"
+
     def __init__(self):
         self._message = None
         self.subject = ""
