@@ -2,125 +2,118 @@
 import numpy as np 
 import matplotlib.pyplot as plt
 
-def main():
-    file = "./trading_view_bot.log"
-    price = []
-    state = []
-    amount = []
-    bullBuyTrigger = -0.2
-    bullSellTrigger = 0.1
-    bearBuyTrigger = 0.2
-    bearSellTrigger = -0.1
-    choosenBullBuyPrice = []
-    choosenBearBuyPrice = []
-    choosenBullSellPrice = []
-    choosenBearSellPrice = []
-    token = "usd"
-    currentPrice = 0
+def calculate_average(state, state_ma_period):
+    avg_state = 0
+    if len(state) > state_ma_period:
+        sum_state = 0
+        for past_state in state[len(state) - state_ma_period:]: 
+            sum_state += past_state
+        avg_state = sum_state/state_ma_period
+    return avg_state
+
+def handle_data_in_file(file_name, price, state, state_ma, state_ma2, state_ma_period, state_ma_period2,
+    bull_buy_trigger, bull_sell_trigger, bear_buy_trigger, bear_sell_trigger):
+
+    
     money = 100
-    btc = 0
+    token = "usd"
+    current_price = 0
+    state_or_price = "state"
+    num_lines = sum(1 for line in open(file_name))
+    choosen_bull_buy_price = []
+    choosen_bear_buy_price = []
+    choosen_bull_sell_price = []
+    choosen_bear_sell_price = []
 
-    stateMA = []
-    stateMAperiod = 1200
-    
-    stateMA2 = []
-    stateMAperiod2 = 900
-
-    maChange = []
-
-    avgState = 0
-    avgState2 = 0
-    num_lines = sum(1 for line in open(file))
-    
-
-    f = open(file, "r")
+    f = open(file_name, "r")
     for i, x in enumerate(f):
-
-        if "price" in x:
-            currentPrice = float(x.split("price: ", 1)[1].rstrip())
-            price.append(currentPrice)
-            if len(price) == 1:
-                btc= money/currentPrice
+        
+        if state_or_price == "price" and "price" in x:
+            current_price = float(x.split("Current price: ", 1)[1].rstrip())
+            price.append(current_price)
+            state_or_price = "state"
             
-        if "state" in x:
-            currentState = float(x.split("state: ", 1)[1].rstrip())
-            state.append(currentState)
+        if state_or_price == "state" and "state" in x:
+            current_state = float(x.split("Current state: ", 1)[1].rstrip())
+            state.append(current_state)
+            state_or_price = "price"
 
-            if len(state) > stateMAperiod:
-                sumState = 0
-                for pastState in state[len(state) - stateMAperiod:]: 
-                    sumState += pastState
-                avgState = sumState/stateMAperiod
-                stateMA.append(avgState)
-            else:
-                stateMA.append(0)
+            state_ma.append(calculate_average(state, state_ma_period))
+            state_ma2.append(calculate_average(state, state_ma_period2))
 
-            if len(state) > stateMAperiod2:
-                sumState = 0
-                for pastState in state[len(state) - stateMAperiod2:]: 
-                    sumState += pastState
-                avgState2 = sumState/stateMAperiod2
-                stateMA2.append(avgState2)
-            else:
-                stateMA2.append(0)
-
-            if token == "usd" and currentPrice > 0 and stateMA2[-2] <= bullBuyTrigger and stateMA2[-1] >= bullBuyTrigger:
+            if token == "usd" and current_price > 0 and state_ma[-2] <= bull_buy_trigger and state_ma[-1] >= bull_buy_trigger:
                 token = "bull"
-                choosenBullBuyPrice.append(currentPrice)
-                print(token, i/3, currentPrice)
+                choosen_bull_buy_price.append(current_price)
+                print(token, i/3, current_price)
 
-            if token == "bull" and (currentPrice > 0 and stateMA2[-2] >= bullSellTrigger and stateMA2[-1] <= bullSellTrigger or i > num_lines - 4):
+            if token == "bull" and (current_price > 0 and state_ma[-2] >= bull_sell_trigger and state_ma[-1] <= bull_sell_trigger or i > num_lines - 4):
                 token = "usd"
-                choosenBullSellPrice.append(currentPrice)
-                if len(choosenBullBuyPrice) > 0:
-                    money = money  * 0.998 * currentPrice/ choosenBullBuyPrice[-1]
-                    print(token, i/3, currentPrice, currentPrice/ choosenBullBuyPrice[-1] * 0.998) 
+                choosen_bull_sell_price.append(current_price)
+                if len(choosen_bull_buy_price) > 0:
+                    money = money  * 0.998 * current_price/ choosen_bull_buy_price[-1]
+                    print(token, i/3, current_price, current_price/ choosen_bull_buy_price[-1] * 0.998)
             
-            if token == "usd" and currentPrice > 0 and stateMA2[-2] >= bearBuyTrigger and stateMA2[-1] <= bearBuyTrigger:
+            if token == "usd" and current_price > 0 and state_ma[-2] >= bear_buy_trigger and state_ma[-1] <= bear_buy_trigger:
                 token = "bear"
-                choosenBearBuyPrice.append(currentPrice)
-                print(token, i/3, currentPrice)
+                choosen_bear_buy_price.append(current_price)
+                print(token, i/3, current_price)
 
-            if token == "bear" and (currentPrice > 0 and stateMA2[-2] <= bearSellTrigger and stateMA2[-1] >= bearSellTrigger or i > num_lines - 4):
+            if token == "bear" and (current_price > 0 and state_ma[-2] <= bear_sell_trigger and state_ma[-1] >= bear_sell_trigger or i > num_lines - 4):
                 token = "usd"
-                choosenBearSellPrice.append(currentPrice)
-                if len(choosenBearBuyPrice) > 0:
-                    money = money * 0.998 * choosenBearBuyPrice[-1] / currentPrice
-                    print(token, i/3, currentPrice, choosenBearBuyPrice[-1], choosenBearBuyPrice[-1] / currentPrice * 0.998 )
-                    
+                choosen_bear_sell_price.append(current_price)
+                if len(choosen_bear_buy_price) > 0:
+                    money = money * 0.998 * choosen_bear_buy_price[-1] / current_price
+                    print(token, i/3, current_price, choosen_bear_buy_price[-1], choosen_bear_buy_price[-1] / current_price * 0.998 )
 
-    print("choosenBullBuyPrice", choosenBullBuyPrice)
-    print("choosenBullSellPrice", choosenBullSellPrice)
-    print("choosenBearBuyPrice", choosenBearBuyPrice)
-    print("choosenBearSellPrice", choosenBearSellPrice)
+    print("choosen_bull_buy_price", choosen_bull_buy_price, "choosen_bull_sell_price", choosen_bull_sell_price)
+    print("choosen_bear_buy_price", choosen_bear_buy_price, "choosen_bear_sell_price", choosen_bear_sell_price)
+    print("money", money)                    
 
-    print("BTC", btc)
-    print("money", money)
+
+def main():
+    file_name = "./trading_view_bot_5m.log"
+    file_name2 = "./trading_view_bot.log"
+
+    bull_buy_trigger = -0.2
+    bull_sell_trigger = 0.1
+    bear_buy_trigger = 0.2
+    bear_sell_trigger = -0.1
+
+    state_ma_period = 900
+    state_ma_period2 = 300
+
+    price_5m = []
+    state_5m = []
+
+    state_ma_5m = []
+    state_ma2_5m = []
+
+    price_1h = []
+    state_1h = []
+
+    state_ma_1h = []
+    state_ma2_1h = []
+
+    handle_data_in_file(file_name, price_5m, state_5m, state_ma_5m, state_ma2_5m, state_ma_period, state_ma_period2,
+        bull_buy_trigger, bull_sell_trigger, bear_buy_trigger, bear_sell_trigger)
+
+    handle_data_in_file(file_name2, price_1h, state_1h, state_ma_1h, state_ma2_1h, state_ma_period, state_ma_period2,
+        bull_buy_trigger, bull_sell_trigger, bear_buy_trigger, bear_sell_trigger)
     
-    price.append(price[len(price)-1])
-    price.append(price[len(price)-1])
-    price.append(price[len(price)-1])
-
-    x = np.array(list(range(1, len(state)+1)))
-    y1 = np.array(price)
-    y2 = np.array(state)
-
-    print(len(x), len(y1), len(y2))
-
+    
     fig, ax1 = plt.subplots()
-
     ax2 = ax1.twinx()
-    ax1.plot(x, y1, 'g-')
-    # ax2.plot(x, y2, 'r-')
+    ax1.plot(np.array(list(range(1, len(price_1h)+1))), np.array(price_1h), 'g-')
+    # ax2.plot(np.array(list(range(1, len(state_1h)+1))), np.array(state_1h), 'r-')
 
-    ax1.set_xlabel('X data')
-    ax1.set_ylabel('Price')
-    # ax2.set_ylabel('State')
+    ax1.set_xlabel('Length')
+    ax1.set_ylabel('Price_1h')
+    # ax2.set_ylabel('State_1h')
     
-    plt.plot(stateMA)
-    plt.ylabel('stateMA')
-    plt.plot(stateMA2)
-    plt.ylabel('stateMA2')
+    plt.plot(state_ma_1h)
+    plt.ylabel('state_ma_1h')
+    plt.plot(state_ma_5m)
+    plt.ylabel('state_ma_5m')
 
     plt.show()
 
