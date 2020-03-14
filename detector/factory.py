@@ -5,8 +5,8 @@ import logging
 import config.market
 import fetcher
 import detector.interface
-import detector.crossover
-import detector.reverse_crossover
+import detector.rising_edge
+import detector.reverse_rising_edge
 import detector.moving_threshold
 import detector.falling_edge
 
@@ -25,14 +25,14 @@ class DetectorFactory:
                 configuration.bullish_threshold)
         if gatherer:
             logging.info("Moving threshold detector has been created.")
-            return detector.moving_threshold.MovingThresholdCrossOverDetector(
+            return detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                 configuration.bearish_threshold,
                 configuration.bullish_threshold, gatherer)
         if configuration.bullish_threshold >= configuration.bearish_threshold:
-            logging.info("Crossover detector has been created.")
-            return detector.crossover.CrossOverDetector(
+            logging.info("Rising edge detector has been created.")
+            return detector.rising_edge.RisingEdgeDetector(
                 configuration.bearish_threshold,
                 configuration.bullish_threshold)
-        logging.info("Reverse crossover detector has been created.")
-        return detector.reverse_crossover.ReverseCrossOverDetector(
+        logging.info("Reverse rising_edge detector has been created.")
+        return detector.reverse_rising_edge.ReverseRisingEdgeDetector(
             configuration.bearish_threshold, configuration.bullish_threshold)

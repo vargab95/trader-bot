@@ -5,10 +5,11 @@ import logging
 import fetcher
 import actions
 import detector.common
-import detector.crossover
+import detector.rising_edge
 
 
-class MovingThresholdCrossOverDetector(detector.crossover.CrossOverDetector):
+class MovingThresholdRisingEdgeDetector(detector.rising_edge.RisingEdgeDetector
+                                        ):
     def __init__(self, bearish_threshold: float, bullish_threshold: float,
                  gatherer: fetcher.TradingViewFetcher):
         super().__init__(bearish_threshold, bullish_threshold)

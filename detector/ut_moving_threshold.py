@@ -17,13 +17,13 @@ class FetcherMock:
         return self.indicator
 
 
-class CrossOverDetectorTest(unittest.TestCase):
+class RisingEdgeDetectorTest(unittest.TestCase):
     def setUp(self):
         self.gatherer = FetcherMock()
 
     def test_quick_fall_down_zero_threshold(self):
         test_detector = \
-                detector.moving_threshold.MovingThresholdCrossOverDetector(
+                detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
         test_data = [[-0.066667, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.066668, actions.TradingAction.HOLD],
@@ -37,7 +37,7 @@ class CrossOverDetectorTest(unittest.TestCase):
 
     def test_quick_fall_down_below_threshold(self):
         test_detector = \
-                detector.moving_threshold.MovingThresholdCrossOverDetector(
+                detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
         test_data = [[-0.066667, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.066668, actions.TradingAction.HOLD],
@@ -54,7 +54,7 @@ class CrossOverDetectorTest(unittest.TestCase):
 
     def test_quick_fall_down_above_threshold(self):
         test_detector = \
-                detector.moving_threshold.MovingThresholdCrossOverDetector(
+                detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
         test_data = [[-0.066667, actions.TradingAction.SWITCH_TO_BULLISH],
                      [-0.066668, actions.TradingAction.HOLD],
@@ -71,7 +71,7 @@ class CrossOverDetectorTest(unittest.TestCase):
 
     def test_move_threshold_above_bullish_while_in_bear(self):
         test_detector = \
-                detector.moving_threshold.MovingThresholdCrossOverDetector(
+                detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
         test_data = [[0.0, 0.066667, actions.TradingAction.SWITCH_TO_BULLISH],
                      [0.0, 0.166667, actions.TradingAction.HOLD],
@@ -86,7 +86,7 @@ class CrossOverDetectorTest(unittest.TestCase):
 
     def test_move_threshold_below_bearish_while_in_bull(self):
         test_detector = \
-                detector.moving_threshold.MovingThresholdCrossOverDetector(
+                detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
         test_data = [[0.0, -0.066667, actions.TradingAction.SWITCH_TO_BEARISH],
                      [0.0, -0.166667, actions.TradingAction.HOLD],

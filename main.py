@@ -29,7 +29,7 @@ def handle_change_to_bearish():
     logging.info("Buy bear")
 
 
-def watch_trading_view(tv_fetcher, crossover_detector, controller,
+def watch_trading_view(tv_fetcher, rising_edge_detector, controller,
                        exchange_config, sma_length):
     tv_fetcher.safe_fetch()
     current_indicator = 0.0
@@ -49,7 +49,7 @@ def watch_trading_view(tv_fetcher, crossover_detector, controller,
             else:
                 sma.pop(0)
                 current_indicator = sum(sma) / sma_length
-                action = crossover_detector.check(current_indicator)
+                action = rising_edge_detector.check(current_indicator)
 
                 logging.debug("Detector has returned %s", str(action))
                 logging.debug("Current state is %s", str(state))
@@ -153,10 +153,10 @@ def main():
             parser.configuration.market,
             parser.configuration.market.follower_candle_size)
 
-    crossover_detector = detector.factory.DetectorFactory.create(
+    rising_edge_detector = detector.factory.DetectorFactory.create(
         parser.configuration.market, long_term_fetcher)
 
-    watch_trading_view(tv_fetcher, crossover_detector, controller,
+    watch_trading_view(tv_fetcher, rising_edge_detector, controller,
                        parser.configuration.exchange,
                        parser.configuration.market.indicator_sma)
 
