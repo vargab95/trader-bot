@@ -19,7 +19,7 @@ class MarketConfig:
     def __str__(self):
         return "\nMarket:" + \
                "\n    Name:                   " + self.name + \
-               "\n    Candle size:            " + self.candle_size + \
+               "\n    Candle size:            " + str(self.candle_size) + \
                "\n    Summary SMA:            " + str(self.indicator_sma) + \
                "\n    Follower enabled:       " + str(self.follower_enabled) + \
                "\n    Follower candle size:   " + self.follower_candle_size + \
