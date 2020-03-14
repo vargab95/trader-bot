@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import smtplib
+from email.message import EmailMessage
 
 import config.mail
 import mailing.message
@@ -18,5 +19,9 @@ class Postman:
                           self.configuration.password)
 
     def send(self, message: mailing.message.Message) -> bool:
-        self.server.sendmail(self.configuration.sender,
-                             self.configuration.receiver, message.get())
+        msg = EmailMessage()
+        msg['Subject'] = message.subject
+        msg['From'] = self.configuration.sender
+        msg['To'] = self.configuration.receiver
+        msg.set_content(message.get())
+        self.server.send_message(msg)

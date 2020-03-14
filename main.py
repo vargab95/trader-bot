@@ -4,6 +4,8 @@ import sys
 import logging
 import enum
 
+from datetime import datetime
+
 import config.parser
 import config.logging
 import fetcher
@@ -11,6 +13,9 @@ import detector.factory
 import actions
 import exchange.factory
 import exchange.interface
+import mailing.postman
+import mailing.error
+import mailing.statistics
 
 
 class BuyState(enum.Enum):
@@ -21,20 +26,13 @@ class BuyState(enum.Enum):
     SWITCHING_TO_BEARISH = 5
 
 
-def handle_change_to_bullish():
-    logging.info("Buy bull")
-
-
-def handle_change_to_bearish():
-    logging.info("Buy bear")
-
-
 def watch_trading_view(tv_fetcher, rising_edge_detector, controller,
-                       exchange_config, sma_length):
+                       exchange_config, sma_length, postman):
     tv_fetcher.safe_fetch()
     current_indicator = 0.0
     state = BuyState.NONE
     sma = list()
+    next_time = datetime.today()
     try:
         while True:
             tv_fetcher.safe_fetch()
@@ -118,8 +116,22 @@ def watch_trading_view(tv_fetcher, rising_edge_detector, controller,
                     controller.get_price(
                         exchange.interface.Market.create_from_string(
                             "BTC-USDT")))
-                logging.info("All money: %f", controller.get_money("USDT"))
+                all_money = controller.get_money("USDT")
+                logging.info("All money: %f", all_money)
                 logging.debug(controller.get_balances())
+
+                current_time = datetime.today()
+                if current_time > next_time:
+                    next_time = current_time.replace(day=current_time.day + 1,
+                                                     hour=1,
+                                                     minute=0,
+                                                     second=0,
+                                                     microsecond=0)
+
+                    message = mailing.statistics.StatisticsMessage()
+                    message.compose({"all_money", all_money})
+                    postman.send(message)
+
             tv_fetcher.sleep_until_next_data()
     except KeyboardInterrupt:
         return
@@ -156,9 +168,17 @@ def main():
     rising_edge_detector = detector.factory.DetectorFactory.create(
         parser.configuration.market, long_term_fetcher)
 
-    watch_trading_view(tv_fetcher, rising_edge_detector, controller,
-                       parser.configuration.exchange,
-                       parser.configuration.market.indicator_sma)
+    postman = mailing.postman.Postman(parser.configuration.mail)
+
+    try:
+        watch_trading_view(tv_fetcher, rising_edge_detector, controller,
+                           parser.configuration.exchange,
+                           parser.configuration.market.indicator_sma, postman)
+    except Exception as error:  # pylint: disable=broad-except
+        message = mailing.error.ErrorMessage()
+        message.compose({"error": str(error)})
+        postman.send(message)
+        logging.critical("Unhandled error occured %s.", str(error))
 
 
 if __name__ == "__main__":
