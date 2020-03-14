@@ -30,9 +30,9 @@ class ExchangeGuardTest(unittest.TestCase):
         self.assertTrue(self.test_function())
 
     def test_temporary_failure(self):
-        self.raise_until = 3
+        self.raise_until = 10
         self.assertTrue(self.test_function())
 
     def test_permanent_failure(self):
-        self.raise_until = 6
+        self.raise_until = 33
         self.assertFalse(self.test_function())

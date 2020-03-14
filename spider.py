@@ -21,6 +21,7 @@ class TradingViewSpider:
     candle_size_map = {
         "1m": "Recommend.All|1",
         "5m": "Recommend.All|5",
+        "15m": "Recommend.All|15",
         "1h": "Recommend.All|60",
         "4h": "Recommend.All|240",
         "1D": "Recommend.All",

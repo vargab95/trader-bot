@@ -8,7 +8,7 @@ class MarketConfig:
         self.name = config.get("name", "GEMINI:BTCUSD")
         self.check_interval = config.get("check_interval", 60)
         self.candle_size = config.get("candle_size", "1h")
-        self.summary_sma = config.get("summary_sma", 1200)
+        self.summary_sma = config.get("summary_sma", 1)
         self.follower_enabled = config.get("follower_enabled", False)
         self.follower_candle_size = config.get("follower_candle_size", "1h")
         self.falling_edge_detection = config.get("falling_edge_detection", False)

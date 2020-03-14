@@ -18,7 +18,7 @@ market:
     name: "GEMINI:BTCUSD"
     candle_size: "1h"
     summary_sma: 1200
-    follower_enabled: False
+    follower_enabled: true
     follower_candle_size: "1D"
 
     # In second
