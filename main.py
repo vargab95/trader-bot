@@ -3,6 +3,7 @@
 import sys
 import logging
 import enum
+import traceback
 
 from datetime import datetime
 
@@ -129,7 +130,7 @@ def watch_trading_view(tv_fetcher, rising_edge_detector, controller,
                                                      microsecond=0)
 
                     message = mailing.statistics.StatisticsMessage()
-                    message.compose({"all_money", all_money})
+                    message.compose({"all_money": all_money})
                     postman.send(message)
 
             tv_fetcher.sleep_until_next_data()
@@ -169,6 +170,7 @@ def main():
         parser.configuration.market, long_term_fetcher)
 
     postman = mailing.postman.Postman(parser.configuration.mail)
+    postman.connect()
 
     try:
         watch_trading_view(tv_fetcher, rising_edge_detector, controller,
@@ -176,9 +178,11 @@ def main():
                            parser.configuration.market.indicator_sma, postman)
     except Exception as error:  # pylint: disable=broad-except
         message = mailing.error.ErrorMessage()
-        message.compose({"error": str(error)})
+        message.compose(
+            {"error": str(error) + "\n\n" + traceback.format_exc()})
         postman.send(message)
-        logging.critical("Unhandled error occured %s.", str(error))
+        logging.critical("Unhandled error occured %s.",
+                         str(error) + "\n\n" + traceback.format_exc())
 
 
 if __name__ == "__main__":
