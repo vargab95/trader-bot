@@ -8,9 +8,9 @@ def main():
     state = []
     amount = []
     bullBuyTrigger = -0.2
-    bullSellTrigger = 0.0
+    bullSellTrigger = 0.1
     bearBuyTrigger = 0.2
-    bearSellTrigger = -0.0
+    bearSellTrigger = -0.1
     choosenBullBuyPrice = []
     choosenBearBuyPrice = []
     choosenBullSellPrice = []
