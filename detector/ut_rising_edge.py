@@ -1,12 +1,12 @@
 import unittest
 
-import detector.crossover
+import detector.rising_edge
 import actions
 
 
-class CrossOverDetectorTest(unittest.TestCase):
+class RisingEdgeDetectorTest(unittest.TestCase):
     def test_quick_fall_down(self):
-        test_detector = detector.crossover.CrossOverDetector(0.0, 0.0)
+        test_detector = detector.rising_edge.RisingEdgeDetector(0.0, 0.0)
         test_data = [[-0.066667, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.066668, actions.TradingAction.HOLD],
                      [-0.021212, actions.TradingAction.HOLD],
@@ -18,7 +18,7 @@ class CrossOverDetectorTest(unittest.TestCase):
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_slow_up_trend(self):
-        test_detector = detector.crossover.CrossOverDetector(0.0, 0.0)
+        test_detector = detector.rising_edge.RisingEdgeDetector(0.0, 0.0)
         test_data = [[-0.045455, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.045456, actions.TradingAction.HOLD],
                      [-0.045457, actions.TradingAction.HOLD],
@@ -30,7 +30,7 @@ class CrossOverDetectorTest(unittest.TestCase):
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_up_trend_with_same_but_modified_threshold(self):
-        test_detector = detector.crossover.CrossOverDetector(0.1, 0.1)
+        test_detector = detector.rising_edge.RisingEdgeDetector(0.1, 0.1)
         test_data = [[-0.145455, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.145456, actions.TradingAction.HOLD],
                      [-0.145457, actions.TradingAction.HOLD],
@@ -42,7 +42,7 @@ class CrossOverDetectorTest(unittest.TestCase):
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_quick_fall_down_with_same_but_modified_threshold(self):
-        test_detector = detector.crossover.CrossOverDetector(-0.1, -0.1)
+        test_detector = detector.rising_edge.RisingEdgeDetector(-0.1, -0.1)
         test_data = [[-0.166667, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.166668, actions.TradingAction.HOLD],
                      [-0.121212, actions.TradingAction.HOLD],
@@ -54,7 +54,7 @@ class CrossOverDetectorTest(unittest.TestCase):
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_up_trend_with_different_and_modified_threshold(self):
-        test_detector = detector.crossover.CrossOverDetector(-0.1, 0.1)
+        test_detector = detector.rising_edge.RisingEdgeDetector(-0.1, 0.1)
         test_data = [[-0.15, actions.TradingAction.SWITCH_TO_BEARISH],
                      [-0.1, actions.TradingAction.HOLD],
                      [-0.05, actions.TradingAction.HOLD],
@@ -69,7 +69,7 @@ class CrossOverDetectorTest(unittest.TestCase):
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_quick_fall_down_with_different_and_modified_threshold(self):
-        test_detector = detector.crossover.CrossOverDetector(-0.33, 0.33)
+        test_detector = detector.rising_edge.RisingEdgeDetector(-0.33, 0.33)
         test_data = [[-0.166667, actions.TradingAction.HOLD],
                      [-0.166668, actions.TradingAction.HOLD],
                      [-0.121212, actions.TradingAction.HOLD],
@@ -81,7 +81,7 @@ class CrossOverDetectorTest(unittest.TestCase):
             self.assertEqual(test_detector.check(line[0]), line[1], str(line))
 
     def test_up_and_down_with_different_and_modified_threshold(self):
-        test_detector = detector.crossover.CrossOverDetector(-0.33, 0.33)
+        test_detector = detector.rising_edge.RisingEdgeDetector(-0.33, 0.33)
         test_data = [
             [0.0, actions.TradingAction.HOLD],
             [0.15, actions.TradingAction.HOLD],
