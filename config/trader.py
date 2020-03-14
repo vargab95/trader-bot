@@ -6,6 +6,7 @@ from config.logging import LoggingConfig
 from config.testing import TestingConfig
 from config.market import MarketConfig
 from config.exchange import ExchangeConfig
+from config.mail import MailConfig
 
 
 class TraderConfig:
@@ -14,6 +15,7 @@ class TraderConfig:
         self.testing = TestingConfig(configuration.get("testing", {}))
         self.market = MarketConfig(configuration.get("market", {}))
         self.exchange = ExchangeConfig(configuration.get("exchange", {}))
+        self.mail = MailConfig(configuration.get("mail", {}))
 
     def __str__(self):
         return ''.join(
