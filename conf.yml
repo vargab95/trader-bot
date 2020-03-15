@@ -44,3 +44,4 @@ database:
     url: ""
     user: ""
     password: ""
+    query_limit: -1
