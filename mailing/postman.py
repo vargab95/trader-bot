@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 
+import time
+import logging
+
 import smtplib
 from email.message import EmailMessage
 
@@ -15,8 +18,6 @@ class Postman:
     def connect(self):
         self.server = smtplib.SMTP(self.configuration.smtp_server,
                                    self.configuration.port)
-        self.server.login(self.configuration.sender,
-                          self.configuration.password)
 
     def send(self, message: mailing.message.Message) -> bool:
         msg = EmailMessage()
@@ -24,4 +25,15 @@ class Postman:
         msg['From'] = self.configuration.sender
         msg['To'] = self.configuration.receiver
         msg.set_content(message.get())
-        self.server.send_message(msg)
+        for i in range(10):
+            try:
+                self.server.login(self.configuration.sender,
+                                  self.configuration.password)
+                self.server.send_message(msg)
+                self.server.quit()
+                return True
+            except (OSError, smtplib.SMTPException, smtplib.SMTPSenderRefused) as exc:
+                logging.exception(exc)
+                logging.warning("Could not send mail. Retrying after 10 secs.")
+                time.sleep(10)
+        return False
