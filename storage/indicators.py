@@ -7,12 +7,20 @@ class IndicatorsStorage:
     def __init__(self, db):
         self.__collection = db.indicators
 
-    def add(self, market: str, candle_size: str, value: float) -> bool:
+    def add(self,
+            market: str,
+            indicator: str,
+            candle_size: str,
+            value: float,
+            date=None) -> bool:
         market_collection = self.__collection[market]
-        candle_collection = market_collection[candle_size]
+        indicator_collection = market_collection[indicator]
+        candle_collection = indicator_collection[candle_size]
         candle_collection.insert_one({
-            "date": datetime.datetime.utcnow(),
-            "value": value
+            "date":
+            datetime.datetime.utcnow() if not date else date,
+            "value":
+            value
         })
 
     def get(self,
@@ -45,7 +53,9 @@ class IndicatorsStorage:
             result = candle_collection.find()
 
         if limit > 0:
-            result = result.sort([("timestamp", -1)]).limit(limit)
+            result = result.sort([("date", -1)]).limit(limit)
+        else:
+            result = result.sort([("date", 1)])
 
         return [{
             "date": line["date"],
