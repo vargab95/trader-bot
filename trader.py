@@ -9,7 +9,7 @@ from datetime import datetime
 
 import config.parser
 import config.logging
-import fetcher
+import fetcher.single
 import detector.factory
 import actions
 import exchange.factory
@@ -150,11 +150,11 @@ def main():
     controller = exchange.factory.ExchangeControllerFactory.create(
         parser.configuration)
 
-    tv_fetcher = fetcher.TradingViewFetcher(
+    tv_fetcher = fetcher.single.TradingViewFetcherSingle(
         parser.configuration.market, parser.configuration.market.candle_size)
     long_term_fetcher = None
     if parser.configuration.market.follower_enabled:
-        long_term_fetcher = fetcher.TradingViewFetcher(
+        long_term_fetcher = fetcher.single.TradingViewFetcherSingle(
             parser.configuration.market,
             parser.configuration.market.follower_candle_size)
 

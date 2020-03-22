@@ -5,53 +5,45 @@ import logging
 import requests
 
 import config.market
+import fetcher.common
 
 
-class InvalidConfigurationException(Exception):
-    pass
-
-
-class CannotFetchDataException(Exception):
-    pass
-
-
-class TradingViewFetcher:
+class TradingViewFetcherBase:
     url = "https://scanner.tradingview.com/crypto/scan"
 
+    # Recommend.MA
+    # Recommend.Others
     candle_size_map = {
-        "1m": "Recommend.All|1",
-        "5m": "Recommend.All|5",
-        "15m": "Recommend.All|15",
-        "1h": "Recommend.All|60",
-        "4h": "Recommend.All|240",
-        "1D": "Recommend.All",
-        "1W": "Recommend.All|1W",
-        "1M": "Recommend.All|1M"
+        "1m": "|1",
+        "5m": "|5",
+        "15m": "|15",
+        "1h": "|60",
+        "4h": "|240",
+        "1D": "",
+        "1W": "|1W",
+        "1M": "|1M"
+    }
+
+    indicator_name_map = {
+        "all": "Recommend.All",
+        "SMA": "Recommend.MA",
+        "oscillator": "Recommend.Other"
     }
 
     def __init__(self, market: config.market.MarketConfig, candle_size: float):
-        if candle_size not in list(self.candle_size_map.keys()):
-            raise InvalidConfigurationException
-        self.request = {
-            "symbols": {
-                "tickers": [market.name],
-                "query": {
-                    "types": []
-                }
-            },
-            "columns": [self.candle_size_map[candle_size]]
-        }
+        self.request = None
         self.response = None
         self.check_interval = market.check_interval
         self.market_name = market.name
         self.candle_size = candle_size
+        self.indicator_name = market.indicator_name
 
     def safe_fetch(self):
         while True:
             try:
                 self.fetch_technical_indicator()
                 break
-            except CannotFetchDataException:
+            except fetcher.common.CannotFetchDataException:
                 continue
 
     def fetch_technical_indicator(self):
@@ -59,17 +51,16 @@ class TradingViewFetcher:
             self.response = requests.post(self.url,
                                           json=self.request,
                                           timeout=5)
+            self.response = self.response.json()
         except requests.exceptions.ConnectionError:
             logging.error("Connection error")
-            raise CannotFetchDataException
+            raise fetcher.common.CannotFetchDataException
         except requests.exceptions.Timeout:
             logging.error("Connection timeout")
-            raise CannotFetchDataException
-        if self.response.json()["totalCount"] != 1:
-            raise InvalidConfigurationException
+            raise fetcher.common.CannotFetchDataException
 
     def get_technical_indicator(self) -> float:
-        return self.response.json()["data"][0]["d"][0]
+        pass
 
     def sleep_until_next_data(self):
         time.sleep(self.check_interval)

@@ -5,11 +5,12 @@ import time
 import logging
 import traceback
 
-import fetcher
+import fetcher.multi
 import config.parser
 import exchange.factory
 import mailing.postman
 import mailing.message
+import mailing.error
 import storage.indicators
 import storage.tickers
 import storage.client
@@ -36,17 +37,15 @@ def main():
     controller = exchange.factory.ExchangeControllerFactory.create(
         parser.configuration)
 
-    fetchers = list()
+    used_fetcher = None
     if isinstance(parser.configuration.market.candle_size, str):
-        fetchers.append(
-            fetcher.TradingViewFetcher(
-                parser.configuration.market,
-                parser.configuration.market.candle_size))
+        used_fetcher = fetcher.multi.TradingViewFetcherMulti(
+            parser.configuration.market,
+            parser.configuration.market.candle_size)
     elif isinstance(parser.configuration.market.candle_size, list):
-        for candle_size in parser.configuration.market.candle_size:
-            fetchers.append(
-                fetcher.TradingViewFetcher(parser.configuration.market,
-                                           candle_size))
+        used_fetcher = fetcher.multi.TradingViewFetcherMulti(
+            parser.configuration.market,
+            parser.configuration.market.candle_size)
     else:
         logging.critical("Invalid candle size parameter type.")
         return
@@ -67,11 +66,15 @@ def main():
                 price = controller.get_price(market)
                 ticker_storage.add(market.key, price)
 
-            for tv_fetcher in fetchers:
-                tv_fetcher.fetch_technical_indicator()
-                indicator = tv_fetcher.get_technical_indicator()
-                indicator_storage.add(tv_fetcher.market_name,
-                                      tv_fetcher.candle_size, indicator)
+            used_fetcher.fetch_technical_indicator()
+            indicators = used_fetcher.get_technical_indicator()
+
+            for market in parser.configuration.market.name:
+                for indicator in parser.configuration.market.indicator_name:
+                    for candle in parser.configuration.market.candle_size:
+                        indicator_storage.add(
+                            market, indicator, candle,
+                            indicators[market][indicator][candle])
 
             time.sleep(parser.configuration.market.check_interval)
     except KeyboardInterrupt:
