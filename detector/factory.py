@@ -3,7 +3,7 @@
 import logging
 
 import config.market
-import fetcher
+import fetcher.single
 import detector.interface
 import detector.rising_edge
 import detector.reverse_rising_edge
@@ -16,7 +16,7 @@ class DetectorFactory:
     def create(
         cls,
         configuration: config.market.MarketConfig,
-        gatherer: fetcher.TradingViewFetcher = None
+        gatherer: fetcher.single.TradingViewFetcherSingle = None
     ) -> detector.interface.DetectorInterface:
         if configuration.falling_edge_detection:
             logging.info("Falling edge detector has been created.")
