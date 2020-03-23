@@ -1,0 +1,12 @@
+<div style="width: 100%;">
+  <canvas
+    *ngIf="indicatorsLoaded && tickersLoaded"
+    baseChart
+    [chartType]="'line'"
+    [datasets]="chartData"
+    [options]="chartOptions"
+    [legend]="true"
+    (chartClick)="onChartClick($event)"
+  >
+  </canvas>
+</div>
