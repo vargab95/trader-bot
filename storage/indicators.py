@@ -25,6 +25,7 @@ class IndicatorsStorage:
 
     def get(self,
             market="",
+            indicator="",
             candle_size="",
             start_date=None,
             end_date=None,
@@ -34,7 +35,8 @@ class IndicatorsStorage:
             return None
 
         market_collection = self.__collection[market]
-        candle_collection = market_collection[candle_size]
+        indicator_collection = market_collection[indicator]
+        candle_collection = indicator_collection[candle_size]
 
         result = None
         if start_date and end_date:
