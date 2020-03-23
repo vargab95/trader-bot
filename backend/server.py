@@ -4,7 +4,7 @@ import traceback
 from datetime import datetime
 
 from flask import Flask
-from flask_restful import reqparse, abort, Api, Resource
+from flask_restful import reqparse, Api, Resource
 
 import fetcher.base
 import config.parser
@@ -17,11 +17,11 @@ import storage.indicators
 APP = Flask(__name__)
 API = Api(APP)
 
-DATE_TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
 
-def convert_date_time(x):
-    return datetime.strptime(x, DATE_TIME_FORMAT)
+def convert_date_time(date_string):
+    return datetime.strptime(date_string, DATE_TIME_FORMAT)
 
 
 class Indicator(Resource):
@@ -64,6 +64,17 @@ class Indicator(Resource):
         return result
 
 
+class IndicatorOptions(Resource):
+    def get(self):
+        return {
+            'market': ['GEMINI:BTCUSD'],
+            'candle_size':
+            list(fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
+            'indicator':
+            list(fetcher.base.TradingViewFetcherBase.indicator_name_map.keys())
+        }
+
+
 class Ticker(Resource):
     storage = None
 
@@ -87,8 +98,15 @@ class Ticker(Resource):
         return result
 
 
+class TickerOptions(Resource):
+    def get(self):
+        return {'market': ['BTCUSDT']}
+
+
 API.add_resource(Indicator, '/indicator')
+API.add_resource(IndicatorOptions, '/indicator/options')
 API.add_resource(Ticker, '/ticker')
+API.add_resource(TickerOptions, '/ticker/options')
 
 
 def main():
