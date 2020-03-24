@@ -10,32 +10,10 @@ export class IndicatorService {
 
   constructor(private http: HttpClient) {}
 
-  getIndicators(
-    market: string,
-    indicator: string,
-    candleSize: string,
-    startDate: Date = null,
-    endDate: Date = null,
-    limit: number = -1
-  ) {
-    const params: IndicatorRequest = {
-      market,
-      indicator,
-      candle_size: candleSize,
-      limit
-    };
-
-    if (startDate) {
-      params.start_date = startDate.toISOString();
-    }
-
-    if (endDate) {
-      params.end_date = endDate.toISOString();
-    }
-
+  getIndicators(request: IndicatorRequest) {
     return this.http
       .get(this.baseUrl, {
-        params: params as any
+        params: request as any
       })
       .pipe(
         map((response: Array<IndicatorValue>) => {
@@ -52,9 +30,17 @@ export class IndicatorService {
         })
       );
   }
+
+  getOptions() {
+    return this.http.get(this.baseUrl + '/options').pipe(
+      map(response => {
+        return response;
+      })
+    );
+  }
 }
 
-interface IndicatorRequest {
+export interface IndicatorRequest {
   market: string;
   indicator: string;
   candle_size: string;

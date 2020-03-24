@@ -1,12 +1,164 @@
 <div style="width: 100%;">
   <canvas
-    *ngIf="indicatorsLoaded && tickersLoaded"
+    *ngIf="indicatorsLoaded || tickersLoaded"
     baseChart
     [chartType]="'line'"
     [datasets]="chartData"
     [options]="chartOptions"
     [legend]="true"
-    (chartClick)="onChartClick($event)"
   >
   </canvas>
+  <form
+    [formGroup]="addTickerForm"
+    (ngSubmit)="onAddTicker(addTickerForm.value)"
+  >
+    <mat-form-field>
+      <input
+        matInput
+        [ngxMatDatetimePicker]="picker"
+        placeholder="Start date"
+        [formControl]="dateControl"
+        [min]="minDate"
+        [max]="maxDate"
+        [disabled]="disabled"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker
+        #picker
+        [showSpinners]="showSpinners"
+        [showSeconds]="showSeconds"
+        [stepHour]="stepHour"
+        [stepMinute]="stepMinute"
+        [stepSecond]="stepSecond"
+        [touchUi]="touchUi"
+        [color]="color"
+        [enableMeridian]="enableMeridian"
+      >
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        [ngxMatDatetimePicker]="picker"
+        placeholder="End date"
+        [formControl]="dateControl"
+        [min]="minDate"
+        [max]="maxDate"
+        [disabled]="disabled"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker
+        #picker
+        [showSpinners]="showSpinners"
+        [showSeconds]="showSeconds"
+        [stepHour]="stepHour"
+        [stepMinute]="stepMinute"
+        [stepSecond]="stepSecond"
+        [touchUi]="touchUi"
+        [color]="color"
+        [enableMeridian]="enableMeridian"
+      >
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Market</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let market of indicatorMarkets" [value]="market">
+          {{ market }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button>Add ticker</button>
+  </form>
+  <form
+    [formGroup]="addIndicatorForm"
+    (ngSubmit)="onAddIndicator(addIndicatorForm.value)"
+  >
+    <mat-form-field>
+      <input
+        matInput
+        formControlName="startDate"
+        [ngxMatDatetimePicker]="picker"
+        placeholder="Start date"
+        [formControl]="dateControl"
+        [min]="minDate"
+        [max]="maxDate"
+        [disabled]="disabled"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker
+        #picker
+        [showSpinners]="showSpinners"
+        [showSeconds]="showSeconds"
+        [stepHour]="stepHour"
+        [stepMinute]="stepMinute"
+        [stepSecond]="stepSecond"
+        [touchUi]="touchUi"
+        [color]="color"
+        [enableMeridian]="enableMeridian"
+      >
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+    <mat-form-field>
+      <input
+        matInput
+        formControlName="endDate"
+        [ngxMatDatetimePicker]="picker"
+        placeholder="End date"
+        [formControl]="dateControl"
+        [min]="minDate"
+        [max]="maxDate"
+        [disabled]="disabled"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <ngx-mat-datetime-picker
+        #picker
+        [showSpinners]="showSpinners"
+        [showSeconds]="showSeconds"
+        [stepHour]="stepHour"
+        [stepMinute]="stepMinute"
+        [stepSecond]="stepSecond"
+        [touchUi]="touchUi"
+        [color]="color"
+        [enableMeridian]="enableMeridian"
+      >
+      </ngx-mat-datetime-picker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Market</mat-label>
+      <mat-select formControlName="market">
+        <mat-option *ngFor="let market of indicatorMarkets" [value]="market">
+          {{ market }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Indicator</mat-label>
+      <mat-select formControlName="indicator">
+        <mat-option
+          *ngFor="let indicator of indicatorNames"
+          [value]="indicator"
+        >
+          {{ indicator }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Candle sizes</mat-label>
+      <mat-select formControlName="candleSize">
+        <mat-option
+          *ngFor="let candleSize of indicatorCandleSizes"
+          [value]="candleSize"
+        >
+          {{ candleSize }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button>
+      Add indicator
+    </button>
+  </form>
 </div>

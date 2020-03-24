@@ -10,26 +10,8 @@ export class TickerService {
 
   constructor(private http: HttpClient) {}
 
-  getIndicators(
-    market: string,
-    startDate: Date = null,
-    endDate: Date = null,
-    limit: number = -1
-  ) {
-    const params: TickerRequest = {
-      market,
-      limit
-    };
-
-    if (startDate) {
-      params.start_date = startDate.toISOString();
-    }
-
-    if (endDate) {
-      params.end_date = endDate.toISOString();
-    }
-
-    return this.http.get(this.baseUrl, { params: params as any }).pipe(
+  getTickers(request: TickerRequest) {
+    return this.http.get(this.baseUrl, { params: request as any }).pipe(
       map((response: Array<TickerValue>) => {
         const indicators = [];
 
@@ -44,9 +26,17 @@ export class TickerService {
       })
     );
   }
+
+  getOptions() {
+    return this.http.get(this.baseUrl + '/options').pipe(
+      map(response => {
+        return response;
+      })
+    );
+  }
 }
 
-interface TickerRequest {
+export interface TickerRequest {
   market: string;
   start_date?: string;
   end_date?: string;
