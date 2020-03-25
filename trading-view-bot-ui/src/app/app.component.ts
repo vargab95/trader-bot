@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
     responsive: true,
     hoverMode: 'index',
     stacked: false,
+    elements: { point: { radius: 0 } },
     title: {
       display: true,
       text: 'Trading view bot test data'
@@ -117,14 +118,16 @@ export class AppComponent implements OnInit {
       candleSize: '',
       startDate: '',
       endDate: '',
-      limit: -1
+      limit: -1,
+      color: '225,10,20'
     });
 
     this.addTickerForm = this.formBuilder.group({
       market: '',
       startDate: '',
       endDate: '',
-      limit: -1
+      limit: -1,
+      color: '225,10,20'
     });
   }
 
@@ -185,19 +188,22 @@ export class AppComponent implements OnInit {
 
   onAddIndicator(event) {
     console.log(event);
-    return;
+
     const request: IndicatorRequest = {
-      market: 'GEMINI:BTCUSD',
-      indicator: 'all',
-      candle_size: '1h'
+      market: event.market,
+      indicator: event.indicator,
+      candle_size: event.candleSize,
+      start_date: event.startDate.toISOString(),
+      end_date: event.endDate.toISOString()
     };
     this.indicatorService.getIndicators(request).subscribe(response => {
       console.log(response);
       this.chartData.push({
-        label: 'GEMINI:BTCUSD.all.1h',
+        label: event.market + '.' + event.indicator + '.' + event.candleSize,
         data: response,
         fill: false,
-        yAxisID: 'indicator'
+        yAxisID: 'indicator',
+        borderColor: 'rgba(' + event.color + ',1)'
       });
       this.indicatorSignalList.push(request);
       this.indicatorsLoaded = true;
@@ -206,15 +212,20 @@ export class AppComponent implements OnInit {
 
   onAddTicker(event) {
     console.log(event);
-    return;
-    const request: TickerRequest = { market: 'BTCUSDT' };
+
+    const request: TickerRequest = {
+      market: event.market,
+      start_date: event.startDate.toISOString(),
+      end_date: event.endDate.toISOString()
+    };
     this.tickerService.getTickers(request).subscribe(response => {
       console.log(response);
       this.chartData.push({
         label: 'BTCUSDT',
         data: response,
         fill: false,
-        yAxisID: 'ticker'
+        yAxisID: 'ticker',
+        borderColor: 'rgba(' + event.color + ',1)'
       });
       this.tickerSignalList.push(request);
       this.tickersLoaded = true;

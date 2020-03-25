@@ -13,60 +13,40 @@
     (ngSubmit)="onAddTicker(addTickerForm.value)"
   >
     <mat-form-field>
-      <input
-        matInput
-        [ngxMatDatetimePicker]="picker"
-        placeholder="Start date"
-        [formControl]="dateControl"
-        [min]="minDate"
-        [max]="maxDate"
-        [disabled]="disabled"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker
-        #picker
-        [showSpinners]="showSpinners"
-        [showSeconds]="showSeconds"
-        [stepHour]="stepHour"
-        [stepMinute]="stepMinute"
-        [stepSecond]="stepSecond"
-        [touchUi]="touchUi"
-        [color]="color"
-        [enableMeridian]="enableMeridian"
-      >
-      </ngx-mat-datetime-picker>
+      <mat-label>Start date</mat-label>
+      <input matInput formControlName="startDate" [matDatepicker]="tsdpicker" />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="tsdpicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #tsdpicker></mat-datepicker>
     </mat-form-field>
     <mat-form-field>
-      <input
-        matInput
-        [ngxMatDatetimePicker]="picker"
-        placeholder="End date"
-        [formControl]="dateControl"
-        [min]="minDate"
-        [max]="maxDate"
-        [disabled]="disabled"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker
-        #picker
-        [showSpinners]="showSpinners"
-        [showSeconds]="showSeconds"
-        [stepHour]="stepHour"
-        [stepMinute]="stepMinute"
-        [stepSecond]="stepSecond"
-        [touchUi]="touchUi"
-        [color]="color"
-        [enableMeridian]="enableMeridian"
-      >
-      </ngx-mat-datetime-picker>
+      <mat-label>End date</mat-label>
+      <input matInput formControlName="endDate" [matDatepicker]="tedpicker" />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="tedpicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #tedpicker></mat-datepicker>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Market</mat-label>
-      <mat-select>
-        <mat-option *ngFor="let market of indicatorMarkets" [value]="market">
+      <mat-select formControlName="market">
+        <mat-option *ngFor="let market of tickerMarkets" [value]="market">
           {{ market }}
         </mat-option>
       </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Color</mat-label>
+      <input
+        matInput
+        formControlName="color"
+        placeholder="Color"
+        value="225,100,100"
+      />
     </mat-form-field>
     <button>Add ticker</button>
   </form>
@@ -75,56 +55,23 @@
     (ngSubmit)="onAddIndicator(addIndicatorForm.value)"
   >
     <mat-form-field>
-      <input
-        matInput
-        formControlName="startDate"
-        [ngxMatDatetimePicker]="picker"
-        placeholder="Start date"
-        [formControl]="dateControl"
-        [min]="minDate"
-        [max]="maxDate"
-        [disabled]="disabled"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker
-        #picker
-        [showSpinners]="showSpinners"
-        [showSeconds]="showSeconds"
-        [stepHour]="stepHour"
-        [stepMinute]="stepMinute"
-        [stepSecond]="stepSecond"
-        [touchUi]="touchUi"
-        [color]="color"
-        [enableMeridian]="enableMeridian"
-      >
-      </ngx-mat-datetime-picker>
+      <mat-label>Start date</mat-label>
+      <input matInput formControlName="startDate" [matDatepicker]="isdpicker" />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="isdpicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #isdpicker></mat-datepicker>
     </mat-form-field>
     <mat-form-field>
-      <input
-        matInput
-        formControlName="endDate"
-        [ngxMatDatetimePicker]="picker"
-        placeholder="End date"
-        [formControl]="dateControl"
-        [min]="minDate"
-        [max]="maxDate"
-        [disabled]="disabled"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker
-        #picker
-        [showSpinners]="showSpinners"
-        [showSeconds]="showSeconds"
-        [stepHour]="stepHour"
-        [stepMinute]="stepMinute"
-        [stepSecond]="stepSecond"
-        [touchUi]="touchUi"
-        [color]="color"
-        [enableMeridian]="enableMeridian"
-      >
-      </ngx-mat-datetime-picker>
+      <mat-label>End date</mat-label>
+      <input matInput formControlName="endDate" [matDatepicker]="iedpicker" />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="iedpicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #iedpicker></mat-datepicker>
     </mat-form-field>
-
     <mat-form-field>
       <mat-label>Market</mat-label>
       <mat-select formControlName="market">
@@ -156,6 +103,15 @@
           {{ candleSize }}
         </mat-option>
       </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Color</mat-label>
+      <input
+        matInput
+        formControlName="color"
+        placeholder="Color"
+        value="225,100,100"
+      />
     </mat-form-field>
     <button>
       Add indicator
