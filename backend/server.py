@@ -17,7 +17,7 @@ import storage.indicators
 APP = Flask(__name__)
 API = Api(APP)
 
-DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
+DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
 def convert_date_time(date_string):
@@ -89,6 +89,7 @@ class Ticker(Resource):
     def get(self):
         request = self.parser.parse_args()
 
+        print(request)
         result = self.storage.get(request['market'], request['start_date'],
                                   request['end_date'], request['limit'])
 
