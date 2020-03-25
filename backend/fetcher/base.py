@@ -3,6 +3,8 @@
 import time
 import logging
 import requests
+import socket
+import urllib3.exceptions
 
 import config.market
 import fetcher.common
@@ -55,8 +57,11 @@ class TradingViewFetcherBase:
         except requests.exceptions.ConnectionError:
             logging.error("Connection error")
             raise fetcher.common.CannotFetchDataException
-        except requests.exceptions.Timeout:
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectTimeout, urllib3.exceptions.ConnectTimeoutError, socket.timeout):
             logging.error("Connection timeout")
+            raise fetcher.common.CannotFetchDataException
+        except urllib3.exceptions.MaxRetryError:
+            logging.error("Max retry error received.")
             raise fetcher.common.CannotFetchDataException
 
     def get_technical_indicator(self) -> float:
