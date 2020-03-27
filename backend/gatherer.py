@@ -66,7 +66,7 @@ def main():
                 price = controller.get_price(market)
                 ticker_storage.add(market.key, price)
 
-            used_fetcher.fetch_technical_indicator()
+            used_fetcher.safe_fetch()
             indicators = used_fetcher.get_technical_indicator()
 
             for market in parser.configuration.market.name:

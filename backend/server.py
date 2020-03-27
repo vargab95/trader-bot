@@ -5,6 +5,8 @@ from datetime import datetime
 
 from flask import Flask
 from flask_restful import reqparse, Api, Resource
+from flask_cors import CORS
+
 
 import fetcher.base
 import config.parser
@@ -15,6 +17,9 @@ import storage.tickers
 import storage.indicators
 
 APP = Flask(__name__)
+
+CORS(APP)
+
 API = Api(APP)
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
@@ -134,7 +139,7 @@ def main():
     Indicator.storage = storage.indicators.IndicatorsStorage(client.database)
 
     try:
-        APP.run(debug=True)
+        APP.run(debug=False, host='0.0.0.0')
     except KeyboardInterrupt:
         return
     except Exception as error:  # pylint: disable=broad-except
