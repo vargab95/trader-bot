@@ -47,6 +47,8 @@ class TradingViewFetcherBase:
                 break
             except fetcher.common.CannotFetchDataException:
                 continue
+            except Exception as exception:
+                logging.critical("Unhandled exception: %s", str(exception))
 
     def fetch_technical_indicator(self):
         try:

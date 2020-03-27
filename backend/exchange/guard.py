@@ -13,12 +13,10 @@ def exchange_guard(function):
         for _ in range(1000):
             try:
                 return function(*args, **kwargs)
-            except (requests.exceptions.ReadTimeout,
-                    requests.exceptions.ConnectionError,
-                    binance.exceptions.BinanceAPIException) as api_exception:
+            except Exception as exception:
                 logging.error(
                     "Exception occured during exchange operation %s: %s",
-                    function.__name__, str(api_exception))
+                    function.__name__, str(exception))
                 time.sleep(5)
         return False
 
