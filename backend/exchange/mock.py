@@ -9,6 +9,7 @@ import binance
 import config.exchange
 import config.testing
 import exchange.interface
+import exchange.guard
 
 
 class TradeState(enum.Enum):
@@ -108,6 +109,7 @@ class BinanceMock(exchange.interface.ExchangeInterface):
     def get_balances(self) -> exchange.interface.Balances:
         return self.__balances.copy()
 
+    @exchange.guard.exchange_guard
     def get_price(self, market: exchange.interface.Market) -> float:
         if self.__is_real_time:
             return float(
