@@ -1,1 +1,24 @@
-<p>date-span-picker works!</p>
+<form [formGroup]="dateSpanForm">
+  <mat-form-field>
+    <mat-label>Start date</mat-label>
+    <input
+      matInput
+      formControlName="startDate"
+      [matDatepicker]="startDatePicker"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="startDatePicker"
+    ></mat-datepicker-toggle>
+    <mat-datepicker #startDatePicker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>End date</mat-label>
+    <input matInput formControlName="endDate" [matDatepicker]="endDatePicker" />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="endDatePicker"
+    ></mat-datepicker-toggle>
+    <mat-datepicker #endDatePicker></mat-datepicker>
+  </mat-form-field>
+</form>
