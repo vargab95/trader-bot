@@ -1,1 +1,26 @@
-<p>add-ticker-form works!</p>
+<form [formGroup]="addTickerForm" (ngSubmit)="onAddTicker(addTickerForm.value)">
+  <app-date-span-picker formControlName="dateSpan"></app-date-span-picker>
+  <mat-form-field>
+    <mat-label>Market</mat-label>
+    <mat-select formControlName="market">
+      <mat-option *ngFor="let market of tickerMarkets" [value]="market">
+        {{ market }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>SMA</mat-label>
+    <input matInput formControlName="sma" placeholder="SMA" value="0" />
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Color</mat-label>
+    <input
+      matInput
+      formControlName="color"
+      placeholder="Color"
+      value="225,100,100"
+    />
+  </mat-form-field>
+  <button>Add ticker</button>
+</form>
