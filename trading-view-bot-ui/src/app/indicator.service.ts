@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
@@ -11,33 +12,16 @@ export class IndicatorService {
 
   constructor(private http: HttpClient) {}
 
-  getIndicators(request: IndicatorRequest) {
-    return this.http
-      .get(this.baseUrl, {
-        params: request as any
-      })
-      .pipe(
-        map((response: Array<IndicatorValue>) => {
-          const indicators = [];
-
-          for (const row of response) {
-            indicators.push({
-              x: new Date(row.date),
-              y: row.value
-            });
-          }
-
-          return indicators;
-        })
-      );
+  getIndicators(request: IndicatorRequest): Observable<IndicatorResponse> {
+    return this.http.get(this.baseUrl, {
+      params: request as any
+    }) as Observable<IndicatorResponse>;
   }
 
-  getOptions() {
-    return this.http.get(this.baseUrl + '/options').pipe(
-      map(response => {
-        return response;
-      })
-    );
+  getOptions(): Observable<IndicatorOptions> {
+    return this.http.get(this.baseUrl + '/options') as Observable<
+      IndicatorOptions
+    >;
   }
 }
 
@@ -51,7 +35,15 @@ export interface IndicatorRequest {
   sma?: number;
 }
 
-interface IndicatorValue {
+export interface Indicator {
   date: Date;
   value: number;
+}
+
+export type IndicatorResponse = Array<Indicator>;
+
+export interface IndicatorOptions {
+  market: Array<string>;
+  candle_size: Array<string>;
+  indicator: Array<string>;
 }

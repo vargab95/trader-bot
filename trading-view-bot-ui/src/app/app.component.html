@@ -1,13 +1,5 @@
 <div style="width: 100%;">
-  <canvas
-    *ngIf="indicatorsLoaded || tickersLoaded"
-    baseChart
-    [chartType]="'line'"
-    [datasets]="chartData"
-    [options]="chartOptions"
-    [legend]="true"
-  >
-  </canvas>
+  <app-chart></app-chart>
   <form
     [formGroup]="addTickerForm"
     (ngSubmit)="onAddTicker(addTickerForm.value)"
@@ -41,12 +33,7 @@
 
     <mat-form-field>
       <mat-label>SMA</mat-label>
-      <input
-        matInput
-        formControlName="sma"
-        placeholder="SMA"
-        value="0"
-      />
+      <input matInput formControlName="sma" placeholder="SMA" value="0" />
     </mat-form-field>
     <mat-form-field>
       <mat-label>Color</mat-label>
@@ -115,12 +102,7 @@
     </mat-form-field>
     <mat-form-field>
       <mat-label>SMA</mat-label>
-      <input
-        matInput
-        formControlName="sma"
-        placeholder="SMA"
-        value="0"
-      />
+      <input matInput formControlName="sma" placeholder="SMA" value="0" />
     </mat-form-field>
     <mat-form-field>
       <mat-label>Color</mat-label>

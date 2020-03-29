@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
@@ -11,29 +12,16 @@ export class TickerService {
 
   constructor(private http: HttpClient) {}
 
-  getTickers(request: TickerRequest) {
-    return this.http.get(this.baseUrl, { params: request as any }).pipe(
-      map((response: Array<TickerValue>) => {
-        const indicators = [];
-
-        for (const row of response) {
-          indicators.push({
-            x: new Date(row.date),
-            y: row.price
-          });
-        }
-
-        return indicators;
-      })
-    );
+  getTickers(request: TickerRequest): Observable<TickerResponse> {
+    return this.http.get(this.baseUrl, {
+      params: request as any
+    }) as Observable<TickerResponse>;
   }
 
-  getOptions() {
-    return this.http.get(this.baseUrl + '/options').pipe(
-      map(response => {
-        return response;
-      })
-    );
+  getOptions(): Observable<TickerOptions> {
+    return this.http.get(this.baseUrl + '/options') as Observable<
+      TickerOptions
+    >;
   }
 }
 
@@ -45,7 +33,13 @@ export interface TickerRequest {
   sma?: number;
 }
 
-interface TickerValue {
+export interface Ticker {
   date: Date;
   price: number;
+}
+
+export type TickerResponse = Array<Ticker>;
+
+export interface TickerOptions {
+  market: Array<string>;
 }
