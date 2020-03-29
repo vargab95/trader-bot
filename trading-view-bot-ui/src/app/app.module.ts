@@ -24,9 +24,13 @@ import {
   NgxMatNativeDateModule
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
+import { ChartComponent } from './chart/chart.component';
+import { DateSpanPickerComponent } from './date-span-picker/date-span-picker.component';
+import { AddIndicatorFormComponent } from './add-indicator-form/add-indicator-form.component';
+import { AddTickerFormComponent } from './add-ticker-form/add-ticker-form.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ChartComponent, DateSpanPickerComponent, AddIndicatorFormComponent, AddTickerFormComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
