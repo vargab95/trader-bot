@@ -7,7 +7,6 @@ from flask import Flask
 from flask_restful import reqparse, Api, Resource
 from flask_cors import CORS
 
-
 import fetcher.base
 import config.parser
 import mailing.message
@@ -27,6 +26,20 @@ DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 def convert_date_time(date_string):
     return datetime.strptime(date_string, DATE_TIME_FORMAT)
+
+
+def get_sma(values, sma_len, value_name):
+    sma = []
+
+    result = []
+    for row in values:
+        sma.append(row[value_name])
+        if len(sma) > sma_len:
+            sma.pop(0)
+            row[value_name] = sum(sma) / len(sma)
+            result.append(row)
+
+    return result
 
 
 class Indicator(Resource):
@@ -54,10 +67,13 @@ class Indicator(Resource):
         self.parser.add_argument('start_date', type=convert_date_time)
         self.parser.add_argument('end_date', type=convert_date_time)
         self.parser.add_argument('limit', type=int, default=-1)
+        self.parser.add_argument('sma', type=int, default=-1)
 
     def get(self):
         request = self.parser.parse_args()
+        sma_len = request['sma']
 
+        print(request)
         result = self.storage.get(request['market'], request['indicator'],
                                   request['candle_size'],
                                   request['start_date'], request['end_date'],
@@ -65,6 +81,9 @@ class Indicator(Resource):
 
         for row in result:
             row['date'] = row['date'].strftime(DATE_TIME_FORMAT)
+
+        if sma_len > 0:
+            result = get_sma(result, sma_len, 'value')
 
         return result
 
@@ -90,9 +109,11 @@ class Ticker(Resource):
         self.parser.add_argument('start_date', type=convert_date_time)
         self.parser.add_argument('end_date', type=convert_date_time)
         self.parser.add_argument('limit', type=int, default=-1)
+        self.parser.add_argument('sma', type=int, default=-1)
 
     def get(self):
         request = self.parser.parse_args()
+        sma_len = request['sma']
 
         print(request)
         result = self.storage.get(request['market'], request['start_date'],
@@ -100,6 +121,9 @@ class Ticker(Resource):
 
         for row in result:
             row['date'] = row['date'].strftime(DATE_TIME_FORMAT)
+
+        if sma_len > 0:
+            result = get_sma(result, sma_len, 'price')
 
         return result
 

@@ -27,7 +27,8 @@ class BinanceController(exchange.interface.ExchangeInterface):
             symbol = market_info["symbol"]
             self.__min_amount[symbol] = min_quantity
             self.__min_notional[symbol] = min_notional
-            logging.debug("    %s: LOT_SIZE: %f MIN_NOTIONAL: %f", symbol, min_quantity, min_notional)
+            logging.debug("    %s: LOT_SIZE: %f MIN_NOTIONAL: %f", symbol,
+                          min_quantity, min_notional)
 
     @exchange.guard.exchange_guard
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:

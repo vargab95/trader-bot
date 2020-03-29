@@ -119,7 +119,8 @@ export class AppComponent implements OnInit {
       startDate: '',
       endDate: '',
       limit: -1,
-      color: '225,10,20'
+      color: '225,10,20',
+      sma: 0
     });
 
     this.addTickerForm = this.formBuilder.group({
@@ -127,7 +128,8 @@ export class AppComponent implements OnInit {
       startDate: '',
       endDate: '',
       limit: -1,
-      color: '225,10,20'
+      color: '225,10,20',
+      sma: 0
     });
   }
 
@@ -194,7 +196,8 @@ export class AppComponent implements OnInit {
       indicator: event.indicator,
       candle_size: event.candleSize,
       start_date: event.startDate.toISOString(),
-      end_date: event.endDate.toISOString()
+      end_date: event.endDate.toISOString(),
+      sma: event.sma
     };
     this.indicatorService.getIndicators(request).subscribe(response => {
       console.log(response);
@@ -216,7 +219,8 @@ export class AppComponent implements OnInit {
     const request: TickerRequest = {
       market: event.market,
       start_date: event.startDate.toISOString(),
-      end_date: event.endDate.toISOString()
+      end_date: event.endDate.toISOString(),
+      sma: event.sma
     };
     this.tickerService.getTickers(request).subscribe(response => {
       console.log(response);
