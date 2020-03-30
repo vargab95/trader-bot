@@ -1,4 +1,5 @@
 <form
+  *ngIf="!loading"
   [formGroup]="addIndicatorForm"
   (ngSubmit)="onAddIndicator(addIndicatorForm.value)"
 >
@@ -49,3 +50,4 @@
     Add indicator
   </button>
 </form>
+<mat-spinner *ngIf="loading"></mat-spinner>

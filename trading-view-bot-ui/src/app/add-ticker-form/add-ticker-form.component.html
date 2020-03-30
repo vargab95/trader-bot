@@ -1,4 +1,8 @@
-<form [formGroup]="addTickerForm" (ngSubmit)="onAddTicker(addTickerForm.value)">
+<form
+  *ngIf="!loading"
+  [formGroup]="addTickerForm"
+  (ngSubmit)="onAddTicker(addTickerForm.value)"
+>
   <app-date-span-picker formControlName="dateSpan"></app-date-span-picker>
   <mat-form-field>
     <mat-label>Market</mat-label>
@@ -24,3 +28,4 @@
   </mat-form-field>
   <button>Add ticker</button>
 </form>
+<mat-spinner *ngIf="loading"></mat-spinner>
