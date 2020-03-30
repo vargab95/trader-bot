@@ -15,6 +15,8 @@ export class AddIndicatorFormComponent implements OnInit {
   indicatorNames = [];
   indicatorCandleSizes = [];
 
+  loading = false;
+
   constructor(
     private indicatorService: IndicatorService,
     private formBuilder: FormBuilder,
@@ -43,8 +45,7 @@ export class AddIndicatorFormComponent implements OnInit {
   }
 
   onAddIndicator(event) {
-    console.log(event);
-
+    this.loading = true;
     const request: IndicatorRequest = {
       market: event.market,
       indicator: event.indicator,
@@ -53,12 +54,19 @@ export class AddIndicatorFormComponent implements OnInit {
       end_date: event.dateSpan.end.toISOString(),
       sma: event.sma
     };
-    this.indicatorService.getIndicators(request).subscribe(response => {
-      this.chartDataService.addChart(
-        response,
-        event.color,
-        event.market + '.' + event.indicator + '.' + event.candleSize
-      );
-    });
+    this.indicatorService.getIndicators(request).subscribe(
+      response => {
+        this.chartDataService.addChart(
+          response,
+          event.color,
+          event.market + '.' + event.indicator + '.' + event.candleSize
+        );
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
+        console.log(error);
+      }
+    );
   }
 }

@@ -12,6 +12,8 @@ export class AddTickerFormComponent implements OnInit {
   tickerMarkets = [];
   addTickerForm: FormGroup;
 
+  loading = false;
+
   constructor(
     private tickerService: TickerService,
     private formBuilder: FormBuilder,
@@ -36,16 +38,22 @@ export class AddTickerFormComponent implements OnInit {
   }
 
   onAddTicker(event) {
-    console.log(event);
-
+    this.loading = true;
     const request: TickerRequest = {
       market: event.market,
       start_date: event.dateSpan.start.toISOString(),
       end_date: event.dateSpan.end.toISOString(),
       sma: event.sma
     };
-    this.tickerService.getTickers(request).subscribe(response => {
-      this.chartDataService.addChart(response, event.color, event.market);
-    });
+    this.tickerService.getTickers(request).subscribe(
+      response => {
+        this.chartDataService.addChart(response, event.color, event.market);
+        this.loading = false;
+      },
+      error => {
+        console.log(error);
+        this.loading = false;
+      }
+    );
   }
 }

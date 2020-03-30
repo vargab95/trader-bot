@@ -17,6 +17,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   NgxMatDatetimePickerModule,
@@ -30,7 +31,13 @@ import { AddIndicatorFormComponent } from './add-indicator-form/add-indicator-fo
 import { AddTickerFormComponent } from './add-ticker-form/add-ticker-form.component';
 
 @NgModule({
-  declarations: [AppComponent, ChartComponent, DateSpanPickerComponent, AddIndicatorFormComponent, AddTickerFormComponent],
+  declarations: [
+    AppComponent,
+    ChartComponent,
+    DateSpanPickerComponent,
+    AddIndicatorFormComponent,
+    AddTickerFormComponent
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -49,7 +56,8 @@ import { AddTickerFormComponent } from './add-ticker-form/add-ticker-form.compon
     MatRadioModule,
     MatSelectModule,
     MatCheckboxModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
