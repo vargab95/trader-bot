@@ -2,6 +2,7 @@
 
 import math
 import logging
+import requests
 
 import binance.client
 
@@ -11,6 +12,9 @@ import exchange.guard
 
 
 class FtxController(exchange.interface.ExchangeInterface):
+    api_url = "https://ftx.com/api/"
+    markets_url = api_url + "markets/"
+
     def __init__(self, configuration: config.exchange.ExchangeConfig):
         self.client = binance.client.Client(configuration.public_key,
                                             configuration.private_key)
@@ -99,7 +103,12 @@ class FtxController(exchange.interface.ExchangeInterface):
 
     @exchange.guard.exchange_guard
     def get_price(self, market: exchange.interface.Market) -> float:
-        return float(self.client.get_ticker(symbol=market.key)["lastPrice"])
+        response = requests.get(self.markets_url + market.target + "/" +
+                                market.base)
+        data = response.json()
+        if data["success"]:
+            return data["result"]["last"]
+        return -1.0
 
     def get_balances_in_different_base(
             self, base: str) -> exchange.interface.Balances:
