@@ -2,10 +2,6 @@
 
 import time
 import logging
-import json
-
-import binance.exceptions
-import requests.exceptions
 
 
 def exchange_guard(function):

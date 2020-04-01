@@ -31,6 +31,7 @@ export interface TickerRequest {
   end_date?: string;
   limit?: number;
   sma?: number;
+  step?: number;
 }
 
 export interface Ticker {

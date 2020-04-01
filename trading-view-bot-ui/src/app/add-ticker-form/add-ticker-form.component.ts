@@ -33,7 +33,8 @@ export class AddTickerFormComponent implements OnInit {
       },
       limit: -1,
       color: '225,10,20',
-      sma: 0
+      sma: 0,
+      step: 1
     });
   }
 
@@ -43,7 +44,8 @@ export class AddTickerFormComponent implements OnInit {
       market: event.market,
       start_date: event.dateSpan.start.toISOString(),
       end_date: event.dateSpan.end.toISOString(),
-      sma: event.sma
+      sma: event.sma,
+      step: event.step
     };
     this.tickerService.getTickers(request).subscribe(
       response => {
