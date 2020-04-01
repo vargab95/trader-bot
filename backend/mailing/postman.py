@@ -42,6 +42,7 @@ class Postman:
         msg.set_content(message.get())
         for _ in range(10):
             try:
+                self.server.connect(self.configuration.smtp_server, self.configuration.port)
                 self.server.login(self.configuration.sender,
                                   self.configuration.password)
                 self.server.send_message(msg)
