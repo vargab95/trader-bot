@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-import logging
 import requests
 
 import config.exchange
@@ -22,7 +21,9 @@ class FtxMock(exchange.mock_base.MockBase):
     @exchange.guard.exchange_guard
     def get_price(self, market: exchange.interface.Market) -> float:
         if self._is_real_time:
-            response = requests.get(self.markets_url + market.target + '/' +
+            response = requests.get(self.markets_url + market.target + "/" +
                                     market.base)
-            return response.json()["last"]
+            data = response.json()
+            if data["success"]:
+                return data["result"]["last"]
         return self.price_mock[market.key]
