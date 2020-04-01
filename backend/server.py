@@ -68,12 +68,13 @@ class Indicator(Resource):
         self.parser.add_argument('end_date', type=convert_date_time)
         self.parser.add_argument('limit', type=int, default=-1)
         self.parser.add_argument('sma', type=int, default=-1)
+        self.parser.add_argument('step', type=int, default=1)
 
     def get(self):
         request = self.parser.parse_args()
         sma_len = request['sma']
+        step = request['step']
 
-        print(request)
         result = self.storage.get(request['market'], request['indicator'],
                                   request['candle_size'],
                                   request['start_date'], request['end_date'],
@@ -85,7 +86,7 @@ class Indicator(Resource):
         if sma_len > 0:
             result = get_sma(result, sma_len, 'value')
 
-        return result
+        return result[::step]
 
 
 class IndicatorOptions(Resource):
@@ -110,12 +111,13 @@ class Ticker(Resource):
         self.parser.add_argument('end_date', type=convert_date_time)
         self.parser.add_argument('limit', type=int, default=-1)
         self.parser.add_argument('sma', type=int, default=-1)
+        self.parser.add_argument('step', type=int, default=1)
 
     def get(self):
         request = self.parser.parse_args()
         sma_len = request['sma']
+        step = request['step']
 
-        print(request)
         result = self.storage.get(request['market'], request['start_date'],
                                   request['end_date'], request['limit'])
 
@@ -125,7 +127,7 @@ class Ticker(Resource):
         if sma_len > 0:
             result = get_sma(result, sma_len, 'price')
 
-        return result
+        return result[::step]
 
 
 class TickerOptions(Resource):
