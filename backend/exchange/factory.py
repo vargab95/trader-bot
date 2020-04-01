@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 import exchange.interface
-import exchange.mock
-import exchange.controller
+import exchange.binance_mock
+import exchange.binance
 import config.trader
 
 
@@ -12,6 +12,6 @@ class ExchangeControllerFactory:
         cls, configuration: config.trader.TraderConfig
     ) -> exchange.interface.ExchangeInterface:
         if configuration.testing.enabled:
-            return exchange.mock.BinanceMock(configuration.exchange,
-                                             configuration.testing)
-        return exchange.controller.BinanceController(configuration.exchange)
+            return exchange.binance_mock.BinanceMock(configuration.exchange,
+                                                     configuration.testing)
+        return exchange.binance.BinanceController(configuration.exchange)
