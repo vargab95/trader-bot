@@ -2,6 +2,7 @@
 
 import exchange.interface
 import exchange.binance_mock
+import exchange.ftx_mock
 import exchange.binance
 import config.trader
 
@@ -11,6 +12,11 @@ class ExchangeControllerFactory:
     def create(
         cls, configuration: config.trader.TraderConfig
     ) -> exchange.interface.ExchangeInterface:
+        if configuration.exchange.name == "ftx":
+            if configuration.testing.enabled:
+                return exchange.ftx_mock.FtxMock(configuration.exchange,
+                                                 configuration.testing)
+            return exchange.ftx.FtxController(configuration.exchange)
         if configuration.testing.enabled:
             return exchange.binance_mock.BinanceMock(configuration.exchange,
                                                      configuration.testing)
