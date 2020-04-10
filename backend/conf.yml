@@ -29,6 +29,7 @@ market:
     bearish_threshold: 0.0
 
 exchange:
+    name: "ftx"
     watched_market: "BTC-USDT"
     bullish_market: "BULL-USDT"
     bearish_market: "BEAR-USDT"

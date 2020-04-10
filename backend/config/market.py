@@ -6,7 +6,7 @@ import typing
 class MarketConfig:
     def __init__(self, config: typing.Dict):
         self.name = config.get("name", "GEMINI:BTCUSD")
-        self.indicator_name = config.get("indicator_name", "Recommend.All")
+        self.indicator_name = config.get("indicator_name", "all")
         self.check_interval = config.get("check_interval", 60)
         self.candle_size = config.get("candle_size", "1h")
         self.indicator_sma = config.get("indicator_sma", 1)

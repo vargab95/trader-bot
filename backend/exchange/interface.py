@@ -24,7 +24,6 @@ class Market:
         return self.target + '-' + self.base
 
 
-# TODO use this in mock too
 class Balances:
     def __init__(self):
         self.__store: typing.Dict[str, float] = {}
