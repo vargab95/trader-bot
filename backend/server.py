@@ -83,7 +83,7 @@ class Indicator(Resource):
         for row in result:
             row['date'] = row['date'].strftime(DATE_TIME_FORMAT)
 
-        if sma_len > 0:
+        if sma_len > 1:
             result = get_sma(result, sma_len, 'value')
 
         return result[::step]
@@ -124,7 +124,7 @@ class Ticker(Resource):
         for row in result:
             row['date'] = row['date'].strftime(DATE_TIME_FORMAT)
 
-        if sma_len > 0:
+        if sma_len > 1:
             result = get_sma(result, sma_len, 'price')
 
         return result[::step]
