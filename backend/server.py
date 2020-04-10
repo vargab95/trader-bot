@@ -33,7 +33,8 @@ def get_sma(values, sma_len, value_name):
 
     result = []
     for row in values:
-        sma.append(row[value_name])
+        if row[value_name]:
+            sma.append(row[value_name])
         if len(sma) > sma_len:
             sma.pop(0)
             row[value_name] = sum(sma) / len(sma)
@@ -165,7 +166,10 @@ def main():
     Indicator.storage = storage.indicators.IndicatorsStorage(client.database)
 
     try:
-        APP.run(debug=False, host='0.0.0.0')
+        if parser.configuration.testing.enabled:
+            APP.run(debug=True, host='127.0.0.1')
+        else:
+            APP.run(debug=False, host='0.0.0.0')
     except KeyboardInterrupt:
         return
     except Exception as error:  # pylint: disable=broad-except
