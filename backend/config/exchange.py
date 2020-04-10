@@ -6,7 +6,10 @@ import exchange.interface
 
 
 class ExchangeConfig:
+    available_exchanges = ["ftx", "binance"]
+
     def __init__(self, config: typing.Dict):
+        self.name = config.get("name", "binance")
         self.public_key = config.get("api_key", "")
         self.private_key = config.get("api_secret", "")
         self.watched_market: exchange.interface.Market = \
@@ -21,6 +24,7 @@ class ExchangeConfig:
 
     def __str__(self):
         return "\nExchange:" + \
+               "\n    Name:                " + self.name + \
                "\n    Public key:          " + self.public_key + \
                "\n    Private key:         " + "*" * len(self.private_key) + \
                "\n    Watched market name: " + str(self.watched_market) + \
