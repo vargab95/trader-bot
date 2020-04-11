@@ -8,6 +8,7 @@ import config.parser
 import storage.client
 import storage.indicators
 import storage.tickers
+import utils.estimators
 
 
 def main():
@@ -40,30 +41,27 @@ def main():
         limit=parser.configuration.database.limit)
     indicator_data = indicator_storage.get(
         market=parser.configuration.market.name,
+        indicator="all",
         candle_size=parser.configuration.market.candle_size,
         limit=parser.configuration.database.limit)
 
     result = []
-    max_length = max([
-        len(watched_market_data),
-        len(bearish_market_data),
-        len(bullish_market_data),
-        len(indicator_data)
-    ])
-
-    for i in range(max_length):
+    for line in watched_market_data:
         result.append({
-            "watched": watched_market_data[i],
-            "bearish": bearish_market_data[i],
-            "bullish": bullish_market_data[i],
-            "indicator": indicator_data[i]
+            "date":
+            line["date"].isoformat(),
+            "watched":
+            line["price"],
+            "bearish":
+            utils.estimators.get_linear_estimation(bearish_market_data,
+                                                   line["date"]),
+            "bullish":
+            utils.estimators.get_linear_estimation(bullish_market_data,
+                                                   line["date"]),
+            "indicator":
+            utils.estimators.get_linear_estimation(indicator_data,
+                                                   line["date"])
         })
-
-    for line in result:
-        line["watched"]["date"] = line["watched"]["date"].isoformat()
-        line["bearish"]["date"] = line["bearish"]["date"].isoformat()
-        line["bullish"]["date"] = line["bullish"]["date"].isoformat()
-        line["indicator"]["date"] = line["indicator"]["date"].isoformat()
 
     with open(sys.argv[2], "w") as output_file:
         json.dump(result, output_file, indent=4)
