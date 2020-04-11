@@ -1,139 +1,142 @@
 #!/usr/bin/python3
 
-import math
+import time
+import hmac
 import logging
 import requests
 
-import binance.client
-
 import config.exchange
+import exchange.base
 import exchange.interface
 import exchange.guard
 
 
-class FtxController(exchange.interface.ExchangeInterface):
+class FtxController(exchange.base.ExchangeBase):
     api_url = "https://ftx.com/api/"
-    markets_url = api_url + "markets/"
+    markets_url = "markets/"
+    balances_url = "wallet/balances"
+    orders_url = "orders"
 
     def __init__(self, configuration: config.exchange.ExchangeConfig):
-        self.client = binance.client.Client(configuration.public_key,
-                                            configuration.private_key)
-        exchange_info = self.client.get_exchange_info()
-        self.__min_amount = {}
-        self.__min_notional = {}
-        logging.debug("Min quantities:")
-        for market_info in exchange_info["symbols"]:
-            for filter_info in market_info["filters"]:
-                if filter_info["filterType"] == "LOT_SIZE":
-                    min_quantity = float(filter_info["minQty"])
-                if filter_info["filterType"] == "MIN_NOTIONAL":
-                    min_notional = float(filter_info["minNotional"])
-            symbol = market_info["symbol"]
-            self.__min_amount[symbol] = min_quantity
-            self.__min_notional[symbol] = min_notional
-            logging.debug("    %s: LOT_SIZE: %f MIN_NOTIONAL: %f", symbol,
-                          min_quantity, min_notional)
+        super().__init__(configuration)
+        response = requests.get(self.api_url + "markets").json()
+        if not response["success"]:
+            raise exchange.interface.ExchangeError(response["error"])
 
-    @exchange.guard.exchange_guard
+        logging.debug("Minimal values:")
+        for market in response["result"]:
+            self._min_amount[market["name"]] = market["minProvideSize"]
+            self._min_notional[market["name"]] = market["priceIncrement"]
+            logging.debug("\t%s amount: %.12f price: %.12f", market["name"],
+                          market["minProvideSize"], market["priceIncrement"])
+
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        corrected_amount = self.__floor(amount, self.__min_amount[market.key])
+        market.set_reverse(True)
+        market.set_delimiter('/')
+        corrected_amount = self._floor(amount, self._min_amount[market.key])
         logging.info("Trying to buy %.10f %s", corrected_amount, market.key)
         logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
 
-        if not self.__is_enough_amount(market, corrected_amount):
+        if not self._is_enough_amount(market, corrected_amount):
             logging.warning("Buy failed due to insufficient resources.")
             return False
 
-        correted_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
-        logging.debug("Corrected amount string: %s", correted_amount_str)
-        self.client.create_order(symbol=market.key,
-                                 side=binance.client.Client.SIDE_BUY,
-                                 type=binance.client.Client.ORDER_TYPE_MARKET,
-                                 quantity=correted_amount_str)
+        logging.debug("Corrected amount string: %f", corrected_amount)
+        self.__send_authenticated_request('POST',
+                                          self.orders_url,
+                                          data={
+                                              "market": market.key,
+                                              "side": "buy",
+                                              "type": "market",
+                                              "size": corrected_amount,
+                                              "price": None
+                                          })
         logging.info("%.10f %s was successfully bought", corrected_amount,
                      market.key)
         return True
 
-    @exchange.guard.exchange_guard
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        corrected_amount = self.__floor(amount, self.__min_amount[market.key])
+        market.set_reverse(True)
+        market.set_delimiter('/')
+        corrected_amount = self._floor(amount, self._min_amount[market.key])
         logging.info("Trying to sell %.10f %s", corrected_amount, market.key)
         logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
 
-        if not self.__is_enough_amount(market, corrected_amount):
+        if not self._is_enough_amount(market, corrected_amount):
             logging.warning("Sell failed due to insufficient resources.")
             return False
 
         correted_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
         logging.debug("Corrected amount string: %s", correted_amount_str)
-        self.client.create_order(symbol=market.key,
-                                 side=binance.client.Client.SIDE_SELL,
-                                 type=binance.client.Client.ORDER_TYPE_MARKET,
-                                 quantity=correted_amount_str)
+        self.__send_authenticated_request('POST',
+                                          self.orders_url,
+                                          data={
+                                              "market": market.key,
+                                              "side": "sell",
+                                              "type": "market",
+                                              "size": corrected_amount,
+                                              "price": None
+                                          })
         logging.info("%.10f %s was successfully sold", corrected_amount,
                      market.key)
         return True
 
-    def __is_enough_amount(self, market, amount: float):
-        if amount < self.__min_amount[market.key]:
-            return False
-
-        price = self.get_price(market)
-        if amount < (self.__min_notional[market.key] / price):
-            return False
-
-        return True
-
-    @exchange.guard.exchange_guard
     def get_balances(self) -> exchange.interface.Balances:
-        account_information = self.client.get_account()
-        binance_balances = account_information["balances"]
-        balances = exchange.interface.Balances()
+        balances = self.__send_authenticated_request('GET', self.balances_url)
 
-        for balance in binance_balances:
+        result = exchange.interface.Balances()
+        for balance in balances:
             free = float(balance["free"])
             if free > 1e-7:
-                balances[balance["asset"]] = free
+                result[balance["coin"]] = free
 
-        return balances
+        return result
 
-    @exchange.guard.exchange_guard
-    def get_balance(self, balance: str) -> float:
-        return float(self.client.get_asset_balance(asset=balance)["free"])
+    def get_balance(self, market: str) -> float:
+        market.set_reverse(True)
+        market.set_delimiter('/')
+        balances = self.get_balances()
+
+        for balance in balances:
+            if balance["coin"] == market:
+                return balance["total"]
+
+        return None
 
     @exchange.guard.exchange_guard
     def get_price(self, market: exchange.interface.Market) -> float:
-        response = requests.get(self.markets_url + market.target + "/" +
-                                market.base)
+        market.set_reverse(True)
+        market.set_delimiter('/')
+        response = requests.get(self.api_url + self.markets_url + market.key)
         data = response.json()
         if data["success"]:
             return data["result"]["last"]
         return -1.0
 
-    def get_balances_in_different_base(
-            self, base: str) -> exchange.interface.Balances:
-        balances = exchange.interface.Balances()
-        for name, balance in self.get_balances().items():
-            if base == name:
-                balances[name] = balance
-            else:
-                market = exchange.interface.Market(base, name)
-                price = self.get_price(market)
-                balances[name] = balance * price
-        return balances
+    @exchange.guard.exchange_guard
+    def __send_authenticated_request(self, method, endpoint, data=None):
+        timestamp = int(time.time() * 1000)
 
-    def get_money(self, base: str) -> float:
-        all_money: float = 0.0
-        for _, balance in self.get_balances_in_different_base(base).items():
-            all_money += balance
-        return all_money
+        session = requests.Session()
+        request = requests.Request(method, self.api_url + endpoint)
+        request.json = data
 
-    @staticmethod
-    def __floor(value: float, precision: float) -> float:
-        exponent = -int(math.log10(precision))
-        remainder = value % precision
-        result = value
-        if remainder > (0.5 * precision):
-            result -= precision
-        result = round(result, exponent)
-        return abs(result)
+        prepared = request.prepare()
+        signature_payload = \
+            f'{timestamp}{prepared.method}{prepared.path_url}'.encode()
+        if prepared.body:
+            signature_payload += prepared.body
+        signature = hmac.new(self._private_key.encode(), signature_payload,
+                             'sha256').hexdigest()
+
+        prepared.headers[f'FTX-KEY'] = self._public_key
+        prepared.headers[f'FTX-SIGN'] = signature
+        prepared.headers[f'FTX-TS'] = str(timestamp)
+        prepared.headers[f'Content-type'] = 'application/json'
+
+        response = session.send(prepared).json()
+
+        if not response["success"]:
+            raise exchange.interface.ExchangeError(response["error"])
+
+        return response["result"]

@@ -133,7 +133,7 @@ def watch_trading_view(tv_fetcher, rising_edge_detector, controller,
 def configure_logging(configuration: config.logging.LoggingConfig):
     logging.basicConfig(
         level=configuration.level,
-        filename=configuration.path,
+        # filename=configuration.path,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
 

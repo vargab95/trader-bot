@@ -2,6 +2,7 @@
 
 import exchange.interface
 import exchange.binance_mock
+import exchange.ftx
 import exchange.ftx_mock
 import exchange.binance
 import config.trader

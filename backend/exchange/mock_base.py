@@ -98,10 +98,10 @@ class MockBase(exchange.interface.ExchangeInterface):
         logging.error("Could not complete sell %f %s", amount, market.target)
         return False
 
-    def get_balance(self, balance: str) -> float:
-        if balance not in self._balances.keys():
-            self._balances[balance] = 0.0
-        return self._balances[balance]
+    def get_balance(self, market: str) -> float:
+        if market not in self._balances.keys():
+            self._balances[market] = 0.0
+        return self._balances[market]
 
     def get_balances(self) -> exchange.interface.Balances:
         return self._balances.copy()

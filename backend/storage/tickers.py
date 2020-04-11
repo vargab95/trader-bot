@@ -44,7 +44,6 @@ class TickersStorage:
         else:
             result = result.sort([("date", 1)])
 
-        print(result)
         return [{
             "date": line["date"],
             "price": line["price"]
