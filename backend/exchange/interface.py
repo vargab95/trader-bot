@@ -5,11 +5,19 @@ import typing
 
 
 class Market:
-    def __init__(self, base: str, target: str):
+    def __init__(self, base: str, target: str, delimiter='', reverse=False):
         self.base: str = base
         self.target: str = target
         self.price: float = 0.0
         self.amount: float = 0.0
+        self.set_delimiter(delimiter)
+        self.set_reverse(reverse)
+
+    def set_reverse(self, reverse):
+        self.__reverse = reverse
+
+    def set_delimiter(self, delimiter):
+        self.__delimiter = delimiter
 
     @classmethod
     def create_from_string(cls, name: str):
@@ -18,9 +26,13 @@ class Market:
 
     @property
     def key(self):
-        return self.target + self.base
+        if self.__reverse:
+            return self.base + self.__delimiter + self.target
+        return self.target + self.__delimiter + self.base
 
     def __str__(self):
+        if self.__reverse:
+            return self.base + '-' + self.target
         return self.target + '-' + self.base
 
 
@@ -48,6 +60,10 @@ class Balances:
             yield name, balance
 
 
+class ExchangeError(Exception):
+    pass
+
+
 class ExchangeInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def buy(self, market: Market, amount: float) -> bool:
@@ -62,7 +78,7 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def get_balance(self, balance: str) -> float:
+    def get_balance(self, market: str) -> float:
         pass
 
     @abc.abstractmethod
