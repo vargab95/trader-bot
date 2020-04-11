@@ -45,22 +45,55 @@ def main():
         candle_size=parser.configuration.market.candle_size,
         limit=parser.configuration.database.limit)
 
+    watched_market_data = sorted(watched_market_data,
+                                 key=lambda item: item["date"])
+    bearish_market_data = sorted(bearish_market_data,
+                                 key=lambda item: item["date"])
+    bullish_market_data = sorted(bullish_market_data,
+                                 key=lambda item: item["date"])
+    indicator_data = sorted(indicator_data, key=lambda item: item["date"])
+
+    bearish_idx = 0
+    bullish_idx = 0
+    indicator_idx = 0
+
     result = []
     for line in watched_market_data:
+
+        while bearish_market_data[bearish_idx]["date"] < line["date"]:
+            bearish_idx += 1
+
+        while bullish_market_data[bullish_idx]["date"] < line["date"]:
+            bullish_idx += 1
+
+        while indicator_data[indicator_idx]["date"] < line["date"]:
+            indicator_idx += 1
+
+        if not bearish_market_data[bearish_idx]["price"] or \
+           not bearish_market_data[bearish_idx - 1]["price"] or \
+           not bullish_market_data[bullish_idx]["price"] or \
+           not bullish_market_data[bullish_idx - 1]["price"] or \
+           not indicator_data[indicator_idx]["value"] or \
+           not indicator_data[indicator_idx - 1]["value"]:
+            continue
+
         result.append({
             "date":
             line["date"].isoformat(),
             "watched":
             line["price"],
             "bearish":
-            utils.estimators.get_linear_estimation(bearish_market_data,
-                                                   line["date"]),
+            utils.estimators.calculate_third_point(
+                bearish_market_data[bearish_idx],
+                bearish_market_data[bearish_idx - 1], line["date"]),
             "bullish":
-            utils.estimators.get_linear_estimation(bullish_market_data,
-                                                   line["date"]),
+            utils.estimators.calculate_third_point(
+                bullish_market_data[bullish_idx],
+                bullish_market_data[bullish_idx - 1], line["date"]),
             "indicator":
-            utils.estimators.get_linear_estimation(indicator_data,
-                                                   line["date"])
+            utils.estimators.calculate_third_point(
+                indicator_data[indicator_idx],
+                indicator_data[indicator_idx - 1], line["date"])
         })
 
     with open(sys.argv[2], "w") as output_file:

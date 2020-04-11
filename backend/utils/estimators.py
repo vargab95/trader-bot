@@ -21,6 +21,8 @@ def get_linear_estimation(data, date):
 
     for row in data:
         prev_row = current_row
+        if prev_row == row:
+            continue
         current_row = row
         if date >= row["date"]:
             break
@@ -28,4 +30,4 @@ def get_linear_estimation(data, date):
     if current_row["date"] == date:
         return current_row[determine_key(current_row)]
 
-    return calculate_third_point(prev_row, current_row, date)
+    return calculate_third_point(current_row, prev_row, date)
