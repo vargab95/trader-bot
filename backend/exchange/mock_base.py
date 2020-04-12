@@ -55,8 +55,9 @@ class MockBase(exchange.interface.ExchangeInterface):
 
     def __init__(self, exchange_config: config.exchange.ExchangeConfig,
                  testing_config: config.testing.TestingConfig):
+        self.__start_money = testing_config.start_money
         self._balances: typing.Dict[str, float] = {}
-        self._balances["USDT"] = testing_config.start_money
+        self._balances["USDT"] = self.__start_money
 
         self._trade: Trade = None
         self._is_real_time: bool = testing_config.real_time
@@ -66,6 +67,10 @@ class MockBase(exchange.interface.ExchangeInterface):
             self.price_mock: typing.Dict[str, float] = {}
         else:
             self._client = None
+
+    def reset(self):
+        self._balances = {}
+        self._balances["USDT"] = self.__start_money
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         logging.debug("Trying to buy %f of %s", amount, str(market))

@@ -11,7 +11,7 @@ import exchange.interface
 class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
     def __init__(self, configuration: config.trader.TraderConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
-        super().__init__(used_exchange)
+        super().__init__(configuration, used_exchange)
 
         # 0 is the NONE
         # 1 is one pack of bull
