@@ -2,6 +2,8 @@
 
 import datetime
 
+import storage.common
+
 
 class TickersStorage:
     def __init__(self, db):
@@ -39,10 +41,7 @@ class TickersStorage:
         else:
             result = market_collection.find()
 
-        if limit > 0:
-            result = result.sort([("date", -1)]).limit(limit)
-        else:
-            result = result.sort([("date", 1)])
+        result = storage.common.sort_and_limit_result(result, limit)
 
         return [{
             "date": line["date"],

@@ -37,6 +37,21 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
                 balances[name] = balance * price
         return balances
 
+    def _check_and_log_corrected_amount(self, market, amount, operation):
+        corrected_amount = self._floor(amount, self._min_amount[market.key])
+        logging.info("Trying to %s %.10f %s", operation, corrected_amount,
+                     market.key)
+        logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
+
+        if not self._is_enough_amount(market, corrected_amount):
+            logging.warning("%s failed due to insufficient resources.",
+                            operation)
+            return corrected_amount
+
+        corrected_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
+        logging.debug("Corrected amount string: %s", corrected_amount_str)
+        return corrected_amount
+
     @staticmethod
     def _floor(value: float, precision: float) -> float:
         exponent = -int(math.log10(precision))

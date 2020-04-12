@@ -10,9 +10,7 @@ import config.trader
 
 class ExchangeControllerFactory:
     @classmethod
-    def create(
-        cls, configuration: config.trader.TraderConfig
-    ) -> exchange.interface.ExchangeInterface:
+    def create(cls, configuration: config.trader.TraderConfig):
         if configuration.exchange.name == "ftx":
             if configuration.testing.enabled:
                 return exchange.ftx_mock.FtxMock(configuration.exchange,

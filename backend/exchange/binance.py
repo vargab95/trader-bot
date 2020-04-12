@@ -31,40 +31,34 @@ class BinanceController(exchange.base.ExchangeBase):
 
     @exchange.guard.exchange_guard
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        corrected_amount = self._floor(amount, self._min_amount[market.key])
-        logging.info("Trying to buy %.10f %s", corrected_amount, market.key)
-        logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
+        corrected_amount = self._check_and_log_corrected_amount(
+            market, amount, "buy")
 
-        if not self._is_enough_amount(market, corrected_amount):
-            logging.warning("Buy failed due to insufficient resources.")
+        if corrected_amount <= 0.0:
             return False
 
-        correted_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
-        logging.debug("Corrected amount string: %s", correted_amount_str)
-        self.client.create_order(symbol=market.key,
-                                 side=binance.client.Client.SIDE_BUY,
-                                 type=binance.client.Client.ORDER_TYPE_MARKET,
-                                 quantity=correted_amount_str)
+        self.client.create_order(
+            symbol=market.key,
+            side=binance.client.Client.SIDE_BUY,
+            type=binance.client.Client.ORDER_TYPE_MARKET,
+            quantity="{:.12f}".format(corrected_amount).rstrip('0'))
         logging.info("%.10f %s was successfully bought", corrected_amount,
                      market.key)
         return True
 
     @exchange.guard.exchange_guard
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        corrected_amount = self._floor(amount, self._min_amount[market.key])
-        logging.info("Trying to sell %.10f %s", corrected_amount, market.key)
-        logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
+        corrected_amount = self._check_and_log_corrected_amount(
+            market, amount, "sell")
 
-        if not self._is_enough_amount(market, corrected_amount):
-            logging.warning("Sell failed due to insufficient resources.")
+        if corrected_amount <= 0.0:
             return False
 
-        correted_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
-        logging.debug("Corrected amount string: %s", correted_amount_str)
-        self.client.create_order(symbol=market.key,
-                                 side=binance.client.Client.SIDE_SELL,
-                                 type=binance.client.Client.ORDER_TYPE_MARKET,
-                                 quantity=correted_amount_str)
+        self.client.create_order(
+            symbol=market.key,
+            side=binance.client.Client.SIDE_SELL,
+            type=binance.client.Client.ORDER_TYPE_MARKET,
+            quantity="{:.12f}".format(corrected_amount).rstrip('0'))
         logging.info("%.10f %s was successfully sold", corrected_amount,
                      market.key)
         return True

@@ -13,11 +13,9 @@ import detector.falling_edge
 
 class DetectorFactory:
     @classmethod
-    def create(
-        cls,
-        configuration: config.market.MarketConfig,
-        gatherer: fetcher.single.TradingViewFetcherSingle = None
-    ) -> detector.interface.DetectorInterface:
+    def create(cls,
+               configuration: config.market.MarketConfig,
+               gatherer: fetcher.single.TradingViewFetcherSingle = None):
         if configuration.falling_edge_detection:
             logging.info("Falling edge detector has been created.")
             return detector.falling_edge.FallingEdgeDetector(

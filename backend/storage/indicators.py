@@ -2,6 +2,8 @@
 
 import datetime
 
+import storage.common
+
 
 class IndicatorsStorage:
     def __init__(self, db):
@@ -54,10 +56,7 @@ class IndicatorsStorage:
         else:
             result = candle_collection.find()
 
-        if limit > 0:
-            result = result.sort([("date", -1)]).limit(limit)
-        else:
-            result = result.sort([("date", 1)])
+        result = storage.common.sort_and_limit_result(result, limit)
 
         return [{
             "date": line["date"],
