@@ -68,6 +68,9 @@ class MockBase(exchange.interface.ExchangeInterface):
         else:
             self._client = None
 
+    def set_real_time(self, value):
+        self._is_real_time = value
+
     def reset(self):
         self._balances = {}
         self._balances["USDT"] = self.__start_money
