@@ -4,7 +4,6 @@ import time
 import hmac
 import logging
 import requests
-import traceback
 
 import config.exchange
 import exchange.base
@@ -42,15 +41,15 @@ class FtxController(exchange.base.ExchangeBase):
             return False
 
         logging.debug("Corrected amount string: %f", corrected_amount)
-        self.__send_authenticated_request('POST',
-                                          self.orders_url,
-                                          data={
-                                              "market": market.key,
-                                              "side": "buy",
-                                              "type": "market",
-                                              "size": corrected_amount,
-                                              "price": None
-                                          })
+        # self.__send_authenticated_request('POST',
+        #                                   self.orders_url,
+        #                                   data={
+        #                                       "market": market.key,
+        #                                       "side": "buy",
+        #                                       "type": "market",
+        #                                       "size": corrected_amount,
+        #                                       "price": None
+        #                                   })
         logging.info("%.10f %s was successfully bought", corrected_amount,
                      market.key)
         return True
@@ -66,15 +65,15 @@ class FtxController(exchange.base.ExchangeBase):
 
         correted_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
         logging.debug("Corrected amount string: %s", correted_amount_str)
-        self.__send_authenticated_request('POST',
-                                          self.orders_url,
-                                          data={
-                                              "market": market.key,
-                                              "side": "sell",
-                                              "type": "market",
-                                              "size": corrected_amount,
-                                              "price": None
-                                          })
+        # self.__send_authenticated_request('POST',
+        #                                   self.orders_url,
+        #                                   data={
+        #                                       "market": market.key,
+        #                                       "side": "sell",
+        #                                       "type": "market",
+        #                                       "size": corrected_amount,
+        #                                       "price": None
+        #                                   })
         logging.info("%.10f %s was successfully sold", corrected_amount,
                      market.key)
         return True

@@ -8,6 +8,7 @@ import abc
 import config.parser
 import config.logging
 import exchange.interface
+import exchange.factory
 import mailing.postman
 import mailing.error
 import storage.client
@@ -93,7 +94,7 @@ class ApplicationBase:
     def _configure_logging(self):
         logging.basicConfig(
             level=self._configuration.logging.level,
-            filename=self._configuration.logging.path,
+            # filename=self._configuration.logging.path,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     def _set_class_variables(self):
