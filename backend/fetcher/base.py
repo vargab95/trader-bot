@@ -2,8 +2,8 @@
 
 import time
 import logging
-import requests
 import socket
+import requests
 import urllib3.exceptions
 
 import config.market
@@ -47,7 +47,7 @@ class TradingViewFetcherBase:
                 break
             except fetcher.common.CannotFetchDataException:
                 continue
-            except Exception as exception:
+            except Exception as exception:  # pylint: disable=broad-except
                 logging.critical("Unhandled exception: %s", str(exception))
 
     def fetch_technical_indicator(self):
@@ -56,11 +56,13 @@ class TradingViewFetcherBase:
                                           json=self.request,
                                           timeout=5)
             self.response = self.response.json()
+        except (requests.exceptions.Timeout,
+                requests.exceptions.ConnectTimeout,
+                urllib3.exceptions.ConnectTimeoutError, socket.timeout):
+            logging.error("Connection timeout")
+            raise fetcher.common.CannotFetchDataException
         except requests.exceptions.ConnectionError:
             logging.error("Connection error")
-            raise fetcher.common.CannotFetchDataException
-        except (requests.exceptions.Timeout, requests.exceptions.ConnectTimeout, urllib3.exceptions.ConnectTimeoutError, socket.timeout):
-            logging.error("Connection timeout")
             raise fetcher.common.CannotFetchDataException
         except urllib3.exceptions.MaxRetryError:
             logging.error("Max retry error received.")

@@ -7,7 +7,7 @@ import binance.exceptions
 import exchange.guard
 
 
-class response_mock:
+class ResponseMock:
     status_code = 1
 
     @staticmethod
@@ -20,7 +20,7 @@ class ExchangeGuardTest(unittest.TestCase):
     def test_function(self):
         if self.raise_until > 0:
             self.raise_until -= 1
-            raise binance.exceptions.BinanceAPIException(response_mock())
+            raise binance.exceptions.BinanceAPIException(ResponseMock())
         return True
 
     def setUp(self):

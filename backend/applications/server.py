@@ -7,6 +7,7 @@ from flask_cors import CORS
 import applications.base
 import api.indicator
 import api.ticker
+import api.common
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
@@ -23,6 +24,8 @@ class ServerApplication(applications.base.ApplicationBase):
         self._initialize_storages()
         self.__initialize_flask_objects()
         self.__initialize_api_routes()
+        api.common.DATE_TIME_FORMAT = \
+            self._configuration.server.datetime_format
 
     def __initialize_flask_objects(self):
         self.__app = Flask(__name__)

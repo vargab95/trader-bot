@@ -33,15 +33,12 @@ class FtxController(exchange.base.ExchangeBase):
                           market["minProvideSize"], market["priceIncrement"])
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        corrected_amount = self._floor(amount, self._min_amount[market.key])
-        logging.info("Trying to buy %.10f %s", corrected_amount, market.key)
-        logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
+        corrected_amount = self._check_and_log_corrected_amount(
+            market, amount, "buy")
 
-        if not self._is_enough_amount(market, corrected_amount):
-            logging.warning("Buy failed due to insufficient resources.")
+        if corrected_amount <= 0.0:
             return False
 
-        logging.debug("Corrected amount string: %f", corrected_amount)
         self.__send_authenticated_request('POST',
                                           self.orders_url,
                                           data={
@@ -51,21 +48,19 @@ class FtxController(exchange.base.ExchangeBase):
                                               "size": corrected_amount,
                                               "price": None
                                           })
+
         logging.info("%.10f %s was successfully bought", corrected_amount,
                      market.key)
+
         return True
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        corrected_amount = self._floor(amount, self._min_amount[market.key])
-        logging.info("Trying to sell %.10f %s", corrected_amount, market.key)
-        logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
+        corrected_amount = self._check_and_log_corrected_amount(
+            market, amount, "sell")
 
-        if not self._is_enough_amount(market, corrected_amount):
-            logging.warning("Sell failed due to insufficient resources.")
+        if corrected_amount <= 0.0:
             return False
 
-        correted_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
-        logging.debug("Corrected amount string: %s", correted_amount_str)
         self.__send_authenticated_request('POST',
                                           self.orders_url,
                                           data={
@@ -75,8 +70,10 @@ class FtxController(exchange.base.ExchangeBase):
                                               "size": corrected_amount,
                                               "price": None
                                           })
+
         logging.info("%.10f %s was successfully sold", corrected_amount,
                      market.key)
+
         return True
 
     def get_balances(self) -> exchange.interface.Balances:

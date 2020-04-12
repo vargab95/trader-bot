@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import logging
-
 import config.market
 import fetcher.common
 import fetcher.base
@@ -10,34 +8,6 @@ import fetcher.base
 class TradingViewFetcherMulti(fetcher.base.TradingViewFetcherBase):
     def __init__(self, market: config.market.MarketConfig, candle_size: float):
         super().__init__(market, candle_size)
-
-        if isinstance(candle_size, str):
-            if candle_size not in list(self.candle_size_map.keys()):
-                raise fetcher.common.InvalidConfigurationException
-        elif isinstance(candle_size, list):
-            for value in candle_size:
-                if value not in list(self.candle_size_map.keys()):
-                    raise fetcher.common.InvalidConfigurationException
-        else:
-            raise fetcher.common.InvalidConfigurationException
-
-        if isinstance(market.indicator_name, str):
-            if market.indicator_name not in list(
-                    self.indicator_name_map.keys()):
-                raise fetcher.common.InvalidConfigurationException
-        elif isinstance(market.indicator_name, list):
-            for value in market.indicator_name:
-                if value not in list(self.indicator_name_map.keys()):
-                    raise fetcher.common.InvalidConfigurationException
-        else:
-            raise fetcher.common.InvalidConfigurationException
-
-        if isinstance(market.name, str) and \
-                isinstance(market.indicator_name, str) and \
-                isinstance(market.candle_size, str):
-            logging.critical("If all configurations are strings, then "
-                             "a single fetcher should be used")
-            raise fetcher.common.InvalidConfigurationException
 
         self.request = {
             "symbols": {

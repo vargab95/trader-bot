@@ -46,12 +46,15 @@ class GathererApplication(applications.base.ApplicationBase):
                         self._configuration.market.indicator_name,
                         self._configuration.market.candle_size, indicators)
             else:
-                for market in self._configuration.market.name:
-                    for indicator in self._configuration.market.indicator_name:
-                        for candle in self._configuration.market.candle_size:
-                            if indicators[market][indicator][candle]:
-                                self._indicator_storage.add(
-                                    market, indicator, candle,
-                                    indicators[market][indicator][candle])
+                self.__process_indicator_response(indicators)
 
             time.sleep(self._configuration.market.check_interval)
+
+    def __process_indicator_response(self, indicators):
+        for market in self._configuration.market.name:
+            for indicator in self._configuration.market.indicator_name:
+                for candle in self._configuration.market.candle_size:
+                    if indicators[market][indicator][candle]:
+                        self._indicator_storage.add(
+                            market, indicator, candle,
+                            indicators[market][indicator][candle])

@@ -4,9 +4,6 @@ import sys
 import json
 
 import applications.base
-import storage.client
-import storage.indicators
-import storage.tickers
 import utils.estimators
 
 
