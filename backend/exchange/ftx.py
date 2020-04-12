@@ -96,7 +96,7 @@ class FtxController(exchange.base.ExchangeBase):
 
         return 0.0
 
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market) -> float:
         response = requests.get(self.api_url + self.markets_url + market.key)
         data = response.json()
@@ -109,7 +109,7 @@ class FtxController(exchange.base.ExchangeBase):
                       ''.join(traceback.format_stack()))
         raise exchange.interface.ExchangeError(response["error"])
 
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard()
     def __send_authenticated_request(self, method, endpoint, data=None):
         timestamp = int(time.time() * 1000)
 

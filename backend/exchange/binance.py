@@ -29,7 +29,7 @@ class BinanceController(exchange.base.ExchangeBase):
             logging.debug("    %s: LOT_SIZE: %f MIN_NOTIONAL: %f", symbol,
                           min_quantity, min_notional)
 
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard()
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "buy")
@@ -46,7 +46,7 @@ class BinanceController(exchange.base.ExchangeBase):
                      market.key)
         return True
 
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard()
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "sell")
@@ -63,7 +63,7 @@ class BinanceController(exchange.base.ExchangeBase):
                      market.key)
         return True
 
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard()
     def get_balances(self) -> exchange.interface.Balances:
         account_information = self.client.get_account()
         binance_balances = account_information["balances"]
@@ -76,11 +76,11 @@ class BinanceController(exchange.base.ExchangeBase):
 
         return balances
 
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard()
     def get_balance(self, market: str) -> float:
         return float(self.client.get_asset_balance(asset=market)["free"])
 
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market) -> float:
         response = self.client.get_ticker(symbol=market.key)
         return float(response["lastPrice"])

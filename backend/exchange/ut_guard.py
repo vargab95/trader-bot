@@ -16,7 +16,7 @@ class ResponseMock:
 
 
 class ExchangeGuardTest(unittest.TestCase):
-    @exchange.guard.exchange_guard
+    @exchange.guard.exchange_guard(0)
     def function(self):
         if self.raise_until > 0:
             self.raise_until -= 1

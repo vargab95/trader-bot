@@ -7,7 +7,7 @@ import exchange.factory
 import exchange.interface
 
 
-class ExchangeControllerTest(unittest.TestCase):
+class FtxMockTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.config: config.trader.TraderConfig = config.trader.TraderConfig({})
@@ -15,6 +15,7 @@ class ExchangeControllerTest(unittest.TestCase):
         cls.config.testing.real_time = False
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
+        cls.config.exchange.name = "ftx"
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format
         cls.controller = exchange.factory.ExchangeControllerFactory.create(
@@ -180,3 +181,10 @@ class ExchangeControllerTest(unittest.TestCase):
         self.controller.price_mock["BEAR-USDT"] = 1.0
 
         self.assertEqual(self.controller.get_money("USDT"), 55.0)
+
+    def test_get_price_real_time(self):
+        self.controller.set_real_time(True)
+        self.assertNotAlmostEqual(
+            self.controller.get_price(
+                exchange.interface.Market.create_from_string("BTC-USDT")), 0.0)
+        self.controller.set_real_time(False)
