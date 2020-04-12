@@ -61,6 +61,7 @@ def watch_trading_view(tv_fetcher, rising_edge_detector, controller,
 
             logging.debug("New state is %s", str(state))
 
+            state = BuyState.SWITCHING_TO_BULLISH
             if state == BuyState.SWITCHING_TO_BULLISH:
                 available_amount = controller.get_balance(
                     exchange_config.bearish_market.target)
@@ -107,11 +108,9 @@ def watch_trading_view(tv_fetcher, rising_edge_detector, controller,
                         "Cannot buy bear due to insufficient money")
 
                 logging.info("New balance: %s", str(controller.get_balances()))
-            logging.info(
-                "Current price: %f",
-                controller.get_price(
-                    exchange.interface.Market.create_from_string("BTC-USDT")))
-            all_money = controller.get_money("USDT")
+            logging.info("Current price: %f",
+                         controller.get_price(exchange_config.watched_market))
+            all_money = controller.get_money("USD")
             logging.info("All money: %f", all_money)
             logging.debug(controller.get_balances())
 
@@ -147,6 +146,8 @@ def main():
     configure_logging(parser.configuration.logging)
     logging.debug(str(parser.configuration))
 
+    exchange.interface.Market.name_format = \
+        parser.configuration.exchange.market_name_format
     controller = exchange.factory.ExchangeControllerFactory.create(
         parser.configuration)
 
