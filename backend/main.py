@@ -6,15 +6,15 @@ from applications.factory import ApplicationFactory, \
                                  InvalidApplicationException
 
 
-def main():
-    if len(sys.argv) < 2:
+def main(argc, argv):
+    if argc < 2:
         available = ', '.join(ApplicationFactory.get_available_applications())
-        print("Usage: {} <application>".format(sys.argv[0]))
+        print("Usage: {} <application>".format(argv[0]))
         print("\nAvailable application: {}".format(available))
         return 1
 
     try:
-        application = ApplicationFactory.create(sys.argv[1])
+        application = ApplicationFactory.create(argv[1])
 
         application.initialize()
         application.run()
@@ -25,4 +25,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(len(sys.argv), sys.argv))  # pragma: no cover

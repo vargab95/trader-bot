@@ -8,17 +8,20 @@ import exchange.interface
 
 
 class ExchangeControllerTest(unittest.TestCase):
-    def setUp(self):
-        self.config: config.trader.TraderConfig = config.trader.TraderConfig(
-            {})
-        self.config.testing.enabled = True
-        self.config.testing.real_time = False
-        self.config.testing.start_money = 100.0
-        self.config.testing.fee = 0.0
+    @classmethod
+    def setUpClass(cls):
+        cls.config: config.trader.TraderConfig = config.trader.TraderConfig({})
+        cls.config.testing.enabled = True
+        cls.config.testing.real_time = False
+        cls.config.testing.start_money = 100.0
+        cls.config.testing.fee = 0.0
         exchange.interface.Market.name_format = \
-            self.config.exchange.market_name_format
-        self.controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+            cls.config.exchange.market_name_format
+        cls.controller = exchange.factory.ExchangeControllerFactory.create(
+            cls.config)
+
+    def setUp(self):
+        self.controller.reset()
         self.controller.price_mock["BTC-USDT"] = 100.0
         self.controller.price_mock["BEAR-USDT"] = 10.0
         self.controller.price_mock["BULL-USDT"] = 5.0
