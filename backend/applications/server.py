@@ -26,6 +26,8 @@ class ServerApplication(applications.base.ApplicationBase):
         self.__initialize_api_routes()
         api.common.DATE_TIME_FORMAT = \
             self._configuration.server.datetime_format
+        api.ticker.Ticker.storage = self._ticker_storage
+        api.indicator.Indicator.storage = self._indicator_storage
 
     def __initialize_flask_objects(self):
         self.__app = Flask(__name__)

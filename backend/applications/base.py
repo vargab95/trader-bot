@@ -35,7 +35,6 @@ class ApplicationBase:
         self._fetcher: fetcher.base.TradingViewFetcherBase
 
     def _initialize_storages(self):
-        self._initialize_client()
         self._initialize_ticker_storage()
         self._initialize_indicator_storage()
 
