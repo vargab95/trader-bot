@@ -17,7 +17,7 @@ class ResponseMock:
 
 class ExchangeGuardTest(unittest.TestCase):
     @exchange.guard.exchange_guard
-    def test_function(self):
+    def function(self):
         if self.raise_until > 0:
             self.raise_until -= 1
             raise binance.exceptions.BinanceAPIException(ResponseMock())
@@ -27,12 +27,8 @@ class ExchangeGuardTest(unittest.TestCase):
         self.raise_until = -1
 
     def test_normal_flow(self):
-        self.assertTrue(self.test_function())
+        self.assertTrue(self.function())
 
-    def test_temporary_failure(self):
-        self.raise_until = 10
-        self.assertTrue(self.test_function())
-
-    def test_permanent_failure(self):
-        self.raise_until = 33
-        self.assertFalse(self.test_function())
+    def test_failure(self):
+        self.raise_until = 2
+        self.assertTrue(self.function())
