@@ -94,7 +94,6 @@ class FtxController(exchange.base.ExchangeBase):
         balances = self.get_balances()
 
         for key, value in balances.items():
-            print(market, key, value)
             if key == market:
                 return value
 

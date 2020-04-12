@@ -8,6 +8,8 @@ class TickersStorage:
         self.__collection = db.tickers
 
     def add(self, market: str, price: float, date=None) -> bool:
+        print(market, price, date)
+        return
         market_collection = self.__collection[market]
         market_collection.insert_one({
             "date":

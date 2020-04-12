@@ -3,7 +3,7 @@ logging:
     path: "trading_view_bot.log"
 
 testing:
-    enabled: true
+    enabled: false
     real_time: true
 
     # In USD
@@ -30,19 +30,21 @@ market:
 
 exchange:
     name: "ftx"
-    watched_market: "BTC-USDT"
-    bullish_market: "BULL-USDT"
-    bearish_market: "BEAR-USDT"
+    watched_market: "BTC-USD"
+    bullish_market: "BULL-USD"
+    bearish_market: "BEAR-USD"
     api_key: ""
     api_secret: ""
+    # market_name_format: "{target}{base}"
+    market_name_format: "{target}/{base}"
 
 mail:
     name: "TradingViewBot"
-    receiver: ""
+    receiver: "tvb@vbj.hu"
     password: ""
 
 database:
-    url: ""
-    user: ""
+    url: "bvarga.hu"
+    user: "tvb"
     password: ""
-    query_limit: -1
+    query_limit: 10

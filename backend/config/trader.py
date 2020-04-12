@@ -8,6 +8,7 @@ from config.market import MarketConfig
 from config.exchange import ExchangeConfig
 from config.mail import MailConfig
 from config.database import DatabaseConfig
+from config.server import ServerConfig
 
 
 class TraderConfig:
@@ -18,6 +19,7 @@ class TraderConfig:
         self.exchange = ExchangeConfig(configuration.get("exchange", {}))
         self.mail = MailConfig(configuration.get("mail", {}))
         self.database = DatabaseConfig(configuration.get("database", {}))
+        self.server = ServerConfig(configuration.get("server", {}))
 
     def __str__(self):
         return ''.join(
