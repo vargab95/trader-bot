@@ -13,6 +13,8 @@ class IndicatorsStorage:
             candle_size: str,
             value: float,
             date=None) -> bool:
+        print(market, indicator, candle_size, value, date)
+        return
         market_collection = self.__collection[market]
         indicator_collection = market_collection[indicator]
         candle_collection = indicator_collection[candle_size]

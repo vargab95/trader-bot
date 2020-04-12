@@ -3,7 +3,6 @@
 import logging
 
 import fetcher.single
-import actions
 import detector.common
 import detector.rising_edge
 
@@ -26,7 +25,7 @@ class MovingThresholdRisingEdgeDetector(detector.rising_edge.RisingEdgeDetector
             return threshold * -1
         return value
 
-    def check(self, indicator: float) -> actions.TradingAction:
+    def check(self, indicator: float) -> detector.common.TradingAction:
         self.gatherer.fetch_technical_indicator()
         long_term_indicator = self.gatherer.get_technical_indicator()
 
@@ -50,11 +49,11 @@ class MovingThresholdRisingEdgeDetector(detector.rising_edge.RisingEdgeDetector
         self.first_signal_returned = True
         if indicator <= self.bearish_threshold:
             logging.debug("Initial state was overwritten by bearish")
-            return actions.TradingAction.SWITCH_TO_BEARISH
+            return detector.common.TradingAction.SWITCH_TO_BEARISH
 
         if indicator >= self.bullish_threshold:
             logging.debug("Initial state was overwritten by bullish")
-            return actions.TradingAction.SWITCH_TO_BULLISH
+            return detector.common.TradingAction.SWITCH_TO_BULLISH
 
         logging.debug("Initial state was overwritten by hold")
-        return actions.TradingAction.HOLD
+        return detector.common.TradingAction.HOLD

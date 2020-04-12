@@ -1,12 +1,13 @@
 #!/usr/bin/python3
 
 import abc
-import actions
+
+import detector.common
 
 
 class DetectorInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def check(self, indicator: float) -> actions.TradingAction:
+    def check(self, indicator: float) -> detector.common.TradingAction:
         pass
 
     @abc.abstractmethod
