@@ -20,6 +20,8 @@ market:
     indicator_sma: 1
     follower_enabled: true
     follower_candle_size: "1D"
+    method: "stepped"
+    step_count: 5
 
     # In second
     check_interval: 10

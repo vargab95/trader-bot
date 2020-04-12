@@ -94,7 +94,7 @@ class ApplicationBase:
     def _configure_logging(self):
         logging.basicConfig(
             level=self._configuration.logging.level,
-            # filename=self._configuration.logging.path,
+            filename=self._configuration.logging.path,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     def _set_class_variables(self):
