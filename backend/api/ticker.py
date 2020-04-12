@@ -32,4 +32,9 @@ class Ticker(Resource):
 class TickerOptions(Resource):
     @staticmethod
     def get():
-        return {'market': ['BTCUSDT', 'BTCUSD']}
+        return {
+            'market': [
+                'BTCUSDT', 'BTCUSD', 'BEARUSDT', 'BEARUSD', 'BULLUSDT',
+                'BULLUSD'
+            ]
+        }

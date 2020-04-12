@@ -25,3 +25,15 @@ python3 -m pip install -r requirements.txt
 ```sh
 source env/bin/activate
 ```
+
+## Run tests
+
+```
+python3 -m coverage run --source=. \
+                        --omit="*ut_*.py" \
+                        -m unittest \
+                        `find . -type f \
+                                -name "ut_*.py" \
+                                -printf "%P\n"`
+python3 -m coverage report -m
+```
