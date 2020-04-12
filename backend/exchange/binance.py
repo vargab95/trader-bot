@@ -82,4 +82,5 @@ class BinanceController(exchange.base.ExchangeBase):
 
     @exchange.guard.exchange_guard
     def get_price(self, market: exchange.interface.Market) -> float:
-        return float(self.client.get_ticker(symbol=market.key)["lastPrice"])
+        response = self.client.get_ticker(symbol=market.key)
+        return float(response["lastPrice"])

@@ -2,6 +2,7 @@
 
 import time
 import logging
+import traceback
 
 
 def exchange_guard(function):
@@ -13,6 +14,7 @@ def exchange_guard(function):
                 logging.error(
                     "Exception occured during exchange operation %s: %s",
                     function.__name__, str(exception))
+                logging.error(traceback.format_exc())
                 time.sleep(5)
         return False
 
