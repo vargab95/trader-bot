@@ -21,6 +21,8 @@ class ExchangeConfig:
         self.bullish_market: exchange.interface.Market = \
             exchange.interface.Market.create_from_string(
                 config.get("bullish_market", "BULL-USDT"))
+        self.market_name_format = config.get("market_name_format",
+                                             "{target}-{base}")
 
     def __str__(self):
         return "\nExchange:" + \
@@ -29,4 +31,5 @@ class ExchangeConfig:
                "\n    Private key:         " + "*" * len(self.private_key) + \
                "\n    Watched market name: " + str(self.watched_market) + \
                "\n    Bullish market name: " + str(self.bullish_market) + \
-               "\n    Bearish market name: " + str(self.bearish_market)
+               "\n    Bearish market name: " + str(self.bearish_market) + \
+               "\n    Market name format:  " + str(self.market_name_format)

@@ -4,6 +4,7 @@ import time
 import hmac
 import logging
 import requests
+import traceback
 
 import config.exchange
 import exchange.base
@@ -21,6 +22,7 @@ class FtxController(exchange.base.ExchangeBase):
         super().__init__(configuration)
         response = requests.get(self.api_url + "markets").json()
         if not response["success"]:
+            logging.error("Could not get markets during init")
             raise exchange.interface.ExchangeError(response["error"])
 
         logging.debug("Minimal values:")
@@ -31,8 +33,6 @@ class FtxController(exchange.base.ExchangeBase):
                           market["minProvideSize"], market["priceIncrement"])
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        market.set_reverse(True)
-        market.set_delimiter('/')
         corrected_amount = self._floor(amount, self._min_amount[market.key])
         logging.info("Trying to buy %.10f %s", corrected_amount, market.key)
         logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
@@ -56,8 +56,6 @@ class FtxController(exchange.base.ExchangeBase):
         return True
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        market.set_reverse(True)
-        market.set_delimiter('/')
         corrected_amount = self._floor(amount, self._min_amount[market.key])
         logging.info("Trying to sell %.10f %s", corrected_amount, market.key)
         logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
@@ -93,25 +91,27 @@ class FtxController(exchange.base.ExchangeBase):
         return result
 
     def get_balance(self, market: str) -> float:
-        market.set_reverse(True)
-        market.set_delimiter('/')
         balances = self.get_balances()
 
-        for balance in balances:
-            if balance["coin"] == market:
-                return balance["total"]
+        for key, value in balances.items():
+            print(market, key, value)
+            if key == market:
+                return value
 
-        return None
+        return 0.0
 
     @exchange.guard.exchange_guard
     def get_price(self, market: exchange.interface.Market) -> float:
-        market.set_reverse(True)
-        market.set_delimiter('/')
         response = requests.get(self.api_url + self.markets_url + market.key)
         data = response.json()
+
         if data["success"]:
             return data["result"]["last"]
-        return -1.0
+
+        logging.error("Could not get price of %s", str(market))
+        logging.error("%s\n\n%s", str(data["error"]),
+                      ''.join(traceback.format_stack()))
+        raise exchange.interface.ExchangeError(response["error"])
 
     @exchange.guard.exchange_guard
     def __send_authenticated_request(self, method, endpoint, data=None):

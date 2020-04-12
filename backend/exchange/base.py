@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import math
+import logging
 
 import config.exchange
 import exchange.interface
@@ -48,6 +49,7 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
 
     def get_money(self, base: str) -> float:
         all_money: float = 0.0
+        logging.debug("Calculating all money for %s", base)
         for _, balance in self._get_balances_in_different_base(base).items():
             all_money += balance
         return all_money
