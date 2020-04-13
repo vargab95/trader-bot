@@ -10,6 +10,7 @@ import { ChartDataService } from '../chart-data.service';
 })
 export class AddTickerFormComponent implements OnInit {
   tickerMarkets = [];
+  filterTypes = [];
   addTickerForm: FormGroup;
 
   loading = false;
@@ -23,6 +24,7 @@ export class AddTickerFormComponent implements OnInit {
   ngOnInit(): void {
     this.tickerService.getOptions().subscribe(response => {
       this.tickerMarkets = response.market;
+      this.filterTypes = response.filter_types;
     });
 
     this.addTickerForm = this.formBuilder.group({
@@ -33,7 +35,8 @@ export class AddTickerFormComponent implements OnInit {
       },
       limit: -1,
       color: '225,10,20',
-      sma: 0,
+      maLength: 0,
+      filterType: 'sma',
       step: 1
     });
   }

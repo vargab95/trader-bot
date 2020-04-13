@@ -33,9 +33,18 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
   <mat-form-field>
-    <mat-label>SMA</mat-label>
-    <input matInput formControlName="sma" placeholder="SMA" value="0" />
+    <mat-label>Filter type</mat-label>
+    <mat-select formControlName="filterType">
+      <mat-option *ngFor="let filterType of filterTypes" value="sma">
+        {{ filterType }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>MA length</mat-label>
+    <input matInput formControlName="maLength" placeholder="length" value="0" />
   </mat-form-field>
   <mat-form-field>
     <mat-label>Step</mat-label>
