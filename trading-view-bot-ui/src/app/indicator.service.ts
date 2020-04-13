@@ -47,4 +47,5 @@ export interface IndicatorOptions {
   market: Array<string>;
   candle_size: Array<string>;
   indicator: Array<string>;
+  filter_types: Array<string>;
 }
