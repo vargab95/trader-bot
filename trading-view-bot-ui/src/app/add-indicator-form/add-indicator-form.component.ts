@@ -17,6 +17,7 @@ export class AddIndicatorFormComponent implements OnInit {
   filterTypes = [];
 
   loading = false;
+  color = this.getRandomColor();
 
   constructor(
     private indicatorService: IndicatorService,
@@ -41,11 +42,25 @@ export class AddIndicatorFormComponent implements OnInit {
         end: ''
       },
       limit: -1,
-      color: '225,10,20',
+      color: this.getRandomColor(),
       maLength: 0,
       filterType: 'sma',
       step: 1
     });
+  }
+
+  getRandomSegment() {
+    return Math.floor(Math.random() * 256).toString();
+  }
+
+  getRandomColor() {
+    return (
+      this.getRandomSegment() +
+      ',' +
+      this.getRandomSegment() +
+      ',' +
+      this.getRandomSegment()
+    );
   }
 
   onAddIndicator(event) {
@@ -68,6 +83,7 @@ export class AddIndicatorFormComponent implements OnInit {
           event.market + '.' + event.indicator + '.' + event.candleSize
         );
         this.loading = false;
+        this.color = this.getRandomColor();
       },
       error => {
         this.loading = false;
