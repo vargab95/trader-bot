@@ -32,7 +32,8 @@ export interface IndicatorRequest {
   start_date?: string;
   end_date?: string;
   limit?: number;
-  sma?: number;
+  ma_length?: number;
+  ma_type?: string;
   step?: number;
 }
 
