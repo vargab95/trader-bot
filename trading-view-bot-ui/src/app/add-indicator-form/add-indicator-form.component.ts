@@ -56,7 +56,8 @@ export class AddIndicatorFormComponent implements OnInit {
       candle_size: event.candleSize,
       start_date: event.dateSpan.start.toISOString(),
       end_date: event.dateSpan.end.toISOString(),
-      sma: event.sma,
+      ma_length: event.maLength,
+      ma_type: event.filterType,
       step: event.step
     };
     this.indicatorService.getIndicators(request).subscribe(
