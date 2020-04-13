@@ -2,6 +2,7 @@
 
 from flask_restful import Resource
 
+import filters.factory
 from api.common import get_sma, get_default_parser
 
 
@@ -36,5 +37,7 @@ class TickerOptions(Resource):
             'market': [
                 'BTCUSDT', 'BTCUSD', 'BEARUSDT', 'BEARUSD', 'BULLUSDT',
                 'BULLUSD'
-            ]
+            ],
+            'filter_types':
+            filters.factory.FilterFactory.available_types
         }
