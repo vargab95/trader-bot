@@ -5,19 +5,27 @@ import typing
 import filters.base
 
 
-class SMA(filters.base.Filter):
+class WMA(filters.base.Filter):
     def __init__(self, length):
         self.__length = length
         self.__data = []
-        self.__sum = 0.0
         self.__sma = None
+
+        denominator = self.__get_nth_triangular_number(length)
+        self.__coefficients = [i / denominator for i in range(1, length + 1)]
+
+    @staticmethod
+    def __get_nth_triangular_number(nth):
+        return int(nth * (nth + 1) / 2)
 
     def put(self, value: float):
         self.__data.append(value)
-        self.__sum += value
         if len(self.__data) >= self.__length:
-            self.__sma = self.__sum / self.__length
-            self.__sum -= self.__data.pop(0)
+            self.__sma = sum([
+                self.__coefficients[i] * self.__data[i]
+                for i in range(self.__length)
+            ])
+            self.__data.pop(0)
 
     def get(self) -> float:
         return self.__sma

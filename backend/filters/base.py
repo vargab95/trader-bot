@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import abc
+import typing
 
 
 class Filter:
@@ -10,4 +11,12 @@ class Filter:
 
     @abc.abstractmethod
     def get(self) -> float:
+        pass
+
+    @abc.abstractproperty
+    def length(self):
+        pass
+
+    @abc.abstractproperty
+    def all(self) -> typing.List[float]:
         pass
