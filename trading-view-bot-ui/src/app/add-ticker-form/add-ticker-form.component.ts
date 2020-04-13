@@ -14,6 +14,7 @@ export class AddTickerFormComponent implements OnInit {
   addTickerForm: FormGroup;
 
   loading = false;
+  color = this.getRandomColor();
 
   constructor(
     private tickerService: TickerService,
@@ -41,6 +42,20 @@ export class AddTickerFormComponent implements OnInit {
     });
   }
 
+  getRandomSegment() {
+    return Math.floor(Math.random() * 256).toString();
+  }
+
+  getRandomColor() {
+    return (
+      this.getRandomSegment() +
+      ',' +
+      this.getRandomSegment() +
+      ',' +
+      this.getRandomSegment()
+    );
+  }
+
   onAddTicker(event) {
     this.loading = true;
     const request: TickerRequest = {
@@ -55,6 +70,7 @@ export class AddTickerFormComponent implements OnInit {
       response => {
         this.chartDataService.addChart(response, event.color, event.market);
         this.loading = false;
+        this.color = this.getRandomColor();
       },
       error => {
         console.log(error);
