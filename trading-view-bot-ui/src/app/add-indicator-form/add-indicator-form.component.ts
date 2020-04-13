@@ -14,6 +14,7 @@ export class AddIndicatorFormComponent implements OnInit {
   indicatorMarkets = [];
   indicatorNames = [];
   indicatorCandleSizes = [];
+  filterTypes = [];
 
   loading = false;
 
@@ -28,6 +29,7 @@ export class AddIndicatorFormComponent implements OnInit {
       this.indicatorMarkets = response.market;
       this.indicatorNames = response.indicator;
       this.indicatorCandleSizes = response.candle_size;
+      this.filterTypes = response.filter_types;
     });
 
     this.addIndicatorForm = this.formBuilder.group({
@@ -40,7 +42,8 @@ export class AddIndicatorFormComponent implements OnInit {
       },
       limit: -1,
       color: '225,10,20',
-      sma: 0,
+      maLength: 0,
+      filterType: 'sma',
       step: 1
     });
   }
