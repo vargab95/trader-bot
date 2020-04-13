@@ -15,7 +15,8 @@ class Ticker(Resource):
 
     def get(self):
         request = self.parser.parse_args()
-        sma_len = request['sma']
+        ma_length = request['ma_length']
+        ma_type = request['ma_type']
         step = request['step']
 
         result = self.storage.get(request['market'], request['start_date'],
@@ -24,8 +25,8 @@ class Ticker(Resource):
         for row in result:
             row['date'] = row['date'].strftime(self.datetime_format)
 
-        if sma_len > 1:
-            result = get_sma(result, sma_len, 'price')
+        if ma_length > 1:
+            result = get_sma(result, ma_type, ma_length, 'price')
 
         return result[::step]
 
