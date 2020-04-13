@@ -47,7 +47,8 @@ export class AddTickerFormComponent implements OnInit {
       market: event.market,
       start_date: event.dateSpan.start.toISOString(),
       end_date: event.dateSpan.end.toISOString(),
-      sma: event.sma,
+      ma_length: event.maLength,
+      ma_type: event.filterType,
       step: event.step
     };
     this.tickerService.getTickers(request).subscribe(
