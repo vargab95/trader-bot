@@ -3,6 +3,7 @@
 from flask_restful import Resource
 
 import fetcher.base
+import filters.factory
 from api.common import get_sma, get_default_parser
 
 
@@ -54,5 +55,8 @@ class IndicatorOptions(Resource):
             'candle_size':
             list(fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
             'indicator':
-            list(fetcher.base.TradingViewFetcherBase.indicator_name_map.keys())
+            list(
+                fetcher.base.TradingViewFetcherBase.indicator_name_map.keys()),
+            'filter_types':
+            filters.factory.FilterFactory.available_types
         }
