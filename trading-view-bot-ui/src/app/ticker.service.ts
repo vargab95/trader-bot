@@ -43,4 +43,5 @@ export type TickerResponse = Array<Ticker>;
 
 export interface TickerOptions {
   market: Array<string>;
+  filter_types: Array<string>;
 }
