@@ -35,8 +35,10 @@ class ServerApplication(applications.base.ApplicationBase):
     def __initialize_api_routes(self):
         api.indicator.Indicator.datetime_format = \
             self._configuration.server.datetime_format
+        api.indicator.Indicator.storage = self._indicator_storage
         api.ticker.Ticker.datetime_format = \
             self._configuration.server.datetime_format
+        api.ticker.Ticker.storage = self._ticker_storage
 
         self.__api.add_resource(api.indicator.Indicator, '/indicator')
         self.__api.add_resource(api.indicator.IndicatorOptions,
