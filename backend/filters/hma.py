@@ -8,10 +8,12 @@ import filters.wma
 
 class HMA(filters.base.Filter):
     def __init__(self, length):
+        super().__init__(length)
+
         self.__n_wma = filters.wma.WMA(length)
         self.__np2_wma = filters.wma.WMA(int(length / 2))
         self.__sqrt_wma = filters.wma.WMA(int(length**0.5))
-        self.__hma = None
+        self._value = None
 
     def put(self, value: float):
         self.__n_wma.put(value)
@@ -24,10 +26,7 @@ class HMA(filters.base.Filter):
 
         hma_value = self.__sqrt_wma.get()
         if hma_value:
-            self.__hma = hma_value
-
-    def get(self) -> float:
-        return self.__hma
+            self._value = hma_value
 
     @property
     def length(self):
@@ -35,4 +34,4 @@ class HMA(filters.base.Filter):
 
     @property
     def all(self) -> typing.List[float]:
-        pass
+        return None
