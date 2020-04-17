@@ -5,18 +5,22 @@ import typing
 
 
 class Filter:
+    def __init__(self, length):
+        self._length = length
+        self._data = []
+        self._value = None
+
     @abc.abstractmethod
     def put(self, value: float):
         pass
 
-    @abc.abstractmethod
     def get(self) -> float:
-        pass
+        return self._value
 
-    @abc.abstractproperty
+    @property
     def length(self):
-        pass
+        return self._length
 
-    @abc.abstractproperty
+    @property
     def all(self) -> typing.List[float]:
-        pass
+        return self._data
