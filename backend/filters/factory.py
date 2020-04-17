@@ -5,7 +5,7 @@ import filters.wma
 import filters.hma
 
 
-class InvalidFilterType(Exception):
+class InvalidFilterFactoryParameter(Exception):
     pass
 
 
@@ -13,7 +13,10 @@ class FilterFactory:
     available_types = ["sma", "wma", "hma", "derivative"]
 
     @staticmethod
-    def create(filter_type: str, length: int = 1):
+    def create(filter_type: str, length: int = 2):
+        if length < 2:
+            raise InvalidFilterFactoryParameter()
+
         if filter_type == "sma":
             return filters.sma.SMA(length)
 
@@ -26,4 +29,4 @@ class FilterFactory:
         if filter_type == "derivative":
             return filters.derivative.Derivative(length)
 
-        raise InvalidFilterType()
+        raise InvalidFilterFactoryParameter()
