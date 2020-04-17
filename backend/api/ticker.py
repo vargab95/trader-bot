@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 
 import filters.factory
 from api.common import get_sma, get_default_parser
@@ -13,6 +14,7 @@ class Ticker(Resource):
     def __init__(self):
         self.parser = get_default_parser()
 
+    @jwt_required
     def get(self):
         request = self.parser.parse_args()
         ma_length = request['ma_length']
@@ -32,6 +34,7 @@ class Ticker(Resource):
 
 
 class TickerOptions(Resource):
+    @jwt_required
     @staticmethod
     def get():
         return {
