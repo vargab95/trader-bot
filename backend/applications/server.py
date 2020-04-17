@@ -5,9 +5,13 @@ from flask_restful import Api
 from flask_cors import CORS
 
 import applications.base
+import api.common
 import api.indicator
 import api.ticker
-import api.common
+import api.auth.login
+import api.auth.signup
+
+import storage.user
 
 DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
@@ -18,16 +22,29 @@ class ServerApplication(applications.base.ApplicationBase):
         self.__app: Flask
         self.__cors: CORS
         self.__api: Api
+        self.__user_storage: storage.user.UserStorage
 
     def _initialize_application_logic(self):
         self._initialize_client()
         self._initialize_storages()
         self.__initialize_flask_objects()
         self.__initialize_api_routes()
+
+        self.__user_storage = storage.user.UserStorage(self._client)
+
+        # FIXME This manipulation with class variables can be better
         api.common.DATE_TIME_FORMAT = \
             self._configuration.server.datetime_format
+
         api.ticker.Ticker.storage = self._ticker_storage
         api.indicator.Indicator.storage = self._indicator_storage
+        api.auth.login.user_storage = self.__user_storage
+        api.auth.signup.user_storage = self.__user_storage
+
+        api.indicator.Indicator.datetime_format = \
+            self._configuration.server.datetime_format
+        api.ticker.Ticker.datetime_format = \
+            self._configuration.server.datetime_format
 
     def __initialize_flask_objects(self):
         self.__app = Flask(__name__)
@@ -35,18 +52,13 @@ class ServerApplication(applications.base.ApplicationBase):
         self.__api = Api(self.__app)
 
     def __initialize_api_routes(self):
-        api.indicator.Indicator.datetime_format = \
-            self._configuration.server.datetime_format
-        api.indicator.Indicator.storage = self._indicator_storage
-        api.ticker.Ticker.datetime_format = \
-            self._configuration.server.datetime_format
-        api.ticker.Ticker.storage = self._ticker_storage
-
         self.__api.add_resource(api.indicator.Indicator, '/indicator')
         self.__api.add_resource(api.indicator.IndicatorOptions,
                                 '/indicator/options')
         self.__api.add_resource(api.ticker.Ticker, '/ticker')
         self.__api.add_resource(api.ticker.TickerOptions, '/ticker/options')
+        self.__api.add_resource(api.auth.login.LoginApi, '/auth/login')
+        self.__api.add_resource(api.auth.login.SignupApi, '/auth/signup')
 
     def _run_application_logic(self):
         if self._configuration.testing.enabled:
