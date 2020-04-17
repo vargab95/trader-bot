@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 
 import fetcher.base
 import filters.factory
@@ -28,6 +29,7 @@ class Indicator(Resource):
                 fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
             required=True)
 
+    @jwt_required
     def get(self):
         request = self.parser.parse_args()
         ma_length = request['ma_length']
@@ -49,6 +51,7 @@ class Indicator(Resource):
 
 
 class IndicatorOptions(Resource):
+    @jwt_required
     @staticmethod
     def get():
         return {
