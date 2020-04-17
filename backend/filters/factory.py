@@ -10,17 +10,20 @@ class InvalidFilterType(Exception):
 
 
 class FilterFactory:
-    available_types = ["sma", "wma", "hma"]
+    available_types = ["sma", "wma", "hma", "derivative"]
 
     @staticmethod
-    def create(ma_type: str, length: int):
-        if ma_type == "sma":
+    def create(filter_type: str, length: int = 1):
+        if filter_type == "sma":
             return filters.sma.SMA(length)
 
-        if ma_type == "wma":
+        if filter_type == "wma":
             return filters.wma.WMA(length)
 
-        if ma_type == "hma":
+        if filter_type == "hma":
             return filters.hma.HMA(length)
+
+        if filter_type == "derivative":
+            return filters.derivative.Derivative(length)
 
         raise InvalidFilterType()
