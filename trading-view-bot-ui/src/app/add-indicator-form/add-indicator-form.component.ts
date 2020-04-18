@@ -26,12 +26,17 @@ export class AddIndicatorFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.indicatorService.getOptions().subscribe(response => {
-      this.indicatorMarkets = response.market;
-      this.indicatorNames = response.indicator;
-      this.indicatorCandleSizes = response.candle_size;
-      this.filterTypes = response.filter_types;
-    });
+    this.indicatorService.getOptions().subscribe(
+      response => {
+        this.indicatorMarkets = response.market;
+        this.indicatorNames = response.indicator;
+        this.indicatorCandleSizes = response.candle_size;
+        this.filterTypes = response.filter_types;
+      },
+      error => {
+        console.log(error);
+      }
+    );
 
     this.addIndicatorForm = this.formBuilder.group({
       market: '',

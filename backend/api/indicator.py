@@ -51,8 +51,8 @@ class Indicator(Resource):
 
 
 class IndicatorOptions(Resource):
-    @jwt_required
     @staticmethod
+    @jwt_required
     def get():
         return {
             'market': ['GEMINI:BTCUSD'],
