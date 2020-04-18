@@ -1,12 +1,7 @@
-<form [formGroup]="dateSpanForm">
+<form [formGroup]="group">
   <mat-form-field>
     <mat-label>Start date</mat-label>
-    <input
-      matInput
-      formControlName="startDate"
-      [matDatepicker]="startDatePicker"
-      [(ngModel)]="start"
-    />
+    <input matInput formControlName="start" [matDatepicker]="startDatePicker" />
     <mat-datepicker-toggle
       matSuffix
       [for]="startDatePicker"
@@ -17,12 +12,7 @@
   <br />
   <mat-form-field>
     <mat-label>End date</mat-label>
-    <input
-      matInput
-      formControlName="endDate"
-      [matDatepicker]="endDatePicker"
-      [(ngModel)]="end"
-    />
+    <input matInput formControlName="end" [matDatepicker]="endDatePicker" />
     <mat-datepicker-toggle
       matSuffix
       [for]="endDatePicker"

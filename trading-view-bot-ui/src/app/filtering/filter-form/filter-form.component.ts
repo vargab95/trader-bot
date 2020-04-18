@@ -1,28 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { TickerService } from '../../signals/ticker.service';
-import { FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-filter-form',
   templateUrl: './filter-form.component.html',
   styleUrls: ['./filter-form.component.css']
 })
-export class FilterFormComponent implements OnInit {
-  filterTypes = [];
+export class FilterFormComponent {
+  @Input() types: string[];
+  @Input() group: FormGroup;
 
-  constructor(
-    private tickerService: TickerService,
-    private formBuilder: FormBuilder
-  ) {}
-
-  ngOnInit(): void {
-    this.tickerService.getOptions().subscribe(
-      response => {
-        this.filterTypes = response.filter_types;
-      },
-      error => {
-        console.log(error);
-      }
-    );
-  }
+  constructor() {}
 }

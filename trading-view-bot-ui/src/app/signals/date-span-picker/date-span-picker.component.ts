@@ -1,60 +1,19 @@
-import { Component, OnInit, Input, forwardRef } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormBuilder,
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR
-} from '@angular/forms';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-date-span-picker',
   templateUrl: './date-span-picker.component.html',
-  styleUrls: ['./date-span-picker.component.css'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => DateSpanPickerComponent),
-      multi: true
-    }
-  ]
+  styleUrls: ['./date-span-picker.component.css']
 })
-export class DateSpanPickerComponent implements OnInit, ControlValueAccessor {
+export class DateSpanPickerComponent implements OnInit {
   @Input() start = new Date();
   @Input() end = new Date();
+  @Input() group: FormGroup;
 
-  dateSpanForm: FormGroup;
-  propagateChange = (_: DateSpan) => {};
+  constructor() {}
 
-  constructor(private formBuilder: FormBuilder) {}
-
-  ngOnInit(): void {
-    this.dateSpanForm = new FormGroup({
-      startDate: new FormControl(),
-      endDate: new FormControl()
-    });
-
-    this.dateSpanForm.get('startDate').valueChanges.subscribe(value => {
-      this.start = value;
-      this.propagateChange({ start: this.start, end: this.end } as DateSpan);
-    });
-
-    this.dateSpanForm.get('endDate').valueChanges.subscribe(value => {
-      this.end = value;
-      this.propagateChange({ start: this.start, end: this.end } as DateSpan);
-    });
-  }
-
-  writeValue(value: DateSpan) {
-    this.start = value.start;
-    this.end = value.end;
-  }
-
-  registerOnChange(fn) {
-    this.propagateChange = fn;
-  }
-
-  registerOnTouched() {}
+  ngOnInit(): void {}
 }
 
 export interface DateSpan {
