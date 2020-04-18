@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IndicatorService, IndicatorRequest } from '../indicator.service';
-import { ChartDataService } from '../chart-data.service';
+import { ChartDataService } from '../../chart/chart-data.service';
 
 @Component({
   selector: 'app-add-indicator-form',

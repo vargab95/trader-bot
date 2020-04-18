@@ -4,6 +4,8 @@
   (ngSubmit)="onAddTicker(addTickerForm.value)"
 >
   <app-date-span-picker formControlName="dateSpan"></app-date-span-picker>
+
+  <br />
   <mat-form-field>
     <mat-label>Market</mat-label>
     <mat-select formControlName="market">
@@ -13,6 +15,7 @@
     </mat-select>
   </mat-form-field>
 
+  <br />
   <mat-form-field>
     <mat-label>Filter type</mat-label>
     <mat-select formControlName="filterType">
@@ -21,14 +24,20 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+
+  <br />
   <mat-form-field>
     <mat-label>MA length</mat-label>
     <input matInput formControlName="maLength" placeholder="length" value="0" />
   </mat-form-field>
+
+  <br />
   <mat-form-field>
     <mat-label>Step</mat-label>
     <input matInput formControlName="step" value="1" />
   </mat-form-field>
+
+  <br />
   <mat-form-field>
     <mat-label>Color</mat-label>
     <input
@@ -38,6 +47,8 @@
       value="225,100,100"
     />
   </mat-form-field>
+
+  <br />
   <button>Add ticker</button>
 </form>
 <mat-spinner *ngIf="loading"></mat-spinner>

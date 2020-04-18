@@ -25,20 +25,25 @@ import {
   NgxMatNativeDateModule
 } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentModule } from '@angular-material-components/moment-adapter';
-import { ChartComponent } from './chart/chart.component';
-import { DateSpanPickerComponent } from './date-span-picker/date-span-picker.component';
-import { AddIndicatorFormComponent } from './add-indicator-form/add-indicator-form.component';
-import { AddTickerFormComponent } from './add-ticker-form/add-ticker-form.component';
+import { ChartComponent } from './chart/chart/chart.component';
+import { DateSpanPickerComponent } from './signals/date-span-picker/date-span-picker.component';
+import { AddIndicatorFormComponent } from './signals/add-indicator-form/add-indicator-form.component';
+import { AddTickerFormComponent } from './signals/add-ticker-form/add-ticker-form.component';
 import { GraphComponent } from './graph/graph.component';
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
+import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { CookieService } from 'ngx-cookie-service';
-import { AuthenticationInterceptor } from './authentication.interceptor';
+import { AuthenticationInterceptor } from './auth/authentication.interceptor';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './navbar/navbar.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
+import { ComplexFilterComponent } from './filtering/complex-filter/complex-filter.component';
+import { FilterFormComponent } from './filtering/filter-form/filter-form.component';
+import { FilterListComponent } from './filtering/filter-list/filter-list.component';
+
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -50,7 +55,10 @@ import { MatIconModule } from '@angular/material/icon';
     GraphComponent,
     LoginComponent,
     SignupComponent,
-    NavbarComponent
+    NavbarComponent,
+    ComplexFilterComponent,
+    FilterFormComponent,
+    FilterListComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +83,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatProgressSpinnerModule,
     MatFormFieldModule,
     MatToolbarModule,
-    MatIconModule
+    MatIconModule,
+    MatTableModule
   ],
   providers: [
     CookieService,

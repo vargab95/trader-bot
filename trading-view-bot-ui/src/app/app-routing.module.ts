@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
+import { LoginComponent } from './auth/login/login.component';
+import { SignupComponent } from './auth/signup/signup.component';
 import { GraphComponent } from './graph/graph.component';
-import { AuthenticationGuardService } from './authentication.guard';
+import { AuthenticationGuardService } from './auth/authentication.guard';
 
 const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },

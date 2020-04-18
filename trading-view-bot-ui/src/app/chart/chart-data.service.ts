@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { IndicatorResponse } from './indicator.service';
-import { TickerResponse, Ticker } from './ticker.service';
+import { IndicatorResponse } from '../signals/indicator.service';
+import { TickerResponse, Ticker } from '../signals/ticker.service';
 
 @Injectable({
   providedIn: 'root'
