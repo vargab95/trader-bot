@@ -23,10 +23,15 @@ export class AddTickerFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.tickerService.getOptions().subscribe(response => {
-      this.tickerMarkets = response.market;
-      this.filterTypes = response.filter_types;
-    });
+    this.tickerService.getOptions().subscribe(
+      response => {
+        this.tickerMarkets = response.market;
+        this.filterTypes = response.filter_types;
+      },
+      error => {
+        console.log(error);
+      }
+    );
 
     this.addTickerForm = this.formBuilder.group({
       market: '',

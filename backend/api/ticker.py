@@ -34,8 +34,8 @@ class Ticker(Resource):
 
 
 class TickerOptions(Resource):
-    @jwt_required
     @staticmethod
+    @jwt_required
     def get():
         return {
             'market': [

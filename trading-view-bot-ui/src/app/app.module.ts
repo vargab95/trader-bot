@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,6 +29,16 @@ import { ChartComponent } from './chart/chart.component';
 import { DateSpanPickerComponent } from './date-span-picker/date-span-picker.component';
 import { AddIndicatorFormComponent } from './add-indicator-form/add-indicator-form.component';
 import { AddTickerFormComponent } from './add-ticker-form/add-ticker-form.component';
+import { GraphComponent } from './graph/graph.component';
+import { LoginComponent } from './login/login.component';
+import { SignupComponent } from './signup/signup.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { CookieService } from 'ngx-cookie-service';
+import { AuthenticationInterceptor } from './authentication.interceptor';
+import { CommonModule } from '@angular/common';
+import { NavbarComponent } from './navbar/navbar.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -36,9 +46,14 @@ import { AddTickerFormComponent } from './add-ticker-form/add-ticker-form.compon
     ChartComponent,
     DateSpanPickerComponent,
     AddIndicatorFormComponent,
-    AddTickerFormComponent
+    AddTickerFormComponent,
+    GraphComponent,
+    LoginComponent,
+    SignupComponent,
+    NavbarComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     AppRoutingModule,
     ChartsModule,
@@ -57,9 +72,19 @@ import { AddTickerFormComponent } from './add-ticker-form/add-ticker-form.compon
     MatSelectModule,
     MatCheckboxModule,
     MatNativeDateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatFormFieldModule,
+    MatToolbarModule,
+    MatIconModule
   ],
-  providers: [],
+  providers: [
+    CookieService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthenticationInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
