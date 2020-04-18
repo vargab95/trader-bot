@@ -14,10 +14,9 @@ export class AddIndicatorFormComponent implements OnInit {
   indicatorMarkets = [];
   indicatorNames = [];
   indicatorCandleSizes = [];
-  filterTypes = [];
 
   loading = false;
-  color = this.getRandomColor();
+  filterTypes = [];
 
   constructor(
     private indicatorService: IndicatorService,
@@ -42,53 +41,42 @@ export class AddIndicatorFormComponent implements OnInit {
       market: '',
       indicator: '',
       candleSize: '',
-      dateSpan: {
-        start: '',
-        end: ''
-      },
-      limit: -1,
-      color: this.getRandomColor(),
-      maLength: 0,
-      filterType: 'sma',
-      step: 1
+      common: this.formBuilder.group({
+        dateSpan: this.formBuilder.group({
+          start: '',
+          end: ''
+        }),
+        step: 1,
+        color: '',
+        filter: this.formBuilder.group({
+          type: '',
+          length: 0
+        })
+      })
     });
-  }
-
-  getRandomSegment() {
-    return Math.floor(Math.random() * 256).toString();
-  }
-
-  getRandomColor() {
-    return (
-      this.getRandomSegment() +
-      ',' +
-      this.getRandomSegment() +
-      ',' +
-      this.getRandomSegment()
-    );
   }
 
   onAddIndicator(event) {
     this.loading = true;
+    console.log(event);
     const request: IndicatorRequest = {
       market: event.market,
       indicator: event.indicator,
       candle_size: event.candleSize,
-      start_date: event.dateSpan.start.toISOString(),
-      end_date: event.dateSpan.end.toISOString(),
-      ma_length: event.maLength,
-      ma_type: event.filterType,
-      step: event.step
+      start_date: event.common.dateSpan.start.toISOString(),
+      end_date: event.common.dateSpan.end.toISOString(),
+      ma_length: event.common.filter.length,
+      ma_type: event.common.filter.type,
+      step: event.common.step
     };
     this.indicatorService.getIndicators(request).subscribe(
       response => {
         this.chartDataService.addChart(
           response,
-          event.color,
+          event.common.color,
           event.market + '.' + event.indicator + '.' + event.candleSize
         );
         this.loading = false;
-        this.color = this.getRandomColor();
       },
       error => {
         this.loading = false;

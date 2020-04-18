@@ -1,16 +1,22 @@
-<form>
+<form [formGroup]="group">
   <mat-form-field>
     <mat-label>Filter type</mat-label>
-    <mat-select formControlName="filterType">
-      <mat-option *ngFor="let filterType of filterTypes" [value]="filterType">
-        {{ filterType }}
+    <mat-select formControlName="type">
+      <mat-option *ngFor="let type of types" [value]="type">
+        {{ type }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
   <br />
   <mat-form-field>
-    <mat-label>MA length</mat-label>
-    <input matInput formControlName="maLength" placeholder="length" value="0" />
+    <mat-label>Length</mat-label>
+    <input
+      matInput
+      formControlName="length"
+      placeholder="length"
+      type="number"
+      value="0"
+    />
   </mat-form-field>
 </form>

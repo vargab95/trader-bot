@@ -1,0 +1,25 @@
+<form [formGroup]="group">
+  <app-date-span-picker [group]="group.get('dateSpan')"></app-date-span-picker>
+
+  <mat-form-field>
+    <mat-label>Step</mat-label>
+    <input matInput value="1" formControlName="step" />
+  </mat-form-field>
+  <br />
+
+  <mat-form-field>
+    <mat-label>Color</mat-label>
+    <input
+      matInput
+      formControlName="color"
+      placeholder="Color"
+      value="225,100,100"
+    />
+  </mat-form-field>
+  <br />
+
+  <app-filter-form
+    [types]="filterTypes"
+    [group]="group.get('filter')"
+  ></app-filter-form>
+</form>

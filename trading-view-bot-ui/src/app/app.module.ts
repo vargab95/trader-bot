@@ -42,6 +42,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ComplexFilterComponent } from './filtering/complex-filter/complex-filter.component';
 import { FilterFormComponent } from './filtering/filter-form/filter-form.component';
 import { FilterListComponent } from './filtering/filter-list/filter-list.component';
+import { AddSignalFormCommonComponent } from './signals/add-signal-form-common/add-signal-form-common.component';
 
 import { MatTableModule } from '@angular/material/table';
 
@@ -58,7 +59,8 @@ import { MatTableModule } from '@angular/material/table';
     NavbarComponent,
     ComplexFilterComponent,
     FilterFormComponent,
-    FilterListComponent
+    FilterListComponent,
+    AddSignalFormCommonComponent
   ],
   imports: [
     CommonModule,
