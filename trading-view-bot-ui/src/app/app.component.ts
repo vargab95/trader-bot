@@ -3,9 +3,12 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { ThemePalette } from '@angular/material/core';
 import * as _moment from 'moment';
-import { TickerService, TickerRequest } from './ticker.service';
-import { IndicatorService, IndicatorRequest } from './indicator.service';
-import { ChartDataService } from './chart-data.service';
+import { TickerService, TickerRequest } from './signals/ticker.service';
+import {
+  IndicatorService,
+  IndicatorRequest
+} from './signals/indicator.service';
+import { ChartDataService } from './chart/chart-data.service';
 
 @Component({
   selector: 'app-root',

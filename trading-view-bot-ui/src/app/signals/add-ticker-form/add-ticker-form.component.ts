@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { TickerService, TickerRequest } from '../ticker.service';
-import { ChartDataService } from '../chart-data.service';
+import { ChartDataService } from '../../chart/chart-data.service';
 
 @Component({
   selector: 'app-add-ticker-form',
