@@ -14,7 +14,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
   styleUrls: ['./add-indicator-form.component.css']
 })
 export class AddIndicatorFormComponent implements OnInit {
-  addIndicatorForm: FormGroup;
+  form: FormGroup;
 
   indicatorMarkets = [];
   indicatorNames = [];
@@ -51,36 +51,24 @@ export class AddIndicatorFormComponent implements OnInit {
       }
     );
 
-    this.addIndicatorForm = this.formBuilder.group({
+    this.form = this.formBuilder.group({
       market: '',
       indicator: '',
       candleSize: '',
-      common: this.formBuilder.group({
-        dateSpan: this.formBuilder.group({
-          start: '',
-          end: ''
-        }),
-        step: 1,
-        color: ''
-      })
+      dateSpan: this.formBuilder.group({
+        start: '',
+        end: ''
+      }),
+      step: 1,
+      color: this.getRandomColor()
     });
   }
 
-  onAddIndicator(event) {
+  onAddSignal() {
     this.loading = true;
-    console.log(event);
-    const properties: SignalProperties = {
-      market: event.market,
-      type: SignalType.Indicator,
-      color: event.common.color,
-      indicator: event.indicator,
-      candle_size: event.candleSize,
-      start_date: event.common.dateSpan.start.toISOString(),
-      end_date: event.common.dateSpan.end.toISOString(),
-      filter: this.currentFilterService.getAll(),
-      step: event.common.step
-    };
-    this.signalRegistryService.register(properties).subscribe(
+    this.properties = { ...this.properties, ...this.form.value };
+    console.log(this.properties);
+    this.signalRegistryService.register(this.properties).subscribe(
       () => {
         this.loading = false;
       },
@@ -88,6 +76,20 @@ export class AddIndicatorFormComponent implements OnInit {
         this.loading = false;
         console.log(error);
       }
+    );
+  }
+
+  getRandomSegment() {
+    return Math.floor(Math.random() * 256).toString();
+  }
+
+  getRandomColor() {
+    return (
+      this.getRandomSegment() +
+      ',' +
+      this.getRandomSegment() +
+      ',' +
+      this.getRandomSegment()
     );
   }
 }

@@ -30,8 +30,7 @@ def get_default_parser():
     parser = reqparse.RequestParser()
 
     parser.add_argument('market', type=str, required=True)
-    parser.add_argument('start_date', type=convert_date_time)
-    parser.add_argument('end_date', type=convert_date_time)
+    parser.add_argument('dateSpan', type=dict)
     parser.add_argument('limit', type=int, default=-1)
     parser.add_argument('step', type=int, default=1)
     parser.add_argument('filter', type=dict, action="append")
