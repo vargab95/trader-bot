@@ -10,13 +10,14 @@ import { CurrentFiltersService } from '../current-filters.service';
 export class FilterListComponent implements OnInit {
   filters: Filter[] = [];
   displayedColumns: string[] = ['no', 'type', 'length'];
-  empty = false;
+  empty = true;
 
   constructor(private currentFilterService: CurrentFiltersService) {}
 
   ngOnInit(): void {
     this.currentFilterService.filtersChanged.subscribe((filters: Filter[]) => {
       this.filters = filters;
+      this.empty = this.filters.length === 0;
     });
   }
 }

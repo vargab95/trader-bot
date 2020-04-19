@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IndicatorService, IndicatorRequest } from '../indicator.service';
 import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
 import { SignalRegistryService, SignalType } from '../signal-registry.service';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-indicator-form',
@@ -19,6 +20,8 @@ export class AddIndicatorFormComponent implements OnInit {
   loading = false;
 
   constructor(
+    public dialogRef: MatDialogRef<AddIndicatorFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public request: IndicatorRequest,
     private indicatorService: IndicatorService,
     private signalRegistryService: SignalRegistryService,
     private currentFilterService: CurrentFiltersService,
