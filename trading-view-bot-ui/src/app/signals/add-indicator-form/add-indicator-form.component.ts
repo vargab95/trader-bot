@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IndicatorService, IndicatorRequest } from '../indicator.service';
 import { ChartDataService } from '../../chart/chart-data.service';
+import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
 
 @Component({
   selector: 'app-add-indicator-form',
@@ -16,10 +17,10 @@ export class AddIndicatorFormComponent implements OnInit {
   indicatorCandleSizes = [];
 
   loading = false;
-  filterTypes = [];
 
   constructor(
     private indicatorService: IndicatorService,
+    private currentFilterService: CurrentFiltersService,
     private formBuilder: FormBuilder,
     private chartDataService: ChartDataService
   ) {}
@@ -30,7 +31,7 @@ export class AddIndicatorFormComponent implements OnInit {
         this.indicatorMarkets = response.market;
         this.indicatorNames = response.indicator;
         this.indicatorCandleSizes = response.candle_size;
-        this.filterTypes = response.filter_types;
+        this.currentFilterService.setTypes(response.filter_types);
       },
       error => {
         console.log(error);
@@ -47,11 +48,7 @@ export class AddIndicatorFormComponent implements OnInit {
           end: ''
         }),
         step: 1,
-        color: '',
-        filter: this.formBuilder.group({
-          type: '',
-          length: 0
-        })
+        color: ''
       })
     });
   }
@@ -65,8 +62,7 @@ export class AddIndicatorFormComponent implements OnInit {
       candle_size: event.candleSize,
       start_date: event.common.dateSpan.start.toISOString(),
       end_date: event.common.dateSpan.end.toISOString(),
-      ma_length: event.common.filter.length,
-      ma_type: event.common.filter.type,
+      filter: this.currentFilterService.getAll(),
       step: event.common.step
     };
     this.indicatorService.getIndicators(request).subscribe(

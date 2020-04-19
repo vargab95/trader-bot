@@ -4,7 +4,7 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 
 import filters.factory
-from api.common import get_sma, get_default_parser
+from api.common import filter_results, get_default_parser
 
 
 class Ticker(Resource):
@@ -15,11 +15,10 @@ class Ticker(Resource):
         self.parser = get_default_parser()
 
     @jwt_required
-    def get(self):
+    def post(self):
         request = self.parser.parse_args()
-        ma_length = request['ma_length']
-        ma_type = request['ma_type']
         step = request['step']
+        filter_list = request['filter']
 
         result = self.storage.get(request['market'], request['start_date'],
                                   request['end_date'], request['limit'])
@@ -27,8 +26,8 @@ class Ticker(Resource):
         for row in result:
             row['date'] = row['date'].strftime(self.datetime_format)
 
-        if ma_length > 1:
-            result = get_sma(result, ma_type, ma_length, 'price')
+        if filter_list:
+            result = filter_results(result, filter_list, 'price')
 
         return result[::step]
 

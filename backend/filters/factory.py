@@ -38,10 +38,12 @@ class FilterFactory:
         raise InvalidFilterFactoryParameter()
 
     @staticmethod
-    def create_complex(filter_specs: typing.Dict[str, int]):
+    def create_complex(filter_specs: typing.List[typing.Dict]):
         filt = filters.complex.Complex()
 
-        for filt_type, filt_length in filter_specs.items():
-            filt.add_filter(FilterFactory.create(filt_type, filt_length))
+        for filter_spec in filter_specs:
+            filt.add_filter(
+                FilterFactory.create(filter_spec["type"],
+                                     filter_spec["length"]))
 
         return filt

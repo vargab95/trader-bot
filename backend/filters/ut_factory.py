@@ -28,28 +28,37 @@ class FilterFactoryTest(unittest.TestCase):
         self.assertTrue(isinstance(instance, filters.derivative.Derivative))
 
     def test_create_complex(self):
-        instance = filters.factory.FilterFactory.create_complex({
-            "sma": 5,
-            "derivative": 2
-        })
+        instance = filters.factory.FilterFactory.create_complex([{
+            "type": "sma",
+            "length": 5
+        }, {
+            "type": "derivative",
+            "length": 2
+        }])
         self.assertTrue(isinstance(instance, filters.complex.Complex))
 
     def test_create_complex_invalid_type(self):
         try:
-            filters.factory.FilterFactory.create_complex({
-                "invalid": 4,
-                "sma": 5
-            })
+            filters.factory.FilterFactory.create_complex([{
+                "type": "invalid",
+                "length": 4
+            }, {
+                "type": "sma",
+                "length": 5
+            }])
             self.fail()
         except filters.factory.InvalidFilterFactoryParameter:
             pass
 
     def test_create_complex_invalid_length(self):
         try:
-            filters.factory.FilterFactory.create_complex({
-                "sma": 5,
-                "derivative": -1
-            })
+            filters.factory.FilterFactory.create_complex([{
+                "type": "sma",
+                "length": 5
+            }, {
+                "type": "derivative",
+                "length": -1
+            }])
             self.fail()
         except filters.factory.InvalidFilterFactoryParameter:
             pass
