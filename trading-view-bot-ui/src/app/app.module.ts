@@ -28,7 +28,6 @@ import { NgxMatMomentModule } from '@angular-material-components/moment-adapter'
 import { ChartComponent } from './chart/chart/chart.component';
 import { DateSpanPickerComponent } from './signals/date-span-picker/date-span-picker.component';
 import { AddIndicatorFormComponent } from './signals/add-indicator-form/add-indicator-form.component';
-import { AddTickerFormComponent } from './signals/add-ticker-form/add-ticker-form.component';
 import { GraphComponent } from './graph/graph.component';
 import { LoginComponent } from './auth/login/login.component';
 import { SignupComponent } from './auth/signup/signup.component';
@@ -54,7 +53,6 @@ import { MatDividerModule } from '@angular/material/divider';
     ChartComponent,
     DateSpanPickerComponent,
     AddIndicatorFormComponent,
-    AddTickerFormComponent,
     GraphComponent,
     LoginComponent,
     SignupComponent,
