@@ -5,8 +5,11 @@ import {
   IndicatorService
 } from './indicator.service';
 import { TickerResponse, TickerRequest, TickerService } from './ticker.service';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Filter } from '../filtering/filter.entity';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -16,20 +19,19 @@ export class SignalRegistryService {
   signalsChanged = new Subject<Array<RegisteredSignal>>();
 
   constructor(
+    private http: HttpClient,
     private indicatorService: IndicatorService,
     private tickerService: TickerService
   ) {}
 
-  register(type: SignalType, request: IndicatorRequest | TickerRequest) {
+  register(properties: SignalProperties) {
     const id = this.signals.push({
       id: this.signals.length + 1,
-      isHidden: false,
-      type,
       data: null,
-      request
+      properties
     });
 
-    return this.modify(id - 1, request);
+    return this.modify(id - 1, properties);
   }
 
   remove(id: number) {
@@ -42,26 +44,39 @@ export class SignalRegistryService {
     this.signalsChanged.next([...this.signals]);
   }
 
-  modify(id: number, request: IndicatorRequest | TickerRequest) {
-    this.signals[id].request = request;
+  modify(id: number, properties: SignalProperties) {
+    this.signals[id].properties = properties;
 
-    if (this.signals[id].type === SignalType.Indicator) {
-      return this.indicatorService
-        .getIndicators(this.signals[id].request as IndicatorRequest)
-        .pipe(
-          map((response: IndicatorResponse) => {
-            this.signals[id].data = response;
-            this.signalsChanged.next([...this.signals]);
-          })
-        );
-    } else {
-      return this.tickerService.getTickers(this.signals[id].request).pipe(
-        map((response: TickerResponse) => {
-          this.signals[id].data = response;
-          this.signalsChanged.next([...this.signals]);
-        })
-      );
-    }
+    return this.getSignal(properties).pipe(
+      map((response: IndicatorResponse) => {
+        this.signals[id].data = response;
+        this.signalsChanged.next([...this.signals]);
+      })
+    );
+  }
+
+  getSignal(properties: SignalProperties): Observable<SignalResponse> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<SignalResponse>(
+      this.getBaseUrl(properties.type),
+      properties,
+      httpOptions
+    );
+  }
+
+  getOptions(type: SignalType): Observable<SignalOptions> {
+    return this.http.get<SignalOptions>(this.getBaseUrl(type));
+  }
+
+  getBaseUrl(type: SignalType): string {
+    return (
+      environment.apiBaseUrl +
+      (type === SignalType.Indicator ? 'indicator' : 'ticker')
+    );
   }
 }
 
@@ -72,8 +87,34 @@ export enum SignalType {
 
 export interface RegisteredSignal {
   id: number;
-  isHidden: boolean;
+  data: SignalResponse;
+  properties: SignalProperties;
+}
+
+export interface SignalProperties {
+  market: string;
   type: SignalType;
-  data: IndicatorResponse | TickerResponse;
-  request: IndicatorRequest | TickerRequest;
+  color: string;
+  indicator?: string;
+  candle_size?: string;
+  start_date?: string;
+  end_date?: string;
+  limit?: number;
+  filter?: Array<Filter>;
+  step?: number;
+}
+
+export interface SignalPoint {
+  date: Date;
+  value?: number;
+  price?: number;
+}
+
+export type SignalResponse = Array<SignalPoint>;
+
+export interface SignalOptions {
+  market: Array<string>;
+  candle_size?: Array<string>;
+  indicator?: Array<string>;
+  filter_types: Array<string>;
 }

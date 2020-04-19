@@ -2,7 +2,11 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { TickerService, TickerRequest } from '../ticker.service';
 import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
-import { SignalRegistryService, SignalType } from '../signal-registry.service';
+import {
+  SignalRegistryService,
+  SignalType,
+  SignalProperties
+} from '../signal-registry.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -52,14 +56,16 @@ export class AddTickerFormComponent implements OnInit {
   onAddTicker(event) {
     this.loading = true;
     console.log(event);
-    const request: TickerRequest = {
+    const request: SignalProperties = {
       market: event.market,
+      type: SignalType.Ticker,
+      color: event.common.color,
       start_date: event.common.dateSpan.start.toISOString(),
       end_date: event.common.dateSpan.end.toISOString(),
       filter: this.currentFilterService.getAll(),
       step: event.common.step
     };
-    this.signalRegistryService.register(SignalType.Ticker, request).subscribe(
+    this.signalRegistryService.register(request).subscribe(
       () => {
         this.loading = false;
       },

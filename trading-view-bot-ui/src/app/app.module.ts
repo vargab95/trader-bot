@@ -46,6 +46,7 @@ import { AddSignalFormCommonComponent } from './signals/add-signal-form-common/a
 
 import { MatTableModule } from '@angular/material/table';
 import { SignalListComponent } from './signals/signal-list/signal-list.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -88,7 +89,8 @@ import { SignalListComponent } from './signals/signal-list/signal-list.component
     MatFormFieldModule,
     MatToolbarModule,
     MatIconModule,
-    MatTableModule
+    MatTableModule,
+    MatDividerModule
   ],
   providers: [
     CookieService,
