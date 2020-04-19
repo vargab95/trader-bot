@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required
 
 import fetcher.base
 import filters.factory
-from api.common import filter_results, get_default_parser
+from api.common import filter_results, get_default_parser, convert_date_time
 
 
 class Indicator(Resource):
@@ -23,7 +23,7 @@ class Indicator(Resource):
             required=True)
 
         self.parser.add_argument(
-            'candle_size',
+            'candleSize',
             type=str,
             choices=tuple(
                 fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
@@ -34,10 +34,11 @@ class Indicator(Resource):
         request = self.parser.parse_args()
         filter_list = request['filter']
         step = request['step']
+        start_date = convert_date_time(request['dateSpan']['start'])
+        end_date = convert_date_time(request['dateSpan']['end'])
 
         result = self.storage.get(request['market'], request['indicator'],
-                                  request['candle_size'],
-                                  request['start_date'], request['end_date'],
+                                  request['candleSize'], start_date, end_date,
                                   request['limit'])
 
         for row in result:

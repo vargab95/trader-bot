@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { Filter } from '../filtering/filter.entity';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { DateSpan } from './date-span-picker/date-span-picker.component';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +40,7 @@ export class SignalRegistryService {
 
     return this.getSignal(properties).pipe(
       map((response: SignalResponse) => {
+        console.log(response);
         this.signals[id].data = response;
         this.signalsChanged.next([...this.signals]);
       })
@@ -88,8 +90,7 @@ export interface SignalProperties {
   color: string;
   indicator?: string;
   candle_size?: string;
-  start_date?: string;
-  end_date?: string;
+  dateSpan?: DateSpan;
   limit?: number;
   filter?: Array<Filter>;
   step?: number;
