@@ -5,8 +5,6 @@ import {
   SignalType,
   SignalResponse
 } from 'src/app/signals/signal-registry.service';
-import { TickerResponse } from 'src/app/signals/ticker.service';
-import { IndicatorResponse } from 'src/app/signals/indicator.service';
 
 @Component({
   selector: 'app-chart',

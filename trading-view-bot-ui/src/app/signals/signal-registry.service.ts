@@ -1,10 +1,4 @@
 import { Injectable } from '@angular/core';
-import {
-  IndicatorResponse,
-  IndicatorRequest,
-  IndicatorService
-} from './indicator.service';
-import { TickerResponse, TickerRequest, TickerService } from './ticker.service';
 import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Filter } from '../filtering/filter.entity';
@@ -18,11 +12,7 @@ export class SignalRegistryService {
   signals: Array<RegisteredSignal> = [];
   signalsChanged = new Subject<Array<RegisteredSignal>>();
 
-  constructor(
-    private http: HttpClient,
-    private indicatorService: IndicatorService,
-    private tickerService: TickerService
-  ) {}
+  constructor(private http: HttpClient) {}
 
   register(properties: SignalProperties) {
     const id = this.signals.push({
@@ -48,7 +38,7 @@ export class SignalRegistryService {
     this.signals[id].properties = properties;
 
     return this.getSignal(properties).pipe(
-      map((response: IndicatorResponse) => {
+      map((response: SignalResponse) => {
         this.signals[id].data = response;
         this.signalsChanged.next([...this.signals]);
       })
@@ -69,13 +59,14 @@ export class SignalRegistryService {
   }
 
   getOptions(type: SignalType): Observable<SignalOptions> {
-    return this.http.get<SignalOptions>(this.getBaseUrl(type));
+    return this.http.get<SignalOptions>(this.getBaseUrl(type, '/options'));
   }
 
-  getBaseUrl(type: SignalType): string {
+  getBaseUrl(type: SignalType, subUrl: string = ''): string {
     return (
       environment.apiBaseUrl +
-      (type === SignalType.Indicator ? 'indicator' : 'ticker')
+      (type === SignalType.Indicator ? 'indicator' : 'ticker') +
+      subUrl
     );
   }
 }

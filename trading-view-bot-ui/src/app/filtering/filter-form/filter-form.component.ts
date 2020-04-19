@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TickerService } from '../../signals/ticker.service';
 import { FormGroup } from '@angular/forms';
 import { CurrentFiltersService } from '../current-filters.service';
 

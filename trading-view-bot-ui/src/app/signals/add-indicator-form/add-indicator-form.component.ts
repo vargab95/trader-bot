@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { IndicatorService, IndicatorRequest } from '../indicator.service';
 import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
 import {
   SignalRegistryService,
@@ -25,15 +24,22 @@ export class AddIndicatorFormComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddIndicatorFormComponent>,
-    @Inject(MAT_DIALOG_DATA) public request: IndicatorRequest,
-    private indicatorService: IndicatorService,
+    @Inject(MAT_DIALOG_DATA) public properties: SignalProperties,
     private signalRegistryService: SignalRegistryService,
     private currentFilterService: CurrentFiltersService,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+    if (!this.properties) {
+      this.properties = {
+        market: '',
+        type: SignalType.Indicator,
+        color: ''
+      };
+    }
+  }
 
   ngOnInit() {
-    this.indicatorService.getOptions().subscribe(
+    this.signalRegistryService.getOptions(this.properties.type).subscribe(
       response => {
         this.indicatorMarkets = response.market;
         this.indicatorNames = response.indicator;
@@ -63,7 +69,7 @@ export class AddIndicatorFormComponent implements OnInit {
   onAddIndicator(event) {
     this.loading = true;
     console.log(event);
-    const request: SignalProperties = {
+    const properties: SignalProperties = {
       market: event.market,
       type: SignalType.Indicator,
       color: event.common.color,
@@ -74,7 +80,7 @@ export class AddIndicatorFormComponent implements OnInit {
       filter: this.currentFilterService.getAll(),
       step: event.common.step
     };
-    this.signalRegistryService.register(request).subscribe(
+    this.signalRegistryService.register(properties).subscribe(
       () => {
         this.loading = false;
       },

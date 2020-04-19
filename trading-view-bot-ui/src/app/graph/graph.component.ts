@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddIndicatorFormComponent } from '../signals/add-indicator-form/add-indicator-form.component';
-import { AddTickerFormComponent } from '../signals/add-ticker-form/add-ticker-form.component';
 
 @Component({
   selector: 'app-graph',
@@ -13,17 +12,9 @@ export class GraphComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  onAddIndicator() {
+  onAddSignal() {
     const dialogRef = this.dialog.open(AddIndicatorFormComponent, {
-      width: '250px',
-      data: null
-    });
-  }
-
-  onAddTicker() {
-    const dialogRef = this.dialog.open(AddTickerFormComponent, {
-      width: '250px',
-      data: null
+      width: '250px'
     });
   }
 }
