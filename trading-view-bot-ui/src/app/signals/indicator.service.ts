@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { Filter } from '../filtering/filter.entity';
 
 @Injectable({
   providedIn: 'root'
@@ -13,9 +14,16 @@ export class IndicatorService {
   constructor(private http: HttpClient) {}
 
   getIndicators(request: IndicatorRequest): Observable<IndicatorResponse> {
-    return this.http.get(this.baseUrl, {
-      params: request as any
-    }) as Observable<IndicatorResponse>;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.http.post<IndicatorResponse>(
+      this.baseUrl,
+      request,
+      httpOptions
+    );
   }
 
   getOptions(): Observable<IndicatorOptions> {
@@ -32,8 +40,7 @@ export interface IndicatorRequest {
   start_date?: string;
   end_date?: string;
   limit?: number;
-  ma_length?: number;
-  ma_type?: string;
+  filter: Array<Filter>;
   step?: number;
 }
 

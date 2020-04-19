@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required
 
 import fetcher.base
 import filters.factory
-from api.common import get_sma, get_default_parser
+from api.common import filter_results, get_default_parser
 
 
 class Indicator(Resource):
@@ -30,10 +30,9 @@ class Indicator(Resource):
             required=True)
 
     @jwt_required
-    def get(self):
+    def post(self):
         request = self.parser.parse_args()
-        ma_length = request['ma_length']
-        ma_type = request['ma_type']
+        filter_list = request['filter']
         step = request['step']
 
         result = self.storage.get(request['market'], request['indicator'],
@@ -44,8 +43,8 @@ class Indicator(Resource):
         for row in result:
             row['date'] = row['date'].strftime(self.datetime_format)
 
-        if ma_length > 1:
-            result = get_sma(result, ma_type, ma_length, 'value')
+        if filter_list:
+            result = filter_results(result, filter_list, 'value')
 
         return result[::step]
 

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { TickerService, TickerRequest } from '../ticker.service';
 import { ChartDataService } from '../../chart/chart-data.service';
+import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
 
 @Component({
   selector: 'app-add-ticker-form',
@@ -13,11 +14,11 @@ export class AddTickerFormComponent implements OnInit {
   addTickerForm: FormGroup;
 
   loading = false;
-  filterTypes = [];
 
   constructor(
     private tickerService: TickerService,
     private formBuilder: FormBuilder,
+    private currentFilterService: CurrentFiltersService,
     private chartDataService: ChartDataService
   ) {}
 
@@ -25,7 +26,7 @@ export class AddTickerFormComponent implements OnInit {
     this.tickerService.getOptions().subscribe(
       response => {
         this.tickerMarkets = response.market;
-        this.filterTypes = response.filter_types;
+        this.currentFilterService.setTypes(response.filter_types);
       },
       error => {
         console.log(error);
@@ -40,11 +41,7 @@ export class AddTickerFormComponent implements OnInit {
           end: ''
         }),
         step: 1,
-        color: '',
-        filter: this.formBuilder.group({
-          type: '',
-          length: 0
-        })
+        color: ''
       })
     });
   }
@@ -56,8 +53,7 @@ export class AddTickerFormComponent implements OnInit {
       market: event.market,
       start_date: event.common.dateSpan.start.toISOString(),
       end_date: event.common.dateSpan.end.toISOString(),
-      ma_length: event.common.filter.length,
-      ma_type: event.common.filter.type,
+      filter: this.currentFilterService.getAll(),
       step: event.common.step
     };
     this.tickerService.getTickers(request).subscribe(

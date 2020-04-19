@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Filter } from '../filter.entity';
+import { CurrentFiltersService } from '../current-filters.service';
 
 @Component({
   selector: 'app-filter-list',
@@ -6,13 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./filter-list.component.css']
 })
 export class FilterListComponent implements OnInit {
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
-  dataSource = [];
+  filters: Filter[] = [];
+  displayedColumns: string[] = ['no', 'type', 'length'];
   empty = false;
 
-  constructor() {}
+  constructor(private currentFilterService: CurrentFiltersService) {}
 
-  ngOnInit(): void {}
-
-  addFilter() {}
+  ngOnInit(): void {
+    this.currentFilterService.filtersChanged.subscribe((filters: Filter[]) => {
+      this.filters = filters;
+    });
+  }
 }

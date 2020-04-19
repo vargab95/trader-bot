@@ -8,7 +8,6 @@ import { FormGroup, FormBuilder, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class AddSignalFormCommonComponent implements OnInit {
   @Input() group: FormGroup;
-  @Input() filterTypes: string[];
 
   constructor() {}
 
