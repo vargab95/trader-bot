@@ -1,6 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ChartDataService, ChartDataPoint } from '../chart-data.service';
 import { Subscription } from 'rxjs';
+import {
+  SignalRegistryService,
+  SignalType
+} from 'src/app/signals/signal-registry.service';
+import { TickerResponse } from 'src/app/signals/ticker.service';
+import { IndicatorResponse } from 'src/app/signals/indicator.service';
 
 @Component({
   selector: 'app-chart',
@@ -92,22 +97,21 @@ export class ChartComponent implements OnInit, OnDestroy {
   anyChartLoaded = false;
   subscription: Subscription;
 
-  constructor(private chartDataService: ChartDataService) {}
+  constructor(private signalRegistryService: SignalRegistryService) {}
 
   ngOnInit(): void {
-    this.subscription = this.chartDataService.chartsChanged.subscribe(
-      charts => {
+    this.subscription = this.signalRegistryService.signalsChanged.subscribe(
+      signals => {
         this.chartData = new Array<Array<ChartDataPoint>>();
 
-        console.log(charts);
-
-        for (const chart of charts) {
+        for (const signal of signals) {
           this.chartData.push({
-            label: '(' + chart.id.toString() + ') ' + chart.name,
-            data: chart.data,
+            label: '(' + signal.id.toString() + ') ',
+            data: this.convertToChartPoints(signal.data),
             fill: false,
-            yAxisID: chart.type,
-            borderColor: 'rgba(' + chart.color + ',1)'
+            yAxisID:
+              signal.type === SignalType.Indicator ? 'indicator' : 'ticker',
+            borderColor: 'rgba(100,100,100,1)'
           });
         }
 
@@ -116,7 +120,27 @@ export class ChartComponent implements OnInit, OnDestroy {
     );
   }
 
+  private convertToChartPoints(
+    data: IndicatorResponse | TickerResponse
+  ): Array<ChartDataPoint> {
+    const chart = new Array<ChartDataPoint>();
+
+    for (const row of data) {
+      chart.push({
+        x: new Date(row.date),
+        y: 'price' in row ? row.price : row.value
+      } as ChartDataPoint);
+    }
+
+    return chart;
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
+}
+
+export interface ChartDataPoint {
+  x: Date;
+  y: number;
 }

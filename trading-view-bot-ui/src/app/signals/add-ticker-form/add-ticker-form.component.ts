@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { TickerService, TickerRequest } from '../ticker.service';
-import { ChartDataService } from '../../chart/chart-data.service';
 import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
+import { SignalRegistryService, SignalType } from '../signal-registry.service';
 
 @Component({
   selector: 'app-add-ticker-form',
@@ -17,9 +17,9 @@ export class AddTickerFormComponent implements OnInit {
 
   constructor(
     private tickerService: TickerService,
+    private signalRegistryService: SignalRegistryService,
     private formBuilder: FormBuilder,
-    private currentFilterService: CurrentFiltersService,
-    private chartDataService: ChartDataService
+    private currentFilterService: CurrentFiltersService
   ) {}
 
   ngOnInit(): void {
@@ -56,13 +56,8 @@ export class AddTickerFormComponent implements OnInit {
       filter: this.currentFilterService.getAll(),
       step: event.common.step
     };
-    this.tickerService.getTickers(request).subscribe(
-      response => {
-        this.chartDataService.addChart(
-          response,
-          event.common.color,
-          event.market
-        );
+    this.signalRegistryService.register(SignalType.Ticker, request).subscribe(
+      () => {
         this.loading = false;
       },
       error => {

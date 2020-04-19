@@ -8,7 +8,6 @@ import {
   IndicatorService,
   IndicatorRequest
 } from './signals/indicator.service';
-import { ChartDataService } from './chart/chart-data.service';
 
 @Component({
   selector: 'app-root',

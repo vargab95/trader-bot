@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IndicatorService, IndicatorRequest } from '../indicator.service';
-import { ChartDataService } from '../../chart/chart-data.service';
 import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
+import { SignalRegistryService, SignalType } from '../signal-registry.service';
 
 @Component({
   selector: 'app-add-indicator-form',
@@ -20,9 +20,9 @@ export class AddIndicatorFormComponent implements OnInit {
 
   constructor(
     private indicatorService: IndicatorService,
+    private signalRegistryService: SignalRegistryService,
     private currentFilterService: CurrentFiltersService,
-    private formBuilder: FormBuilder,
-    private chartDataService: ChartDataService
+    private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -65,19 +65,24 @@ export class AddIndicatorFormComponent implements OnInit {
       filter: this.currentFilterService.getAll(),
       step: event.common.step
     };
-    this.indicatorService.getIndicators(request).subscribe(
-      response => {
-        this.chartDataService.addChart(
-          response,
-          event.common.color,
-          event.market + '.' + event.indicator + '.' + event.candleSize
-        );
-        this.loading = false;
-      },
-      error => {
-        this.loading = false;
-        console.log(error);
-      }
-    );
+    this.signalRegistryService
+      .register(SignalType.Indicator, request)
+      .subscribe(
+        /*response => {
+          this.chartDataService.addChart(
+            response,
+            event.common.color,
+            event.market + '.' + event.indicator + '.' + event.candleSize
+          );
+          this.loading = false;
+        },*/
+        () => {
+          this.loading = false;
+        },
+        error => {
+          this.loading = false;
+          console.log(error);
+        }
+      );
   }
 }
