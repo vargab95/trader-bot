@@ -2,7 +2,11 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IndicatorService, IndicatorRequest } from '../indicator.service';
 import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
-import { SignalRegistryService, SignalType } from '../signal-registry.service';
+import {
+  SignalRegistryService,
+  SignalType,
+  SignalProperties
+} from '../signal-registry.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
@@ -59,8 +63,10 @@ export class AddIndicatorFormComponent implements OnInit {
   onAddIndicator(event) {
     this.loading = true;
     console.log(event);
-    const request: IndicatorRequest = {
+    const request: SignalProperties = {
       market: event.market,
+      type: SignalType.Indicator,
+      color: event.common.color,
       indicator: event.indicator,
       candle_size: event.candleSize,
       start_date: event.common.dateSpan.start.toISOString(),
@@ -68,24 +74,14 @@ export class AddIndicatorFormComponent implements OnInit {
       filter: this.currentFilterService.getAll(),
       step: event.common.step
     };
-    this.signalRegistryService
-      .register(SignalType.Indicator, request)
-      .subscribe(
-        /*response => {
-          this.chartDataService.addChart(
-            response,
-            event.common.color,
-            event.market + '.' + event.indicator + '.' + event.candleSize
-          );
-          this.loading = false;
-        },*/
-        () => {
-          this.loading = false;
-        },
-        error => {
-          this.loading = false;
-          console.log(error);
-        }
-      );
+    this.signalRegistryService.register(request).subscribe(
+      () => {
+        this.loading = false;
+      },
+      error => {
+        this.loading = false;
+        console.log(error);
+      }
+    );
   }
 }

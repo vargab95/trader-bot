@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {
   SignalRegistryService,
-  SignalType
+  SignalType,
+  SignalResponse
 } from 'src/app/signals/signal-registry.service';
 import { TickerResponse } from 'src/app/signals/ticker.service';
 import { IndicatorResponse } from 'src/app/signals/indicator.service';
@@ -110,8 +111,10 @@ export class ChartComponent implements OnInit, OnDestroy {
             data: this.convertToChartPoints(signal.data),
             fill: false,
             yAxisID:
-              signal.type === SignalType.Indicator ? 'indicator' : 'ticker',
-            borderColor: 'rgba(100,100,100,1)'
+              signal.properties.type === SignalType.Indicator
+                ? 'indicator'
+                : 'ticker',
+            borderColor: 'rgba(' + signal.properties.color + ',1)'
           });
         }
 
@@ -120,9 +123,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     );
   }
 
-  private convertToChartPoints(
-    data: IndicatorResponse | TickerResponse
-  ): Array<ChartDataPoint> {
+  private convertToChartPoints(data: SignalResponse): Array<ChartDataPoint> {
     const chart = new Array<ChartDataPoint>();
 
     for (const row of data) {
