@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { TickerService, TickerRequest } from '../ticker.service';
 import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
 import { SignalRegistryService, SignalType } from '../signal-registry.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-ticker-form',
@@ -16,6 +17,8 @@ export class AddTickerFormComponent implements OnInit {
   loading = false;
 
   constructor(
+    public dialogRef: MatDialogRef<AddTickerFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public request: TickerRequest,
     private tickerService: TickerService,
     private signalRegistryService: SignalRegistryService,
     private formBuilder: FormBuilder,

@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="filters" class="mat-elevation-z8">
+<table *ngIf="!empty" mat-table [dataSource]="filters" class="mat-elevation-z8">
   <ng-container matColumnDef="no">
     <th mat-header-cell *matHeaderCellDef>No.</th>
     <td mat-cell *matCellDef="let element">{{ element.no }}</td>
