@@ -45,6 +45,7 @@ import { FilterListComponent } from './filtering/filter-list/filter-list.compone
 import { AddSignalFormCommonComponent } from './signals/add-signal-form-common/add-signal-form-common.component';
 
 import { MatTableModule } from '@angular/material/table';
+import { SignalListComponent } from './signals/signal-list/signal-list.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { MatTableModule } from '@angular/material/table';
     ComplexFilterComponent,
     FilterFormComponent,
     FilterListComponent,
-    AddSignalFormCommonComponent
+    AddSignalFormCommonComponent,
+    SignalListComponent
   ],
   imports: [
     CommonModule,
