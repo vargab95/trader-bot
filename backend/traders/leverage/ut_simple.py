@@ -111,6 +111,8 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         self.trader.perform(-0.47)
         self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
 
+    # TODO Write some test for sell failures
+
 
 class MultiDetectorSimpleLeverageTraderTest(unittest.TestCase):
     @classmethod
