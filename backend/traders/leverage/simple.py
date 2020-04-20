@@ -3,7 +3,7 @@
 import traders.leverage.base
 import traders.common
 
-from traders.common import TraderState, BuyState, SellState
+from traders.common import TraderState
 
 
 class SimpleLeverageTrader(traders.leverage.base.LeverageTraderBase):
