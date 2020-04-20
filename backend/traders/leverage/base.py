@@ -10,7 +10,7 @@ import detector.factory
 import detector.interface
 import exchange.interface
 
-from traders.common import TraderState, BuyState, SellState
+from traders.common import TraderState
 
 
 class LeverageTraderBase(traders.base.TraderBase):
@@ -20,13 +20,15 @@ class LeverageTraderBase(traders.base.TraderBase):
         self._configuration = configuration
         self._detectors: typing.List[detector.interface.DetectorInterface] = []
         self._state: TraderState = TraderState.BASE
+        self._use_stateless_detector = False
 
     def initialize(self):
         for threshold in self._configuration.market.thresholds:
             self._detectors.append(
                 detector.factory.DetectorFactory.create(
                     threshold["bear"], threshold["bull"],
-                    self._configuration.market.falling_edge_detection))
+                    self._configuration.market.falling_edge_detection,
+                    self._use_stateless_detector))
 
     def perform(self, value: float):
         actions = []

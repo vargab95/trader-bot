@@ -92,8 +92,9 @@ class SteppedLeverageTraderTest(unittest.TestCase):
 
     def test_exceeds_bullish(self):
         indicator_values = [
-            -0.44, -0.55, -0.63, -0.44, -0.55, -0.63, -0.44, -0.55, -0.63,
-            -0.44, -0.55, -0.63
+            -0.04, -0.55, -0.03, -0.44, -0.05, -0.63, -0.04, -0.55, -0.03,
+            -0.44, -0.05, -0.63, -0.03, -0.44, -0.05, -0.63, -0.04, -0.55,
+            -0.04, -0.55
         ]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
@@ -104,8 +105,8 @@ class SteppedLeverageTraderTest(unittest.TestCase):
 
     def test_exceeds_bearish(self):
         indicator_values = [
-            0.44, 0.55, 0.63, 0.44, 0.55, 0.63, 0.44, 0.55, 0.63, 0.44, 0.55,
-            0.63
+            0.04, 0.55, 0.03, 0.44, 0.05, 0.63, 0.04, 0.55, 0.03, 0.44, 0.05,
+            0.63, 0.03, 0.44, 0.05, 0.63, 0.04, 0.55, 0.04, 0.55
         ]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
@@ -124,8 +125,6 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.market.bullish_threshold = [-0.4, -0.5, -0.6]
-        cls.config.market.bearish_threshold = [0.4, 0.5, 0.6]
         cls.config.market.thresholds = [{
             "bull": -0.4,
             "bear": 0.4
@@ -209,8 +208,8 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
 
     def test_exceeds_bullish(self):
         indicator_values = [
-            -0.44, -0.55, -0.63, -0.44, -0.55, -0.63, -0.44, -0.55, -0.63,
-            -0.44, -0.55, -0.63
+            -0.34, -0.44, -0.55, -0.63, -0.34, -0.44, -0.55, -0.63, -0.34,
+            -0.44, -0.55, -0.63, -0.34, -0.44, -0.55, -0.63
         ]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
@@ -221,8 +220,8 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
 
     def test_exceeds_bearish(self):
         indicator_values = [
-            0.44, 0.55, 0.63, 0.44, 0.55, 0.63, 0.44, 0.55, 0.63, 0.44, 0.55,
-            0.63
+            0.34, 0.44, 0.55, 0.63, 0.34, 0.44, 0.55, 0.63, 0.34, 0.44, 0.55,
+            0.63, 0.34, 0.44, 0.55, 0.63
         ]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
