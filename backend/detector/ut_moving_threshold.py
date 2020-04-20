@@ -17,7 +17,7 @@ class FetcherMock:
         return self.indicator
 
 
-class RisingEdgeDetectorTest(unittest.TestCase):
+class MovingEdgeDetectorTest(unittest.TestCase):
     def setUp(self):
         self.gatherer = FetcherMock()
 
@@ -25,9 +25,8 @@ class RisingEdgeDetectorTest(unittest.TestCase):
         test_detector = \
                 detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
-        test_data = [[
-            -0.066667, detector.common.TradingAction.SWITCH_TO_BEARISH
-        ], [-0.066668, detector.common.TradingAction.HOLD],
+        test_data = [[-0.066667, detector.common.TradingAction.BUY_BEARISH],
+                     [-0.066668, detector.common.TradingAction.HOLD],
                      [-0.021212, detector.common.TradingAction.HOLD],
                      [0.0, detector.common.TradingAction.HOLD],
                      [0.0, detector.common.TradingAction.HOLD],
@@ -40,9 +39,8 @@ class RisingEdgeDetectorTest(unittest.TestCase):
         test_detector = \
                 detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
-        test_data = [[
-            -0.066667, detector.common.TradingAction.SWITCH_TO_BEARISH
-        ], [-0.066668, detector.common.TradingAction.HOLD],
+        test_data = [[-0.066667, detector.common.TradingAction.BUY_BEARISH],
+                     [-0.066668, detector.common.TradingAction.HOLD],
                      [-0.021212, detector.common.TradingAction.HOLD],
                      [0.0, detector.common.TradingAction.HOLD],
                      [0.0, detector.common.TradingAction.HOLD],
@@ -58,15 +56,13 @@ class RisingEdgeDetectorTest(unittest.TestCase):
         test_detector = \
                 detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
-        test_data = [
-            [-0.066667, detector.common.TradingAction.SWITCH_TO_BULLISH],
-            [-0.066668, detector.common.TradingAction.HOLD],
-            [-0.021212, detector.common.TradingAction.HOLD],
-            [0.0, detector.common.TradingAction.HOLD],
-            [0.0, detector.common.TradingAction.HOLD],
-            [-0.378788, detector.common.TradingAction.SWITCH_TO_BEARISH],
-            [-0.378789, detector.common.TradingAction.HOLD]
-        ]
+        test_data = [[-0.066667, detector.common.TradingAction.BUY_BULLISH],
+                     [-0.066668, detector.common.TradingAction.HOLD],
+                     [-0.021212, detector.common.TradingAction.HOLD],
+                     [0.0, detector.common.TradingAction.HOLD],
+                     [0.0, detector.common.TradingAction.HOLD],
+                     [-0.378788, detector.common.TradingAction.BUY_BEARISH],
+                     [-0.378789, detector.common.TradingAction.HOLD]]
 
         self.gatherer.indicator = 0.1
 
@@ -78,11 +74,11 @@ class RisingEdgeDetectorTest(unittest.TestCase):
                 detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
         test_data = [
-            [0.0, 0.066667, detector.common.TradingAction.SWITCH_TO_BULLISH],
+            [0.0, 0.066667, detector.common.TradingAction.BUY_BULLISH],
             [0.0, 0.166667, detector.common.TradingAction.HOLD],
-            [-0.3, 0.266667, detector.common.TradingAction.SWITCH_TO_BEARISH],
+            [-0.3, 0.266667, detector.common.TradingAction.BUY_BEARISH],
             [-0.3, 0.276667, detector.common.TradingAction.HOLD],
-            [-0.3, 0.366667, detector.common.TradingAction.SWITCH_TO_BULLISH],
+            [-0.3, 0.366667, detector.common.TradingAction.BUY_BULLISH],
             [-0.3, 0.466667, detector.common.TradingAction.HOLD]
         ]
 
@@ -95,11 +91,11 @@ class RisingEdgeDetectorTest(unittest.TestCase):
                 detector.moving_threshold.MovingThresholdRisingEdgeDetector(
                     0.0, 0.0, self.gatherer)
         test_data = [
-            [0.0, -0.066667, detector.common.TradingAction.SWITCH_TO_BEARISH],
+            [0.0, -0.066667, detector.common.TradingAction.BUY_BEARISH],
             [0.0, -0.166667, detector.common.TradingAction.HOLD],
-            [0.3, -0.266667, detector.common.TradingAction.SWITCH_TO_BULLISH],
+            [0.3, -0.266667, detector.common.TradingAction.BUY_BULLISH],
             [0.3, -0.276667, detector.common.TradingAction.HOLD],
-            [0.3, -0.366667, detector.common.TradingAction.SWITCH_TO_BEARISH],
+            [0.3, -0.366667, detector.common.TradingAction.BUY_BEARISH],
             [0.3, -0.466667, detector.common.TradingAction.HOLD]
         ]
 
