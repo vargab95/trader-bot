@@ -29,6 +29,11 @@ class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
             self._state = 0
             self._pack_ratio = 1.0 / self._configuration.market.max_steps
         if self._state < self._max_steps:
+            # FIXME That state is not handled properly, when this buy statement
+            # fails, because it won't take into account the bullish signal
+            # anymore
+            # TODO Unittests should be written for this behaviour here and also
+            # for the bearish case
             if self._buy(self._configuration.exchange.bullish_market,
                          self._pack_ratio):
                 self._state += 1
