@@ -12,7 +12,7 @@ class DetectorInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def check(self, indicator: float) -> detector.common.TradingAction:
-        pass
+        pass  # pragma: no cover
 
     def set_threshold(self, bearish_threshold: float,
                       bullish_threshold: float):

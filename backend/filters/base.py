@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import abc
-import typing
 
 
 class Filter:
@@ -12,7 +11,7 @@ class Filter:
 
     @abc.abstractmethod
     def put(self, value: float):
-        pass
+        pass  # pragma: no cover
 
     def get(self) -> float:
         return self._value
@@ -20,7 +19,3 @@ class Filter:
     @property
     def length(self):
         return self._length
-
-    @property
-    def all(self) -> typing.List[float]:
-        return self._data

@@ -5,6 +5,7 @@ import fetcher.common
 import fetcher.base
 
 
+# TODO Not covered by tests
 class TradingViewFetcherMulti(fetcher.base.TradingViewFetcherBase):
     def __init__(self, market: config.market.MarketConfig, candle_size: float):
         super().__init__(market, candle_size)

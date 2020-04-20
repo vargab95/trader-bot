@@ -10,4 +10,7 @@ class Client:
                                            username=user,
                                            password=password,
                                            authSource="trading_view_bot")
-        self.database = self._client.trading_view_bot
+
+    @property
+    def database(self):
+        return self._client.trading_view_bot

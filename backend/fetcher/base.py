@@ -56,6 +56,7 @@ class TradingViewFetcherBase:
                                           json=self.request,
                                           timeout=5)
             self.response = self.response.json()
+        # FIXME Is it necessary when the safe fetch catches all exceptions?
         except (requests.exceptions.Timeout,
                 requests.exceptions.ConnectTimeout,
                 urllib3.exceptions.ConnectTimeoutError, socket.timeout):
