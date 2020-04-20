@@ -30,8 +30,4 @@ class HMA(filters.base.Filter):
 
     @property
     def length(self):
-        return self.__n_wma.length
-
-    @property
-    def all(self) -> typing.List[float]:
-        return None
+        return self.__n_wma.length  # pragma: no cover

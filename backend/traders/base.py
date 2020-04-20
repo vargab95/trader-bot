@@ -11,11 +11,11 @@ class TraderBase:
 
     @abc.abstractmethod
     def initialize(self):
-        pass
+        pass  # pragma: no cover
 
     @abc.abstractmethod
     def perform(self, value: float):
-        pass
+        pass  # pragma: no cover
 
     def _sell(self,
               market: exchange.interface.Market,
