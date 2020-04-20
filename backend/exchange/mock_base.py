@@ -51,6 +51,7 @@ class Trade:
 
 
 class MockBase(exchange.interface.ExchangeInterface):
+    # TODO Replace with parameter
     base_coin = "USDT"
 
     def __init__(self, exchange_config: config.exchange.ExchangeConfig,

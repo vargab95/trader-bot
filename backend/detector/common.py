@@ -5,8 +5,8 @@ import enum
 
 class TradingAction(enum.Enum):
     HOLD = 0
-    SWITCH_TO_BULLISH = 1
-    SWITCH_TO_BEARISH = 2
+    BUY_BULLISH = 1
+    BUY_BEARISH = 2
 
 
 class CurrentState(enum.Enum):

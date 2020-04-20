@@ -5,6 +5,7 @@ import typing
 
 class MarketConfig:
     def __init__(self, config: typing.Dict):
+        # TODO create sub config classes
         self.name = config.get("name", "GEMINI:BTCUSD")
         self.indicator_name = config.get("indicator_name", "all")
         self.check_interval = config.get("check_interval", 60)
@@ -16,8 +17,11 @@ class MarketConfig:
         self.max_steps = config.get("step_count", 5)
         self.falling_edge_detection = config.get("falling_edge_detection",
                                                  False)
-        self.bullish_threshold = config.get("bullish_threshold", 0.0)
-        self.bearish_threshold = config.get("bearish_threshold", 0.0)
+        self.enable_multi_buy = config.get("enable_multi_buy", False)
+        self.thresholds = config.get("thresholds", [{
+            "bear": 0.0,
+            "bull": 0.0
+        }])
 
     def __str__(self):
         return "\nMarket:" + \
@@ -31,5 +35,4 @@ class MarketConfig:
                "\n    Step count:             " + str(self.max_steps) + \
                "\n    Check interval:         " + str(self.check_interval) + \
                "\n    Falling edge detection: " + str(self.falling_edge_detection) + \
-               "\n    Bullish threshold:      " + str(self.bullish_threshold) + \
-               "\n    Bearish threshold:      " + str(self.bearish_threshold)
+               "\n    Threshold:      " + str(self.thresholds)

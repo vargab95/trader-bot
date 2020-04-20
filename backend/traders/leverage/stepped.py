@@ -5,6 +5,7 @@ import logging
 import config.market
 import traders.base
 import traders.common
+import traders.leverage.base
 import exchange.interface
 
 
@@ -25,20 +26,26 @@ class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
         if self._state < 0:
             self._sell(self._configuration.exchange.bearish_market)
             self._state = 0
-        if self._state <= self._max_steps:
-            if self._buy(self._configuration.exchange.bullish_market):
+            self._pack_ratio = 1.0 / self._configuration.market.max_steps
+        if self._state < self._max_steps:
+            if self._buy(self._configuration.exchange.bullish_market,
+                         self._pack_ratio):
                 self._state += 1
+                self._pack_ratio = 1.0 / (
+                    self._configuration.market.max_steps - self._state)
         else:
             logging.warning("Step limit reached %d", self._state)
-        self._pack_ratio = 1.0 / (configuration.market.max_steps - self._state)
 
     def _bearish_logic(self):
         if self._state > 0:
             self._sell(self._configuration.exchange.bullish_market)
             self._state = 0
-        if self._state >= -self._max_steps:
-            if self._buy(self._configuration.exchange.bearish_market):
+            self._pack_ratio = 1.0 / self._configuration.market.max_steps
+        if self._state > -self._max_steps:
+            if self._buy(self._configuration.exchange.bearish_market,
+                         self._pack_ratio):
                 self._state -= 1
+                self._pack_ratio = 1.0 / (
+                    self._configuration.market.max_steps + self._state)
         else:
             logging.warning("Step limit reached %d", self._state)
-        self._pack_ratio = 1.0 / (configuration.market.max_steps + self._state)
