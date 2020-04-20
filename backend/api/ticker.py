@@ -17,7 +17,6 @@ class Ticker(Resource):
     @jwt_required
     def post(self):
         request = self.parser.parse_args()
-        print(request)
         step = request['step']
         filter_list = request['filter']
         start_date = convert_date_time(request['dateSpan']['start'])
@@ -32,7 +31,6 @@ class Ticker(Resource):
         if filter_list:
             result = filter_results(result, filter_list, 'price')
 
-        print(result)
         return result[::step]
 
 

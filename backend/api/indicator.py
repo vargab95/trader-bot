@@ -55,7 +55,7 @@ class IndicatorOptions(Resource):
     @jwt_required
     def get():
         return {
-            'market': ['GEMINI:BTCUSD'],
+            'market': ['GEMINI:BTCUSD', 'FTX:BEARUSD', 'FTX:BEARUSDT', 'FTX:BULLUSD', 'FTX:BULLUSDT'],
             'candle_size':
             list(fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
             'indicator':

@@ -30,6 +30,7 @@ class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
                 self._state += 1
         else:
             logging.warning("Step limit reached %d", self._state)
+        self._pack_ratio = 1.0 / (configuration.market.max_steps - self._state)
 
     def _bearish_logic(self):
         if self._state > 0:
@@ -40,3 +41,4 @@ class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
                 self._state -= 1
         else:
             logging.warning("Step limit reached %d", self._state)
+        self._pack_ratio = 1.0 / (configuration.market.max_steps + self._state)

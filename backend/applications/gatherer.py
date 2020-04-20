@@ -16,6 +16,7 @@ class GathererApplication(applications.base.ApplicationBase):
         self._market_list = list()
 
     def _initialize_application_logic(self):
+        self._initialize_client()
         self._initialize_storages()
         self._initialize_exchange()
         self._initialize_fetcher()
@@ -36,7 +37,6 @@ class GathererApplication(applications.base.ApplicationBase):
 
             self._fetcher.safe_fetch()
             indicators = self._fetcher.get_technical_indicator()
-            print(indicators)
 
             if isinstance(self._fetcher,
                           fetcher.single.TradingViewFetcherSingle):
