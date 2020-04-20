@@ -8,7 +8,7 @@ class ServerConfig:
         self.port: int = config.get("port", 5000)
         self.datetime_format: str = config.get("datetime_format",
                                                '%Y-%m-%dT%H:%M:%S.%fZ')
-        self.secret_key: str = config.get('secret_key', None)
+        self.secret_key: str = config.get('secret_key', "")
 
     def __str__(self):
         return "\nServer:" + \
