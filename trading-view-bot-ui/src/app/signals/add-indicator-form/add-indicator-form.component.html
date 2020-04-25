@@ -1,4 +1,11 @@
 <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onAddSignal()">
+  <mat-radio-group aria-label="Signal type" formControlName="type">
+    <mat-radio-button [value]="signalTypes.Indicator"
+      >Indicator</mat-radio-button
+    >
+    <mat-radio-button [value]="signalTypes.Ticker">Ticker</mat-radio-button>
+  </mat-radio-group>
+
   <mat-form-field>
     <mat-label>Market</mat-label>
     <mat-select formControlName="market">
@@ -9,34 +16,39 @@
   </mat-form-field>
   <br />
 
-  <mat-form-field>
-    <mat-label>Indicator</mat-label>
-    <mat-select formControlName="indicator">
-      <mat-option *ngFor="let indicator of indicatorNames" [value]="indicator">
-        {{ indicator }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <br />
+  <div *ngIf="type === signalTypes.Indicator">
+    <mat-form-field>
+      <mat-label>Indicator</mat-label>
+      <mat-select formControlName="indicator">
+        <mat-option
+          *ngFor="let indicator of indicatorNames"
+          [value]="indicator"
+        >
+          {{ indicator }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br />
 
-  <mat-form-field>
-    <mat-label>Candle sizes</mat-label>
-    <mat-select formControlName="candleSize">
-      <mat-option
-        *ngFor="let candleSize of indicatorCandleSizes"
-        [value]="candleSize"
-      >
-        {{ candleSize }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <br />
+    <mat-form-field>
+      <mat-label>Candle sizes</mat-label>
+      <mat-select formControlName="candleSize">
+        <mat-option
+          *ngFor="let candleSize of indicatorCandleSizes"
+          [value]="candleSize"
+        >
+          {{ candleSize }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <br />
+  </div>
 
   <app-date-span-picker [group]="form.get('dateSpan')"></app-date-span-picker>
 
   <mat-form-field>
     <mat-label>Step</mat-label>
-    <input matInput type="number" value="1" formControlName="step" />
+    <input matInput type="number" value="1" min="0" formControlName="step" />
   </mat-form-field>
   <br />
 
@@ -51,7 +63,10 @@
   </mat-form-field>
   <br />
 
-  <app-complex-filter></app-complex-filter>
+  <app-complex-filter
+    [(filters)]="filters"
+    [types]="filterTypes"
+  ></app-complex-filter>
 
   <button mat-raised-button color="primary">
     Add indicator

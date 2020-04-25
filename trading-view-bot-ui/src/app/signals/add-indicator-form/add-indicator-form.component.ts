@@ -1,78 +1,91 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { CurrentFiltersService } from 'src/app/filtering/current-filters.service';
+import { Component, OnInit, Inject } from "@angular/core";
+import { FormGroup, FormBuilder } from "@angular/forms";
 import {
   SignalRegistryService,
   SignalType,
-  SignalProperties
-} from '../signal-registry.service';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+  SignalProperties,
+} from "../signal-registry.service";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-add-indicator-form',
-  templateUrl: './add-indicator-form.component.html',
-  styleUrls: ['./add-indicator-form.component.css']
+  selector: "app-add-indicator-form",
+  templateUrl: "./add-indicator-form.component.html",
+  styleUrls: ["./add-indicator-form.component.css"],
 })
 export class AddIndicatorFormComponent implements OnInit {
+  public signalTypes = SignalType;
   form: FormGroup;
 
   indicatorMarkets = [];
   indicatorNames = [];
   indicatorCandleSizes = [];
+  filterTypes = [];
+  filters = [];
 
   loading = false;
+  type: SignalType = null;
 
   constructor(
     public dialogRef: MatDialogRef<AddIndicatorFormComponent>,
     @Inject(MAT_DIALOG_DATA) public properties: SignalProperties,
     private signalRegistryService: SignalRegistryService,
-    private currentFilterService: CurrentFiltersService,
     private formBuilder: FormBuilder
   ) {
     if (!this.properties) {
       this.properties = {
-        market: '',
+        market: "",
         type: SignalType.Indicator,
-        color: ''
+        color: "",
       };
     }
   }
 
   ngOnInit() {
-    this.signalRegistryService.getOptions(this.properties.type).subscribe(
-      response => {
-        this.indicatorMarkets = response.market;
-        this.indicatorNames = response.indicator;
-        this.indicatorCandleSizes = response.candle_size;
-        this.currentFilterService.setTypes(response.filter_types);
-      },
-      error => {
-        console.log(error);
-      }
-    );
-
     this.form = this.formBuilder.group({
-      market: '',
-      indicator: '',
-      candleSize: '',
+      type: "",
+      market: "",
+      indicator: "",
+      candleSize: "",
       dateSpan: this.formBuilder.group({
-        start: '',
-        end: ''
+        start: "",
+        end: "",
       }),
+      filter: [],
       step: 1,
-      color: this.getRandomColor()
+      color: this.getRandomColor(),
+    });
+
+    this.form.controls.type.valueChanges.subscribe((signalType: SignalType) => {
+      this.type = signalType;
+      this.loading = true;
+      this.signalRegistryService.getOptions(this.type).subscribe(
+        (response) => {
+          this.indicatorMarkets = response.market;
+          this.indicatorNames = response.indicator;
+          this.indicatorCandleSizes = response.candle_size;
+          this.filterTypes = response.filter_types;
+          this.loading = false;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
     });
   }
 
   onAddSignal() {
     this.loading = true;
-    this.properties = { ...this.properties, ...this.form.value };
+    this.properties = {
+      ...this.properties,
+      ...this.form.value,
+      filter: [...this.filters],
+    };
     console.log(this.properties);
     this.signalRegistryService.register(this.properties).subscribe(
       () => {
         this.loading = false;
       },
-      error => {
+      (error) => {
         this.loading = false;
         console.log(error);
       }
@@ -86,9 +99,9 @@ export class AddIndicatorFormComponent implements OnInit {
   getRandomColor() {
     return (
       this.getRandomSegment() +
-      ',' +
+      "," +
       this.getRandomSegment() +
-      ',' +
+      "," +
       this.getRandomSegment()
     );
   }

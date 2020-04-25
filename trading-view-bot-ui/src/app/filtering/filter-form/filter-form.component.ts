@@ -1,21 +1,16 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { CurrentFiltersService } from '../current-filters.service';
+import { Component, Input } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { Subscription } from "rxjs";
 
 @Component({
-  selector: 'app-filter-form',
-  templateUrl: './filter-form.component.html',
-  styleUrls: ['./filter-form.component.css']
+  selector: "app-filter-form",
+  templateUrl: "./filter-form.component.html",
+  styleUrls: ["./filter-form.component.css"],
 })
-export class FilterFormComponent implements OnInit {
+export class FilterFormComponent {
   @Input() group: FormGroup;
-  types: string[] = [];
+  @Input() types: string[] = [];
+  filterSubscription: Subscription;
 
-  constructor(private currentFilterService: CurrentFiltersService) {}
-
-  ngOnInit(): void {
-    this.currentFilterService.typesChanged.subscribe(types => {
-      this.types = types;
-    });
-  }
+  constructor() {}
 }

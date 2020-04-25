@@ -1,13 +1,13 @@
-import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Filter } from '../filtering/filter.entity';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { DateSpan } from './date-span-picker/date-span-picker.component';
+import { Injectable } from "@angular/core";
+import { Subject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
+import { Filter } from "../filtering/filter.entity";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { environment } from "src/environments/environment";
+import { DateSpan } from "./date-span-picker/date-span-picker.component";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class SignalRegistryService {
   signals: Array<RegisteredSignal> = [];
@@ -19,7 +19,7 @@ export class SignalRegistryService {
     const id = this.signals.push({
       id: this.signals.length + 1,
       data: null,
-      properties
+      properties,
     });
 
     return this.modify(id - 1, properties);
@@ -50,8 +50,8 @@ export class SignalRegistryService {
   getSignal(properties: SignalProperties): Observable<SignalResponse> {
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
+        "Content-Type": "application/json",
+      }),
     };
     return this.http.post<SignalResponse>(
       this.getBaseUrl(properties.type),
@@ -61,13 +61,13 @@ export class SignalRegistryService {
   }
 
   getOptions(type: SignalType): Observable<SignalOptions> {
-    return this.http.get<SignalOptions>(this.getBaseUrl(type, '/options'));
+    return this.http.get<SignalOptions>(this.getBaseUrl(type, "/options"));
   }
 
-  getBaseUrl(type: SignalType, subUrl: string = ''): string {
+  getBaseUrl(type: SignalType, subUrl: string = ""): string {
     return (
       environment.apiBaseUrl +
-      (type === SignalType.Indicator ? 'indicator' : 'ticker') +
+      (type === SignalType.Indicator ? "indicator" : "ticker") +
       subUrl
     );
   }
@@ -75,7 +75,7 @@ export class SignalRegistryService {
 
 export enum SignalType {
   Indicator,
-  Ticker
+  Ticker,
 }
 
 export interface RegisteredSignal {
