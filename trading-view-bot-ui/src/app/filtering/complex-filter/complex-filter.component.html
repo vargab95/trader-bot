@@ -1,5 +1,25 @@
-<app-filter-form [group]="addFilterFormGroup"></app-filter-form>
+<app-filter-form [types]="types" [group]="addFilterFormGroup"></app-filter-form>
+
 <button mat-raised-button type="button" color="primary" (click)="onAddFilter()">
   Add filter
 </button>
-<app-filter-list></app-filter-list>
+
+<table *ngIf="!empty" mat-table [dataSource]="filters" class="mat-elevation-z8">
+  <ng-container matColumnDef="no">
+    <th mat-header-cell *matHeaderCellDef>No.</th>
+    <td mat-cell *matCellDef="let element">{{ element.no }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="length">
+    <th mat-header-cell *matHeaderCellDef>Length</th>
+    <td mat-cell *matCellDef="let element">{{ element.length }}</td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
