@@ -46,6 +46,8 @@ import { MatTableModule } from "@angular/material/table";
 import { SignalListComponent } from "./signals/signal-list/signal-list.component";
 import { MatDividerModule } from "@angular/material/divider";
 
+import { MatDialogModule } from "@angular/material/dialog";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -87,6 +89,7 @@ import { MatDividerModule } from "@angular/material/divider";
     MatIconModule,
     MatTableModule,
     MatDividerModule,
+    MatDialogModule,
   ],
   providers: [
     CookieService,

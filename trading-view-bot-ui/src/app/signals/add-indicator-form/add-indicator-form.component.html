@@ -1,75 +1,96 @@
-<form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onAddSignal()">
-  <mat-radio-group aria-label="Signal type" formControlName="type">
-    <mat-radio-button [value]="signalTypes.Indicator"
-      >Indicator</mat-radio-button
-    >
-    <mat-radio-button [value]="signalTypes.Ticker">Ticker</mat-radio-button>
-  </mat-radio-group>
+<h4 mat-dialog-title *ngIf="!loading">Add new signal</h4>
+<mat-dialog-content>
+  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onAddSignal()">
+    <mat-radio-group aria-label="Signal type" formControlName="type">
+      <mat-radio-button [value]="signalTypes.Indicator"
+        >Indicator</mat-radio-button
+      >
+      <mat-radio-button [value]="signalTypes.Ticker">Ticker</mat-radio-button>
+    </mat-radio-group>
 
-  <mat-form-field>
-    <mat-label>Market</mat-label>
-    <mat-select formControlName="market">
-      <mat-option *ngFor="let market of indicatorMarkets" [value]="market">
-        {{ market }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <br />
+    <div *ngIf="type !== null">
+      <mat-form-field>
+        <mat-label>Market</mat-label>
+        <mat-select formControlName="market">
+          <mat-option *ngFor="let market of indicatorMarkets" [value]="market">
+            {{ market }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br />
 
-  <div *ngIf="type === signalTypes.Indicator">
-    <mat-form-field>
-      <mat-label>Indicator</mat-label>
-      <mat-select formControlName="indicator">
-        <mat-option
-          *ngFor="let indicator of indicatorNames"
-          [value]="indicator"
-        >
-          {{ indicator }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <br />
+      <div *ngIf="type === signalTypes.Indicator">
+        <mat-form-field>
+          <mat-label>Indicator</mat-label>
+          <mat-select formControlName="indicator">
+            <mat-option
+              *ngFor="let indicator of indicatorNames"
+              [value]="indicator"
+            >
+              {{ indicator }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br />
 
-    <mat-form-field>
-      <mat-label>Candle sizes</mat-label>
-      <mat-select formControlName="candleSize">
-        <mat-option
-          *ngFor="let candleSize of indicatorCandleSizes"
-          [value]="candleSize"
-        >
-          {{ candleSize }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <br />
-  </div>
+        <mat-form-field>
+          <mat-label>Candle sizes</mat-label>
+          <mat-select formControlName="candleSize">
+            <mat-option
+              *ngFor="let candleSize of indicatorCandleSizes"
+              [value]="candleSize"
+            >
+              {{ candleSize }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br />
+      </div>
 
-  <app-date-span-picker [group]="form.get('dateSpan')"></app-date-span-picker>
+      <app-date-span-picker
+        [group]="form.get('dateSpan')"
+      ></app-date-span-picker>
 
-  <mat-form-field>
-    <mat-label>Step</mat-label>
-    <input matInput type="number" value="1" min="0" formControlName="step" />
-  </mat-form-field>
-  <br />
+      <mat-form-field>
+        <mat-label>Step</mat-label>
+        <input
+          matInput
+          type="number"
+          value="1"
+          min="0"
+          formControlName="step"
+        />
+      </mat-form-field>
+      <br />
 
-  <mat-form-field>
-    <mat-label>Color</mat-label>
-    <input
-      matInput
-      formControlName="color"
-      placeholder="Color"
-      value="225,100,100"
-    />
-  </mat-form-field>
-  <br />
+      <mat-form-field>
+        <mat-label>Color</mat-label>
+        <input
+          matInput
+          formControlName="color"
+          placeholder="Color"
+          value="225,100,100"
+        />
+      </mat-form-field>
+      <br />
 
-  <app-complex-filter
-    [(filters)]="filters"
-    [types]="filterTypes"
-  ></app-complex-filter>
+      <app-complex-filter></app-complex-filter>
 
-  <button mat-raised-button color="primary">
+      <!-- <button mat-raised-button color="primary">
+        Add indicator
+      </button> -->
+    </div>
+  </form>
+  <mat-spinner *ngIf="loading"></mat-spinner>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="!loading" align="end">
+  <button mat-raised-button mat-dialog-close color="primary">Cancel</button>
+  <button
+    mat-raised-button
+    cdkFocusInitial
+    color="primary"
+    (click)="onAddSignal()"
+  >
     Add indicator
   </button>
-</form>
-<mat-spinner *ngIf="loading"></mat-spinner>
+</mat-dialog-actions>
