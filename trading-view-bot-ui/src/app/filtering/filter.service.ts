@@ -20,7 +20,6 @@ export class FilterService {
   }
 
   set types(types: Array<string>) {
-    console.log(types);
     this._types = [...types];
     this.typesChanged.next(this.types);
   }

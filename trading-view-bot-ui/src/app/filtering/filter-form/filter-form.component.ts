@@ -19,7 +19,6 @@ export class FilterFormComponent implements OnInit, OnDestroy {
     this.types = this.filterService.types;
     this.filterSubscription = this.filterService.typesChanged.subscribe(
       (types) => {
-        console.log("Types changed in filter form");
         this.types = types;
       }
     );
