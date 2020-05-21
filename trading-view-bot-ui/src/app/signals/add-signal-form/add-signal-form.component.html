@@ -1,7 +1,11 @@
 <h4 mat-dialog-title *ngIf="!loading">Add new signal</h4>
 <mat-dialog-content>
   <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onAddSignal()">
-    <mat-radio-group aria-label="Signal type" formControlName="type">
+    <mat-radio-group
+      *ngIf="type === null"
+      aria-label="Signal type"
+      formControlName="type"
+    >
       <mat-radio-button [value]="signalTypes.Indicator"
         >Indicator</mat-radio-button
       >
@@ -87,6 +91,7 @@
     cdkFocusInitial
     color="primary"
     (click)="onAddSignal()"
+    [(disabled)]="!form.valid"
   >
     Add indicator
   </button>
