@@ -9,23 +9,23 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { FilterService } from "src/app/filtering/filter.service";
 
 @Component({
-  selector: "app-add-indicator-form",
-  templateUrl: "./add-indicator-form.component.html",
-  styleUrls: ["./add-indicator-form.component.css"],
+  selector: "app-add-signal-form",
+  templateUrl: "./add-signal-form.component.html",
+  styleUrls: ["./add-signal-form.component.css"],
 })
-export class AddIndicatorFormComponent implements OnInit {
+export class AddSignalFormComponent implements OnInit {
   public signalTypes = SignalType;
   form: FormGroup;
 
-  indicatorMarkets = [];
-  indicatorNames = [];
-  indicatorCandleSizes = [];
+  markets = [];
+  names = [];
+  candleSizes = [];
 
   loading = false;
   type: SignalType = null;
 
   constructor(
-    public dialogRef: MatDialogRef<AddIndicatorFormComponent>,
+    public dialogRef: MatDialogRef<AddSignalFormComponent>,
     @Inject(MAT_DIALOG_DATA) public properties: SignalProperties,
     private signalRegistryService: SignalRegistryService,
     private filterService: FilterService,
@@ -61,9 +61,9 @@ export class AddIndicatorFormComponent implements OnInit {
       this.loading = true;
       this.signalRegistryService.getOptions(this.type).subscribe(
         (response) => {
-          this.indicatorMarkets = response.market;
-          this.indicatorNames = response.indicator;
-          this.indicatorCandleSizes = response.candle_size;
+          this.markets = response.market;
+          this.names = response.indicator;
+          this.candleSizes = response.candle_size;
           this.filterService.types = response.filter_types;
           this.loading = false;
         },

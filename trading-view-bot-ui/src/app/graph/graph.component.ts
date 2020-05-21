@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
-import { AddIndicatorFormComponent } from "../signals/add-indicator-form/add-indicator-form.component";
+import { AddSignalFormComponent } from "../signals/add-signal-form/add-signal-form.component";
 
 @Component({
   selector: "app-graph",
@@ -13,7 +13,7 @@ export class GraphComponent implements OnInit {
   ngOnInit(): void {}
 
   onAddSignal() {
-    const dialogRef = this.dialog.open(AddIndicatorFormComponent, {
+    const dialogRef = this.dialog.open(AddSignalFormComponent, {
       maxWidth: "90%",
       minWidth: "20%",
     });

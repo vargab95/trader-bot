@@ -27,7 +27,7 @@ import {
 import { NgxMatMomentModule } from "@angular-material-components/moment-adapter";
 import { ChartComponent } from "./chart/chart/chart.component";
 import { DateSpanPickerComponent } from "./signals/date-span-picker/date-span-picker.component";
-import { AddIndicatorFormComponent } from "./signals/add-indicator-form/add-indicator-form.component";
+import { AddSignalFormComponent } from "./signals/add-signal-form/add-signal-form.component";
 import { GraphComponent } from "./graph/graph.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { SignupComponent } from "./auth/signup/signup.component";
@@ -40,7 +40,6 @@ import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatIconModule } from "@angular/material/icon";
 import { ComplexFilterComponent } from "./filtering/complex-filter/complex-filter.component";
 import { FilterFormComponent } from "./filtering/filter-form/filter-form.component";
-import { AddSignalFormCommonComponent } from "./signals/add-signal-form-common/add-signal-form-common.component";
 
 import { MatTableModule } from "@angular/material/table";
 import { SignalListComponent } from "./signals/signal-list/signal-list.component";
@@ -53,14 +52,13 @@ import { MatDialogModule } from "@angular/material/dialog";
     AppComponent,
     ChartComponent,
     DateSpanPickerComponent,
-    AddIndicatorFormComponent,
+    AddSignalFormComponent,
     GraphComponent,
     LoginComponent,
     SignupComponent,
     NavbarComponent,
     ComplexFilterComponent,
     FilterFormComponent,
-    AddSignalFormCommonComponent,
     SignalListComponent,
   ],
   imports: [
