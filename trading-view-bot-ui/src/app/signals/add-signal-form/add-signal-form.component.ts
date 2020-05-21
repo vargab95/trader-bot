@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from "@angular/core";
-import { FormGroup, FormBuilder } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import {
   SignalRegistryService,
   SignalType,
@@ -43,22 +43,38 @@ export class AddSignalFormComponent implements OnInit {
 
   ngOnInit() {
     this.form = this.formBuilder.group({
-      type: "",
-      market: "",
-      indicator: "",
-      candleSize: "",
-      dateSpan: this.formBuilder.group({
-        start: "",
-        end: "",
-      }),
-      filter: [],
-      step: 1,
-      color: this.getRandomColor(),
+      type: ["", Validators.required],
     });
-
     this.form.controls.type.valueChanges.subscribe((signalType: SignalType) => {
       this.type = signalType;
       this.loading = true;
+
+      if (signalType == SignalType.Ticker) {
+        this.form = this.formBuilder.group({
+          market: ["", Validators.required],
+          dateSpan: this.formBuilder.group({
+            start: [new Date(), Validators.required],
+            end: [new Date(), Validators.required],
+          }),
+          filter: [],
+          step: [1, Validators.required],
+          color: [this.getRandomColor(), Validators.required],
+        });
+      } else {
+        this.form = this.formBuilder.group({
+          market: ["", Validators.required],
+          indicator: ["", Validators.required],
+          candleSize: ["", Validators.required],
+          dateSpan: this.formBuilder.group({
+            start: ["", Validators.required],
+            end: ["", Validators.required],
+          }),
+          filter: [],
+          step: [1, Validators.required],
+          color: [this.getRandomColor(), Validators.required],
+        });
+      }
+
       this.signalRegistryService.getOptions(this.type).subscribe(
         (response) => {
           this.markets = response.market;
@@ -81,6 +97,7 @@ export class AddSignalFormComponent implements OnInit {
       ...this.form.value,
       filter: [...this.filterService.filters],
     };
+    this.properties.type = this.type;
     console.log(this.properties);
     this.signalRegistryService.register(this.properties).subscribe(
       () => {
