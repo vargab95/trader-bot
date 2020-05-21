@@ -12,7 +12,7 @@
       <mat-form-field>
         <mat-label>Market</mat-label>
         <mat-select formControlName="market">
-          <mat-option *ngFor="let market of indicatorMarkets" [value]="market">
+          <mat-option *ngFor="let market of markets" [value]="market">
             {{ market }}
           </mat-option>
         </mat-select>
@@ -23,10 +23,7 @@
         <mat-form-field>
           <mat-label>Indicator</mat-label>
           <mat-select formControlName="indicator">
-            <mat-option
-              *ngFor="let indicator of indicatorNames"
-              [value]="indicator"
-            >
+            <mat-option *ngFor="let indicator of names" [value]="indicator">
               {{ indicator }}
             </mat-option>
           </mat-select>
@@ -37,7 +34,7 @@
           <mat-label>Candle sizes</mat-label>
           <mat-select formControlName="candleSize">
             <mat-option
-              *ngFor="let candleSize of indicatorCandleSizes"
+              *ngFor="let candleSize of candleSizes"
               [value]="candleSize"
             >
               {{ candleSize }}
