@@ -1,6 +1,8 @@
-<h4 mat-dialog-title *ngIf="!loading">Add new signal</h4>
+<h4 mat-dialog-title *ngIf="!loading">
+  {{ isModify ? "Modify signal" : "Add new signal" }}
+</h4>
 <mat-dialog-content>
-  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onAddSignal()">
+  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-radio-group
       *ngIf="type === null"
       aria-label="Signal type"
@@ -90,9 +92,9 @@
     mat-raised-button
     cdkFocusInitial
     color="primary"
-    (click)="onAddSignal()"
-    [(disabled)]="!form.valid"
+    (click)="onSubmit()"
+    [disabled]="!form.valid"
   >
-    Add indicator
+    {{ isModify ? "Modify signal" : "Add signal" }}
   </button>
 </mat-dialog-actions>

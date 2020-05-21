@@ -41,7 +41,6 @@ export class ComplexFilterComponent implements OnInit, OnDestroy {
   }
 
   onAddFilter(): void {
-    console.log(this.addFilterFormGroup.value);
     this.filterService.addFilter(this.addFilterFormGroup.value as Filter);
   }
 }

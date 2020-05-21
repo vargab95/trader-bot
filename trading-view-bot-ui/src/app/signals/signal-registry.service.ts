@@ -15,9 +15,13 @@ export class SignalRegistryService {
 
   constructor(private http: HttpClient) {}
 
+  get(id: number) {
+    return { ...this.signals[id] };
+  }
+
   register(properties: SignalProperties) {
     const id = this.signals.push({
-      id: this.signals.length + 1,
+      id: this.signals.length,
       data: null,
       properties,
     });
@@ -26,10 +30,10 @@ export class SignalRegistryService {
   }
 
   remove(id: number) {
-    delete this.signals[id];
+    this.signals.splice(id, 1);
 
     for (let i = 0; i < this.signals.length; i++) {
-      this.signals[i].id = i + 1;
+      this.signals[i].id = i;
     }
 
     this.signalsChanged.next([...this.signals]);
@@ -40,7 +44,6 @@ export class SignalRegistryService {
 
     return this.getSignal(properties).pipe(
       map((response: SignalResponse) => {
-        console.log(response);
         this.signals[id].data = response;
         this.signalsChanged.next([...this.signals]);
       })
@@ -89,7 +92,7 @@ export interface SignalProperties {
   type: SignalType;
   color: string;
   indicator?: string;
-  candle_size?: string;
+  candleSize?: string;
   dateSpan?: DateSpan;
   limit?: number;
   filter?: Array<Filter>;
