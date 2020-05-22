@@ -14,7 +14,7 @@ from traders.common import TraderState
 
 
 class LeverageTraderBase(traders.base.TraderBase):
-    def __init__(self, configuration: config.trader.TraderConfig,
+    def __init__(self, configuration: config.application.ApplicationConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         super().__init__(used_exchange)
         self._configuration = configuration

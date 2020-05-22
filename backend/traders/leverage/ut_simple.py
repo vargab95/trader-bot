@@ -3,7 +3,7 @@
 import unittest
 import unittest.mock
 
-import config.trader
+import config.application
 import traders.leverage.simple
 import exchange.interface
 import exchange.factory
@@ -12,7 +12,8 @@ import exchange.factory
 class SimpleLeverageTraderTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.config: config.trader.TraderConfig = config.trader.TraderConfig({})
+        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({
+        })
         cls.config.testing.enabled = True
         cls.config.testing.real_time = False
         cls.config.testing.start_money = 100.0
@@ -117,7 +118,8 @@ class SimpleLeverageTraderTest(unittest.TestCase):
 class MultiDetectorSimpleLeverageTraderTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.config: config.trader.TraderConfig = config.trader.TraderConfig({})
+        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({
+        })
         cls.config.testing.enabled = True
         cls.config.testing.real_time = False
         cls.config.testing.start_money = 100.0

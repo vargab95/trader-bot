@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import config.trader
+import config.application
 import traders.leverage.simple
 import traders.leverage.stepped
 import exchange.interface
@@ -12,7 +12,7 @@ class InvalidTradingMethod(Exception):
 
 class TraderFactory:
     @staticmethod
-    def create(configuration: config.trader.TraderConfig,
+    def create(configuration: config.application.ApplicationConfig,
                used_exchange: exchange.interface.ExchangeInterface):
         if configuration.market.method == "simple":
             return traders.leverage.simple.SimpleLeverageTrader(

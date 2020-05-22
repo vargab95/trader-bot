@@ -2,7 +2,7 @@
 
 import unittest
 
-import config.trader
+import config.application
 import exchange.factory
 import exchange.interface
 
@@ -10,7 +10,8 @@ import exchange.interface
 class BinanceMockTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.config: config.trader.TraderConfig = config.trader.TraderConfig({})
+        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({
+        })
         cls.config.testing.enabled = True
         cls.config.testing.real_time = False
         cls.config.testing.start_money = 100.0

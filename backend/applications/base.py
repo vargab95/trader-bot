@@ -25,7 +25,7 @@ class ApplicationInitializationException(Exception):
 
 class ApplicationBase:
     def __init__(self):
-        self._configuration: config.trader.TraderConfig
+        self._configuration: config.application.ApplicationConfig
         self._configuration_file_path: str
         self._postman: mailing.postman.Postman
         self._client: storage.client.Client

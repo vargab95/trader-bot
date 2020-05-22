@@ -10,7 +10,7 @@ import exchange.interface
 
 
 class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
-    def __init__(self, configuration: config.trader.TraderConfig,
+    def __init__(self, configuration: config.application.ApplicationConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         super().__init__(configuration, used_exchange)
 
