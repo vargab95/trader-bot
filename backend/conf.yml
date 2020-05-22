@@ -1,52 +1,60 @@
-logging:
-    level: 0
-    path: "trading_view_bot.log"
-
-testing:
-    enabled: false
-    real_time: true
-
-    # In USD
-    start_money: 100
-
-    # In ratio (1% is 0.01)
-    fee: 0.001
-
-    balance_storage: "balances.json"
-
-market:
-    name: "GEMINI:BTCUSD"
-    candle_size: "1h"
-    indicator_sma: 1
-    follower_enabled: true
-    follower_candle_size: "1D"
-    method: "stepped"
-    step_count: 5
-
-    # In second
-    check_interval: 10
-
-    falling_edge_detection: False
-    bullish_threshold: 0.0
-    bearish_threshold: 0.0
-
-exchange:
-    name: "ftx"
-    watched_market: "BTC-USD"
-    bullish_market: "BULL-USD"
-    bearish_market: "BEAR-USD"
-    api_key: ""
-    api_secret: ""
-    # market_name_format: "{target}{base}"
-    market_name_format: "{target}/{base}"
-
-mail:
-    name: "TradingViewBot"
-    receiver: "tvb@vbj.hu"
-    password: ""
-
-database:
-    url: "bvarga.hu"
-    user: "tvb"
-    password: ""
-    query_limit: 10
+!!python/object:config.trader.TraderConfig
+database: !!python/object:config.database.DatabaseConfig
+  limit: -1
+  password: ''
+  url: ''
+  user: ''
+exchange: !!python/object:config.exchange.ExchangeConfig
+  bearish_market: !!python/object:exchange.interface.Market
+    amount: 0.0
+    base: USDT
+    price: 0.0
+    target: BEAR
+  bullish_market: !!python/object:exchange.interface.Market
+    amount: 0.0
+    base: USDT
+    price: 0.0
+    target: BULL
+  market_name_format: '{target}-{base}'
+  name: binance
+  private_key: ''
+  public_key: ''
+  watched_market: !!python/object:exchange.interface.Market
+    amount: 0.0
+    base: USDT
+    price: 0.0
+    target: BTC
+logging: !!python/object:config.logging.LoggingConfig
+  level: 31
+  path: ''
+mail: !!python/object:config.mail.MailConfig
+  name: TradingViewBot
+  password: ''
+  port: 25
+  receiver: ''
+  sender: tvb@vbj.hu
+  smtp_server: smtp.vbj.hu
+market: !!python/object:config.market.MarketConfig
+  candle_size: 1h
+  check_interval: 60
+  falling_edge_detection: false
+  follower_candle_size: 1h
+  follower_enabled: false
+  indicator_name: all
+  indicator_sma: 1
+  max_steps: 5
+  method: simple
+  name: GEMINI:BTCUSD
+  thresholds:
+  - bear: 0.0
+    bull: 0.0
+server: !!python/object:config.server.ServerConfig
+  datetime_format: '%Y-%m-%dT%H:%M:%S.%fZ'
+  port: 5000
+  secret_key: ''
+testing: !!python/object:config.testing.TestingConfig
+  balance_store: balances.json
+  enabled: false
+  fee: 0.001
+  real_time: false
+  start_money: 100.0

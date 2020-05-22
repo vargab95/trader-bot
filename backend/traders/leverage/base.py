@@ -38,9 +38,9 @@ class LeverageTraderBase(traders.base.TraderBase):
         logging.debug("Detector(s) has returned %s", str(actions))
         logging.debug("Current state is %s", str(self._state))
 
-        if detector.common.TradingAction.BUY_BULLISH in actions:
+        if detector.common.TradingAction.BULLISH_SIGNAL in actions:
             self._bullish_logic()
-        elif detector.common.TradingAction.BUY_BEARISH in actions:
+        elif detector.common.TradingAction.BEARISH_SIGNAL in actions:
             self._bearish_logic()
 
         if self._is_there_any_pending_transaction():
