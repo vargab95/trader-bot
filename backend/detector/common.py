@@ -4,9 +4,9 @@ import enum
 
 
 class TradingAction(enum.Enum):
-    HOLD = 0
-    BUY_BULLISH = 1
-    BUY_BEARISH = 2
+    HOLD_SIGNAL = 0
+    BULLISH_SIGNAL = 1
+    BEARISH_SIGNAL = 2
 
 
 class CurrentState(enum.Enum):

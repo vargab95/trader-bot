@@ -11,20 +11,20 @@ class StatelessRisingEdgeDetector(detector.interface.DetectorInterface):
 
     def _bullish_compare(self, indicator):
         return indicator > self._bullish_threshold and \
-               self._last_value <= self._bullish_threshold and \
-               indicator != self._last_value
+            self._last_value <= self._bullish_threshold and \
+            indicator != self._last_value
 
     def _bearish_compare(self, indicator):
         return indicator < self._bearish_threshold and \
-               self._last_value >= self._bearish_threshold and \
-               indicator != self._last_value
+            self._last_value >= self._bearish_threshold and \
+            indicator != self._last_value
 
     def check(self, indicator: float) -> detector.common.TradingAction:
-        result = detector.common.TradingAction.HOLD
+        result = detector.common.TradingAction.HOLD_SIGNAL
         if self._bullish_compare(indicator):
-            result = detector.common.TradingAction.BUY_BULLISH
+            result = detector.common.TradingAction.BULLISH_SIGNAL
         elif self._bearish_compare(indicator):
-            result = detector.common.TradingAction.BUY_BEARISH
+            result = detector.common.TradingAction.BEARISH_SIGNAL
 
         self._last_value = indicator
 

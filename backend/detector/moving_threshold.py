@@ -49,11 +49,11 @@ class MovingThresholdRisingEdgeDetector(detector.rising_edge.RisingEdgeDetector
         self.first_signal_returned = True
         if indicator <= self._bearish_threshold:
             logging.debug("Initial state was overwritten by bearish")
-            return detector.common.TradingAction.BUY_BEARISH
+            return detector.common.TradingAction.BEARISH_SIGNAL
 
         if indicator >= self._bullish_threshold:
             logging.debug("Initial state was overwritten by bullish")
-            return detector.common.TradingAction.BUY_BULLISH
+            return detector.common.TradingAction.BULLISH_SIGNAL
 
         logging.debug("Initial state was overwritten by hold")
-        return detector.common.TradingAction.HOLD
+        return detector.common.TradingAction.HOLD_SIGNAL

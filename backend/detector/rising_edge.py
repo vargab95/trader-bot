@@ -17,14 +17,14 @@ class RisingEdgeDetector(detector.interface.DetectorInterface):
         return indicator < self._bearish_threshold
 
     def check(self, indicator: float) -> detector.common.TradingAction:
-        result = detector.common.TradingAction.HOLD
+        result = detector.common.TradingAction.HOLD_SIGNAL
         if self._bullish_compare(indicator) and \
                 self.current_state != detector.common.CurrentState.BULL:
-            result = detector.common.TradingAction.BUY_BULLISH
+            result = detector.common.TradingAction.BULLISH_SIGNAL
             self.current_state = detector.common.CurrentState.BULL
         elif self._bearish_compare(indicator) and \
                 self.current_state != detector.common.CurrentState.BEAR:
-            result = detector.common.TradingAction.BUY_BEARISH
+            result = detector.common.TradingAction.BEARISH_SIGNAL
             self.current_state = detector.common.CurrentState.BEAR
 
         return result
