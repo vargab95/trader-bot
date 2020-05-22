@@ -2,14 +2,14 @@
 
 import logging
 
-import config.market
+import config.trader
 import fetcher.common
 import fetcher.base
 
 
 # TODO Not covered by tests
 class TradingViewFetcherSingle(fetcher.base.TradingViewFetcherBase):
-    def __init__(self, market: config.market.MarketConfig, candle_size: float):
+    def __init__(self, market: config.trader.TraderConfig, candle_size: float):
         super().__init__(market, candle_size)
 
         if candle_size not in list(self.candle_size_map.keys()):

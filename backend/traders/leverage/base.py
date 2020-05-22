@@ -4,7 +4,7 @@ import abc
 import logging
 import typing
 
-import config.market
+import config.trader
 import traders.base
 import detector.factory
 import detector.interface
@@ -23,11 +23,11 @@ class LeverageTraderBase(traders.base.TraderBase):
         self._use_stateless_detector = False
 
     def initialize(self):
-        for threshold in self._configuration.market.thresholds:
+        for threshold in self._configuration.trader.thresholds:
             self._detectors.append(
                 detector.factory.DetectorFactory.create(
                     threshold["bear"], threshold["bull"],
-                    self._configuration.market.falling_edge_detection,
+                    self._configuration.trader.falling_edge_detection,
                     self._use_stateless_detector))
 
     def perform(self, value: float):

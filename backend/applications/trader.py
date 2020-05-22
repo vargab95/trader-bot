@@ -27,9 +27,9 @@ class TraderApplication(applications.base.ApplicationBase):
         self._initialize_exchange()
         self._initialize_fetcher()
 
-        if self._configuration.market.indicator_sma > 1:
+        if self._configuration.trader.indicator_sma > 1:
             self.__sma = filters.sma.SMA(
-                self._configuration.market.indicator_sma)
+                self._configuration.trader.indicator_sma)
         else:
             self.__sma = None
 
@@ -68,7 +68,7 @@ class TraderApplication(applications.base.ApplicationBase):
                 "Waiting for SMA to be filled. "
                 "Current length: %d "
                 "Final length: %d ", self.__sma.length,
-                self._configuration.market.indicator_sma)
+                self._configuration.trader.indicator_sma)
         return self.__sma.get()
 
     def __log_all_money(self, all_money):

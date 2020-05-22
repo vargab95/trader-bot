@@ -19,8 +19,8 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.market.thresholds = [{"bull": -0.4, "bear": 0.4}]
-        cls.config.market.max_steps = 10
+        cls.config.trader.thresholds = [{"bull": -0.4, "bear": 0.4}]
+        cls.config.trader.max_steps = 10
 
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format
@@ -127,7 +127,7 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.market.thresholds = [{
+        cls.config.trader.thresholds = [{
             "bull": -0.4,
             "bear": 0.4
         }, {
@@ -137,7 +137,7 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
             "bull": -0.6,
             "bear": 0.6
         }]
-        cls.config.market.max_steps = 10
+        cls.config.trader.max_steps = 10
 
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format

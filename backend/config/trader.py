@@ -3,7 +3,7 @@
 import typing
 
 
-class MarketConfig:
+class TraderConfig:
     def __init__(self, config: typing.Dict):
         # TODO create sub config classes
         self.name = config.get("name", "GEMINI:BTCUSD")
@@ -23,7 +23,7 @@ class MarketConfig:
         }])
 
     def __str__(self):
-        return "\nMarket:" + \
+        return "\nTrader:" + \
                "\n    Name:                   " + str(self.name) + \
                "\n    Indicator name:         " + str(self.indicator_name) + \
                "\n    Candle size:            " + str(self.candle_size) + \

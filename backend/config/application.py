@@ -4,7 +4,7 @@ import typing
 
 from config.logging import LoggingConfig
 from config.testing import TestingConfig
-from config.market import MarketConfig
+from config.trader import TraderConfig
 from config.exchange import ExchangeConfig
 from config.mail import MailConfig
 from config.database import DatabaseConfig
@@ -15,7 +15,7 @@ class ApplicationConfig:
     def __init__(self, configuration: typing.Dict = None):
         self.logging = LoggingConfig(configuration.get("logging", {}))
         self.testing = TestingConfig(configuration.get("testing", {}))
-        self.market = MarketConfig(configuration.get("market", {}))
+        self.trader = TraderConfig(configuration.get("market", {}))
         self.exchange = ExchangeConfig(configuration.get("exchange", {}))
         self.mail = MailConfig(configuration.get("mail", {}))
         self.database = DatabaseConfig(configuration.get("database", {}))

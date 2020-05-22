@@ -14,11 +14,11 @@ class TraderFactory:
     @staticmethod
     def create(configuration: config.application.ApplicationConfig,
                used_exchange: exchange.interface.ExchangeInterface):
-        if configuration.market.method == "simple":
+        if configuration.trader.method == "simple":
             return traders.leverage.simple.SimpleLeverageTrader(
                 configuration, used_exchange)
 
-        if configuration.market.method == "stepped":
+        if configuration.trader.method == "stepped":
             return traders.leverage.stepped.SteppedLeverageTrader(
                 configuration, used_exchange)
 
