@@ -46,9 +46,9 @@ class ExporterApplication(applications.base.ApplicationBase):
                 limit=self._configuration.database.limit),
             "indicator":
             self._indicator_storage.get(
-                market=self._configuration.market.name,
+                market=self._configuration.trader.name,
                 indicator="all",
-                candle_size=self._configuration.market.candle_size,
+                candle_size=self._configuration.trader.candle_size,
                 limit=self._configuration.database.limit)
         }
 

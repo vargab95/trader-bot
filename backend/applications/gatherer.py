@@ -42,18 +42,18 @@ class GathererApplication(applications.base.ApplicationBase):
                           fetcher.single.TradingViewFetcherSingle):
                 if indicators:
                     self._indicator_storage.add(
-                        self._configuration.market.name,
-                        self._configuration.market.indicator_name,
-                        self._configuration.market.candle_size, indicators)
+                        self._configuration.trader.name,
+                        self._configuration.trader.indicator_name,
+                        self._configuration.trader.candle_size, indicators)
             else:
                 self.__process_indicator_response(indicators)
 
-            time.sleep(self._configuration.market.check_interval)
+            time.sleep(self._configuration.trader.check_interval)
 
     def __process_indicator_response(self, indicators):
-        for market in self._configuration.market.name:
-            for indicator in self._configuration.market.indicator_name:
-                for candle in self._configuration.market.candle_size:
+        for market in self._configuration.trader.name:
+            for indicator in self._configuration.trader.indicator_name:
+                for candle in self._configuration.trader.candle_size:
                     if indicators[market][indicator][candle]:
                         self._indicator_storage.add(
                             market, indicator, candle,

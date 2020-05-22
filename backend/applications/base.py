@@ -53,14 +53,14 @@ class ApplicationBase:
             self._client.database)
 
     def _initialize_fetcher(self):
-        if isinstance(self._configuration.market.candle_size, str):
+        if isinstance(self._configuration.trader.candle_size, str):
             self._fetcher = fetcher.single.TradingViewFetcherSingle(
-                self._configuration.market,
-                self._configuration.market.candle_size)
-        elif isinstance(self._configuration.market.candle_size, list):
+                self._configuration.trader,
+                self._configuration.trader.candle_size)
+        elif isinstance(self._configuration.trader.candle_size, list):
             self._fetcher = fetcher.multi.TradingViewFetcherMulti(
-                self._configuration.market,
-                self._configuration.market.candle_size)
+                self._configuration.trader,
+                self._configuration.trader.candle_size)
         else:
             logging.critical("Invalid candle size parameter type.")
             raise ApplicationInitializationException()

@@ -19,7 +19,7 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.market.thresholds = [{"bull": -0.4, "bear": 0.4}]
+        cls.config.trader.thresholds = [{"bull": -0.4, "bear": 0.4}]
 
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format
@@ -125,7 +125,7 @@ class MultiDetectorSimpleLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.market.thresholds = [{"bull": -0.4, "bear": 0.4}]
+        cls.config.trader.thresholds = [{"bull": -0.4, "bear": 0.4}]
 
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format

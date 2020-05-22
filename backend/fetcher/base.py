@@ -6,7 +6,7 @@ import socket
 import requests
 import urllib3.exceptions
 
-import config.market
+import config.trader
 import fetcher.common
 
 
@@ -32,7 +32,7 @@ class TradingViewFetcherBase:
         "oscillator": "Recommend.Other"
     }
 
-    def __init__(self, market: config.market.MarketConfig, candle_size: float):
+    def __init__(self, market: config.trader.TraderConfig, candle_size: float):
         self.request = None
         self.response = None
         self.check_interval = market.check_interval

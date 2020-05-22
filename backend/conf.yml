@@ -34,7 +34,7 @@ mail: !!python/object:config.mail.MailConfig
   receiver: ""
   sender: tvb@vbj.hu
   smtp_server: smtp.vbj.hu
-market: !!python/object:config.market.MarketConfig
+market: !!python/object:config.trader.MarketConfig
   candle_size: 1h
   check_interval: 60
   falling_edge_detection: false

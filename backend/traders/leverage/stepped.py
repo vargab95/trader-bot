@@ -2,7 +2,7 @@
 
 import logging
 
-import config.market
+import config.trader
 import traders.base
 import traders.common
 import traders.leverage.base
@@ -19,15 +19,15 @@ class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
         # -1 is one pack of bear
         self._state = 0
 
-        self._pack_ratio = 1.0 / configuration.market.max_steps
-        self._max_steps = configuration.market.max_steps
+        self._pack_ratio = 1.0 / configuration.trader.max_steps
+        self._max_steps = configuration.trader.max_steps
         self._use_stateless_detector = True
 
     def _bullish_logic(self):
         if self._state < 0:
             self._sell(self._configuration.exchange.bearish_market)
             self._state = 0
-            self._pack_ratio = 1.0 / self._configuration.market.max_steps
+            self._pack_ratio = 1.0 / self._configuration.trader.max_steps
         if self._state < self._max_steps:
             # FIXME That state is not handled properly, when this buy statement
             # fails, because it won't take into account the bullish signal
@@ -37,9 +37,9 @@ class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
             if self._buy(self._configuration.exchange.bullish_market,
                          self._pack_ratio):
                 self._state += 1
-                if self._state != self._configuration.market.max_steps:
+                if self._state != self._configuration.trader.max_steps:
                     self._pack_ratio = 1.0 / (
-                        self._configuration.market.max_steps - self._state)
+                        self._configuration.trader.max_steps - self._state)
         else:
             logging.warning("Step limit reached %d", self._state)
 
@@ -47,14 +47,14 @@ class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
         if self._state > 0:
             self._sell(self._configuration.exchange.bullish_market)
             self._state = 0
-            self._pack_ratio = 1.0 / self._configuration.market.max_steps
+            self._pack_ratio = 1.0 / self._configuration.trader.max_steps
         if self._state > -self._max_steps:
             if self._buy(self._configuration.exchange.bearish_market,
                          self._pack_ratio):
                 self._state -= 1
                 # FIXME a better solution may be found
-                if self._state * -1 != self._configuration.market.max_steps:
+                if self._state * -1 != self._configuration.trader.max_steps:
                     self._pack_ratio = 1.0 / (
-                        self._configuration.market.max_steps + self._state)
+                        self._configuration.trader.max_steps + self._state)
         else:
             logging.warning("Step limit reached %d", self._state)
