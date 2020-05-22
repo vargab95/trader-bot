@@ -3,7 +3,7 @@
 import unittest
 import unittest.mock
 
-import config.trader
+import config.application
 import exchange.factory
 import exchange.interface
 
@@ -12,7 +12,8 @@ import exchange.interface
 class BinanceTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.config: config.trader.TraderConfig = config.trader.TraderConfig({})
+        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({
+        })
         cls.config.testing.enabled = False
         cls.config.exchange.market_name_format = "{target}{base}"
         exchange.interface.Market.name_format = \

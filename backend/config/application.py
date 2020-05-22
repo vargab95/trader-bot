@@ -11,7 +11,7 @@ from config.database import DatabaseConfig
 from config.server import ServerConfig
 
 
-class TraderConfig:
+class ApplicationConfig:
     def __init__(self, configuration: typing.Dict = None):
         self.logging = LoggingConfig(configuration.get("logging", {}))
         self.testing = TestingConfig(configuration.get("testing", {}))
