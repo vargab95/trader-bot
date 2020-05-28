@@ -21,13 +21,14 @@ class SimpleSingleMarketTrader(TraderBase):
         self._use_stateless_detector = False
 
     def initialize(self):
+        # TODO Refactor to have a sell and buy value instead of bear and bull to have a
         for threshold in self._configuration.trader.thresholds:
             self._detectors.append(
                 detector.factory.DetectorFactory.create(
                     threshold["bear"], threshold["bull"],
                     self._configuration.trader.falling_edge_detection,
                     self._use_stateless_detector))
-    
+
     def perform(self, value: float):
         actions = []
         for next_detector in self._detectors:
