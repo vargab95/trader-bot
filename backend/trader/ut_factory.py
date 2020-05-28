@@ -4,31 +4,31 @@ import unittest
 import unittest.mock
 
 import config.application
-import traders.factory
-import traders.leverage.simple
-import traders.leverage.stepped
+import trader.factory
+import trader.leverage.simple
+import trader.leverage.stepped
 
 
 class TraderFactoryTest(unittest.TestCase):
     def test_create_simple(self):
         configuration = config.application.ApplicationConfig({})
         configuration.trader.method = "simple"
-        trader = traders.factory.TraderFactory.create(configuration, None)
+        trader_ins = trader.factory.TraderFactory.create(configuration, None)
         self.assertTrue(
-            isinstance(trader, traders.leverage.simple.SimpleLeverageTrader))
+            isinstance(trader_ins, trader.leverage.simple.SimpleLeverageTrader))
 
     def test_create_stepped(self):
         configuration = config.application.ApplicationConfig({})
         configuration.trader.method = "stepped"
-        trader = traders.factory.TraderFactory.create(configuration, None)
+        trader_ins = trader.factory.TraderFactory.create(configuration, None)
         self.assertTrue(
-            isinstance(trader, traders.leverage.stepped.SteppedLeverageTrader))
+            isinstance(trader_ins, trader.leverage.stepped.SteppedLeverageTrader))
 
     def test_create_invalid(self):
         configuration = config.application.ApplicationConfig({})
         configuration.trader.method = "non-existing method"
         try:
-            traders.factory.TraderFactory.create(configuration, None)
+            trader.factory.TraderFactory.create(configuration, None)
             self.fail()
-        except traders.factory.InvalidTradingMethod:
+        except trader.factory.InvalidTradingMethod:
             pass

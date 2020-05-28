@@ -4,7 +4,7 @@ import unittest
 import unittest.mock
 
 import config.application
-import traders.leverage.simple
+import trader.leverage.simple
 import exchange.interface
 import exchange.factory
 
@@ -30,7 +30,7 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = traders.leverage.simple.SimpleLeverageTrader(
+        self.trader = trader.leverage.simple.SimpleLeverageTrader(
             self.config, self.exchange)
         self.trader.initialize()
 
@@ -136,7 +136,7 @@ class MultiDetectorSimpleLeverageTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = traders.leverage.simple.SimpleLeverageTrader(
+        self.trader = trader.leverage.simple.SimpleLeverageTrader(
             self.config, self.exchange)
         self.trader.initialize()
 
