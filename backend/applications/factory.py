@@ -6,6 +6,7 @@ import applications.exporter
 import applications.gatherer
 import applications.server
 import applications.trader
+import applications.simulator
 
 
 class InvalidApplicationException(Exception):
@@ -13,7 +14,8 @@ class InvalidApplicationException(Exception):
 
 
 class ApplicationFactory:
-    __available_applications = ["trader", "exporter", "gatherer", "server"]
+    __available_applications = [
+        "trader", "exporter", "gatherer", "server", "simulator"]
 
     @classmethod
     def create(cls, application_name):
@@ -28,6 +30,9 @@ class ApplicationFactory:
 
         if application_name == "server":
             return applications.server.ServerApplication()
+
+        if application_name == "simulator":
+            return applications.simulator.SimulatorApplication()
 
         logging.critical("There is no such application %s. Use one of %s",
                          application_name,
