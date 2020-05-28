@@ -10,9 +10,9 @@ import mailing.error
 import mailing.statistics
 import applications.base
 import filters.sma
-import traders.base
-import traders.factory
-import traders.common
+import trader.base
+import trader.factory
+import trader.common
 
 
 class TraderApplication(applications.base.ApplicationBase):
@@ -20,7 +20,7 @@ class TraderApplication(applications.base.ApplicationBase):
         super().__init__()
         self.__long_term_fetcher: fetcher.base.TradingViewFetcherBase
         self.__sma: filters.sma.SMA
-        self.__trader: traders.base.TraderBase
+        self.__trader: trader.base.TraderBase
         self.__last_sent_time: datetime
 
     def _initialize_application_logic(self):
@@ -33,7 +33,7 @@ class TraderApplication(applications.base.ApplicationBase):
         else:
             self.__sma = None
 
-        self.__trader = traders.factory.TraderFactory.create(
+        self.__trader = trader.factory.TraderFactory.create(
             self._configuration, self._exchange)
         self.__trader.initialize()
         self.__last_sent_time = datetime.today()

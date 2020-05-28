@@ -4,7 +4,7 @@ import unittest
 import unittest.mock
 
 import config.application
-import traders.leverage.stepped
+import trader.leverage.stepped
 import exchange.interface
 import exchange.factory
 
@@ -31,7 +31,7 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = traders.leverage.stepped.SteppedLeverageTrader(
+        self.trader = trader.leverage.stepped.SteppedLeverageTrader(
             self.config, self.exchange)
         self.trader.initialize()
 
@@ -148,7 +148,7 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = traders.leverage.stepped.SteppedLeverageTrader(
+        self.trader = trader.leverage.stepped.SteppedLeverageTrader(
             self.config, self.exchange)
         self.trader.initialize()
 

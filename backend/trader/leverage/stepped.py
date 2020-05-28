@@ -3,13 +3,13 @@
 import logging
 
 import config.trader
-import traders.base
-import traders.common
-import traders.leverage.base
+import trader.base
+import trader.common
+import trader.leverage.base
 import exchange.interface
 
 
-class SteppedLeverageTrader(traders.leverage.base.LeverageTraderBase):
+class SteppedLeverageTrader(trader.leverage.base.LeverageTraderBase):
     def __init__(self, configuration: config.application.ApplicationConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         super().__init__(configuration, used_exchange)

@@ -5,15 +5,15 @@ import logging
 import typing
 
 import config.trader
-import traders.base
+import trader.base
 import detector.factory
 import detector.interface
 import exchange.interface
 
-from traders.common import TraderState
+from trader.common import TraderState
 
 
-class LeverageTraderBase(traders.base.TraderBase):
+class LeverageTraderBase(trader.base.TraderBase):
     def __init__(self, configuration: config.application.ApplicationConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         super().__init__(used_exchange)

@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-import traders.leverage.base
-import traders.common
+import trader.leverage.base
+import trader.common
 
-from traders.common import TraderState
+from trader.common import TraderState
 
 
-class SimpleLeverageTrader(traders.leverage.base.LeverageTraderBase):
+class SimpleLeverageTrader(trader.leverage.base.LeverageTraderBase):
     def _bullish_logic(self):
         if self._state != TraderState.BULLISH:
             if self._state != TraderState.BASE:
