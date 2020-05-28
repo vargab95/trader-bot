@@ -12,6 +12,7 @@ class TraderConfig:
         self.candle_size = config.get("candle_size", "1h")
         self.indicator_sma = config.get("indicator_sma", 1)
         self.method = config.get("method", "simple")
+        self.leverage = config.get("leverage", False)
         self.max_steps = config.get("step_count", 5)
         self.follower_enabled = config.get("follower_enabled", False)
         self.follower_candle_size = config.get("follower_candle_size", "1h")
@@ -31,6 +32,7 @@ class TraderConfig:
                "\n    Follower enabled:       " + str(self.follower_enabled) + \
                "\n    Follower candle size:   " + str(self.follower_candle_size) + \
                "\n    Method:                 " + str(self.method) + \
+               "\n    Leverage:               " + str(self.leverage) + \
                "\n    Step count:             " + str(self.max_steps) + \
                "\n    Check interval:         " + str(self.check_interval) + \
                "\n    Falling edge detection: " + str(self.falling_edge_detection) + \

@@ -7,6 +7,7 @@ import filters.wma
 import filters.hma
 import filters.derivative
 import filters.complex
+import config.filter
 
 
 class InvalidFilterFactoryParameter(Exception):
@@ -38,12 +39,12 @@ class FilterFactory:
         raise InvalidFilterFactoryParameter()
 
     @staticmethod
-    def create_complex(filter_specs: typing.List[typing.Dict]):
+    def create_complex(filter_specs: typing.List[config.filter.FilterConfig]):
         filt = filters.complex.Complex()
 
         for filter_spec in filter_specs:
             filt.add_filter(
-                FilterFactory.create(filter_spec["type"],
-                                     filter_spec["length"]))
+                FilterFactory.create(filter_spec.type,
+                                     filter_spec.length))
 
         return filt

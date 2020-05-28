@@ -13,18 +13,20 @@ import mailing.message
 
 class Postman:
     def __init__(self, configuration: config.mail.MailConfig):
-        self.configuration = configuration
-        self.server = None
-        self.connected = False
+        self.__configuration = configuration
+        self.__server = None
+        self.__connected = False
 
     def connect(self):
+        # TODO Fix connection issues
+        # It can only send out one mail now...
         for _ in range(3):
             try:
                 logging.debug("Connecting to mail server")
-                self.server = smtplib.SMTP(self.configuration.smtp_server,
-                                           self.configuration.port,
-                                           timeout=5)
-                self.connected = True
+                self.__server = smtplib.SMTP(self.__configuration.smtp_server,
+                                             self.__configuration.port,
+                                             timeout=5)
+                self.__connected = True
                 logging.info("Postman was initialized")
                 break
             except (TimeoutError, ConnectionRefusedError, socket.timeout):
@@ -32,23 +34,23 @@ class Postman:
                 time.sleep(5)
 
     def send(self, message: mailing.message.Message) -> bool:
-        if not self.connected:
+        if not self.__connected:
             return False
 
         msg = EmailMessage()
         msg['Subject'] = message.subject
-        msg['From'] = self.configuration.sender
-        msg['To'] = self.configuration.receiver
+        msg['From'] = self.__configuration.sender
+        msg['To'] = self.__configuration.receiver
         msg.set_content(message.get())
         for _ in range(10):
             try:
-                self.server.connect(self.configuration.smtp_server,
-                                    self.configuration.port)
-                self.server.ehlo()
-                self.server.login(self.configuration.sender,
-                                  self.configuration.password)
-                self.server.send_message(msg)
-                self.server.quit()
+                self.__server.connect(self.__configuration.smtp_server,
+                                      self.__configuration.port)
+                self.__server.ehlo()
+                self.__server.login(self.__configuration.sender,
+                                    self.__configuration.password)
+                self.__server.send_message(msg)
+                self.__server.quit()
                 return True
             except (OSError, smtplib.SMTPException,
                     smtplib.SMTPSenderRefused) as exc:
