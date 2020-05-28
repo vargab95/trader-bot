@@ -13,6 +13,7 @@ class TraderFactoryTest(unittest.TestCase):
     def test_create_simple(self):
         configuration = config.application.ApplicationConfig({})
         configuration.trader.method = "simple"
+        configuration.trader.leverage = True
         trader_ins = trader.factory.TraderFactory.create(configuration, None)
         self.assertTrue(
             isinstance(trader_ins, trader.leverage.simple.SimpleLeverageTrader))
@@ -20,6 +21,7 @@ class TraderFactoryTest(unittest.TestCase):
     def test_create_stepped(self):
         configuration = config.application.ApplicationConfig({})
         configuration.trader.method = "stepped"
+        configuration.trader.leverage = True
         trader_ins = trader.factory.TraderFactory.create(configuration, None)
         self.assertTrue(
             isinstance(trader_ins, trader.leverage.stepped.SteppedLeverageTrader))
@@ -27,6 +29,7 @@ class TraderFactoryTest(unittest.TestCase):
     def test_create_invalid(self):
         configuration = config.application.ApplicationConfig({})
         configuration.trader.method = "non-existing method"
+        configuration.trader.leverage = True
         try:
             trader.factory.TraderFactory.create(configuration, None)
             self.fail()

@@ -8,6 +8,7 @@ import filters.wma
 import filters.hma
 import filters.derivative
 import filters.complex
+import config.filter
 
 
 class FilterFactoryTest(unittest.TestCase):
@@ -28,37 +29,43 @@ class FilterFactoryTest(unittest.TestCase):
         self.assertTrue(isinstance(instance, filters.derivative.Derivative))
 
     def test_create_complex(self):
-        instance = filters.factory.FilterFactory.create_complex([{
-            "type": "sma",
-            "length": 5
-        }, {
-            "type": "derivative",
-            "length": 2
-        }])
+        instance = filters.factory.FilterFactory.create_complex([
+            config.filter.FilterConfig({
+                "type": "sma",
+                "length": 5
+            }), config.filter.FilterConfig({
+                "type": "derivative",
+                "length": 2
+            })
+        ])
         self.assertTrue(isinstance(instance, filters.complex.Complex))
 
     def test_create_complex_invalid_type(self):
         try:
-            filters.factory.FilterFactory.create_complex([{
-                "type": "invalid",
-                "length": 4
-            }, {
-                "type": "sma",
-                "length": 5
-            }])
+            filters.factory.FilterFactory.create_complex([
+                config.filter.FilterConfig({
+                    "type": "invalid",
+                    "length": 4
+                }), config.filter.FilterConfig({
+                    "type": "sma",
+                    "length": 5
+                })
+            ])
             self.fail()
         except filters.factory.InvalidFilterFactoryParameter:
             pass
 
     def test_create_complex_invalid_length(self):
         try:
-            filters.factory.FilterFactory.create_complex([{
-                "type": "sma",
-                "length": 5
-            }, {
-                "type": "derivative",
-                "length": -1
-            }])
+            filters.factory.FilterFactory.create_complex([
+                config.filter.FilterConfig({
+                    "type": "sma",
+                    "length": 5
+                }), config.filter.FilterConfig({
+                    "type": "derivative",
+                    "length": -1
+                })
+            ])
             self.fail()
         except filters.factory.InvalidFilterFactoryParameter:
             pass
