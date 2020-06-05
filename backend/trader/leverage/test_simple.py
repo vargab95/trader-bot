@@ -112,7 +112,33 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         self.trader.perform(-0.47)
         self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
 
-    # TODO Write some test for sell failures
+    def test_sell_failure_when_switching_to_bearish(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(-0.5)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.sell",
+                                 return_value=False):
+            self.trader.perform(0.44)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
+        self.trader.perform(0.47)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 0.0)
+
+    def test_sell_failure_when_switching_to_bullish(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(0.5)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.sell",
+                                 return_value=False):
+            self.trader.perform(-0.44)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
+        self.trader.perform(-0.45)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 0.0)
 
 
 class MultiDetectorSimpleLeverageTraderTest(unittest.TestCase):
