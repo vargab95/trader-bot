@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# pylint: skip-file
+
 
 def calculate_average(state, state_ma_period):
     avg_state = 0
@@ -27,16 +29,16 @@ def handle_data_in_file(file_name, price, state, state_ma, state_ma2,
     choosen_bull_sell_price = []
     choosen_bear_sell_price = []
 
-    f = open(file_name, "r")
-    for i, x in enumerate(f):
+    input_file = open(file_name, "r")
+    for i, j in enumerate(input_file):
 
-        if state_or_price == "price" and "price" in x:
-            current_price = float(x.split("Current price: ", 1)[1].rstrip())
+        if state_or_price == "price" and "price" in j:
+            current_price = float(j.split("Current price: ", 1)[1].rstrip())
             price.append(current_price)
             state_or_price = "state"
 
-        if state_or_price == "state" and "state" in x:
-            current_state = float(x.split("Current state: ", 1)[1].rstrip())
+        if state_or_price == "state" and "state" in j:
+            current_state = float(j.split("Current state: ", 1)[1].rstrip())
             state.append(current_state)
             state_or_price = "price"
 
