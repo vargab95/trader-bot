@@ -3,8 +3,9 @@
 import unittest
 import unittest.mock
 
-import storage.user
 import pymongo.errors
+
+import storage.user
 
 
 class MongoUserTableMock:
@@ -12,12 +13,13 @@ class MongoUserTableMock:
     find_call_count = 0
     simulate_duplicate = False
 
-    def insert_one(self, data):
+    def insert_one(self, _):
         MongoUserTableMock.insert_call_count += 1
         if self.simulate_duplicate:
             raise pymongo.errors.DuplicateKeyError("A")
 
-    def find_one(self, request):
+    @staticmethod
+    def find_one(_):
         MongoUserTableMock.find_call_count += 1
 
 

@@ -125,10 +125,10 @@ class FtxController(exchange.base.ExchangeBase):
         signature = hmac.new(self._private_key.encode(), signature_payload,
                              'sha256').hexdigest()
 
-        prepared.headers[f'FTX-KEY'] = self._public_key
-        prepared.headers[f'FTX-SIGN'] = signature
-        prepared.headers[f'FTX-TS'] = str(timestamp)
-        prepared.headers[f'Content-type'] = 'application/json'
+        prepared.headers['FTX-KEY'] = self._public_key
+        prepared.headers['FTX-SIGN'] = signature
+        prepared.headers['FTX-TS'] = str(timestamp)
+        prepared.headers['Content-type'] = 'application/json'
 
         response = session.send(prepared).json()
 

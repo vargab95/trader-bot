@@ -13,8 +13,7 @@ class ExchangeControllerFactory:
     def create(cls, configuration: config.application.ApplicationConfig):
         if configuration.exchange.name == "ftx":
             if configuration.testing.enabled:
-                return exchange.ftx_mock.FtxMock(configuration.exchange,
-                                                 configuration.testing)
+                return exchange.ftx_mock.FtxMock(configuration.testing)
             return exchange.ftx.FtxController(configuration.exchange)
         if configuration.testing.enabled:
             return exchange.binance_mock.BinanceMock(configuration.exchange,

@@ -45,29 +45,14 @@ class TradingViewFetcherBase:
             try:
                 self.fetch_technical_indicator()
                 break
-            except fetcher.common.CannotFetchDataException:
-                continue
             except Exception as exception:  # pylint: disable=broad-except
                 logging.critical("Unhandled exception: %s", str(exception))
 
     def fetch_technical_indicator(self):
-        try:
-            self.response = requests.post(self.url,
-                                          json=self.request,
-                                          timeout=5)
-            self.response = self.response.json()
-        # FIXME Is it necessary when the safe fetch catches all exceptions?
-        except (requests.exceptions.Timeout,
-                requests.exceptions.ConnectTimeout,
-                urllib3.exceptions.ConnectTimeoutError, socket.timeout):
-            logging.error("Connection timeout")
-            raise fetcher.common.CannotFetchDataException
-        except requests.exceptions.ConnectionError:
-            logging.error("Connection error")
-            raise fetcher.common.CannotFetchDataException
-        except urllib3.exceptions.MaxRetryError:
-            logging.error("Max retry error received.")
-            raise fetcher.common.CannotFetchDataException
+        self.response = requests.post(self.url,
+                                      json=self.request,
+                                      timeout=5)
+        self.response = self.response.json()
 
     def get_technical_indicator(self) -> float:
         pass

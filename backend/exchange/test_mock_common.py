@@ -1,25 +1,21 @@
 #!/usr/bin/python3
 
+import os
 import unittest
 
-import config.application
+import abc
+
 import exchange.factory
 import exchange.interface
 
+TESTS_USING_NETWORK = os.getenv('TESTS_USING_NETWORK', 'FALSE')
 
-class BinanceMockTest(unittest.TestCase):
-    @classmethod
+
+class CommonMockTest(unittest.TestCase):
+    @abc.abstractclassmethod
     def setUpClass(cls):
-        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({
-        })
-        cls.config.testing.enabled = True
-        cls.config.testing.real_time = False
-        cls.config.testing.start_money = 100.0
-        cls.config.testing.fee = 0.0
-        exchange.interface.Market.name_format = \
-            cls.config.exchange.market_name_format
-        cls.controller = exchange.factory.ExchangeControllerFactory.create(
-            cls.config)
+        cls.controller = None
+        raise unittest.SkipTest("Base class")
 
     def setUp(self):
         self.controller.reset()
@@ -182,10 +178,10 @@ class BinanceMockTest(unittest.TestCase):
 
         self.assertEqual(self.controller.get_money("USDT"), 55.0)
 
+    @unittest.skipIf(TESTS_USING_NETWORK, "FALSE")
     def test_get_price_real_time(self):
         self.controller.set_real_time(True)
-        exchange.interface.Market.name_format = "{target}{base}"
         self.assertNotAlmostEqual(
             self.controller.get_price(
-                exchange.interface.Market.create_from_string("ETH-BTC")), 0.0)
+                exchange.interface.Market.create_from_string("BTC-USDT")), 0.0)
         self.controller.set_real_time(False)

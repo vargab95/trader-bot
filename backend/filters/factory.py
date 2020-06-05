@@ -19,7 +19,6 @@ class FilterFactory:
 
     @staticmethod
     def create(filter_type: str, length: int = 2):
-        # TODO if EMA will be created create a new level in inheritance tree
         # for Coefficient filter which can be used with WMA and EMA
         if length < 2:
             raise InvalidFilterFactoryParameter()

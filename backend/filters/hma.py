@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import typing
-
 import filters.base
 import filters.wma
 
