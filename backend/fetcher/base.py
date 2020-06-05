@@ -2,12 +2,9 @@
 
 import time
 import logging
-import socket
 import requests
-import urllib3.exceptions
 
 import config.trader
-import fetcher.common
 
 
 class TradingViewFetcherBase:
