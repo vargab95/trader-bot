@@ -52,13 +52,13 @@ class LeverageTraderBase(trader.base.TraderBase):
         if TraderState.SELLING_BULLISH == self._state:
             if self._sell(self._configuration.exchange.bullish_market):
                 self._state = TraderState.BUYING_BEARISH
-        elif TraderState.SELLING_BEARISH == self._state:
+        if TraderState.SELLING_BEARISH == self._state:
             if self._sell(self._configuration.exchange.bearish_market):
                 self._state = TraderState.BUYING_BULLISH
-        elif TraderState.BUYING_BEARISH == self._state:
+        if TraderState.BUYING_BEARISH == self._state:
             if self._buy(self._configuration.exchange.bearish_market):
                 self._state = TraderState.BEARISH
-        elif TraderState.BUYING_BULLISH == self._state:
+        if TraderState.BUYING_BULLISH == self._state:
             if self._buy(self._configuration.exchange.bullish_market):
                 self._state = TraderState.BULLISH
 
