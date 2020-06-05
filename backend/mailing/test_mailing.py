@@ -6,36 +6,6 @@ import mailing.statistics
 import config.mail
 
 
-class SMTPMock:
-
-    def __init__(self, server: str, port: int, timeout: int = 0):
-        self.server = server
-        self.port = port
-        self.timeout = timeout
-        self.call_count = {
-            "connect": 0,
-            "ehlo": 0,
-            "login": 0,
-            "send_message": 0,
-            "quit": 0
-        }
-
-    def connect(self, server: str, port: int):
-        self.call_count["connect"] += 1
-
-    def ehlo(self):
-        self.call_count["ehlo"] += 1
-
-    def login(self, sender: str, password: str):
-        self.call_count["login"] += 1
-
-    def send_message(self, msg):
-        self.call_count["send_message"] += 1
-
-    def quit(self):
-        self.call_count["quit"] += 1
-
-
 @unittest.mock.patch("smtplib.SMTP")
 class MailingTest(unittest.TestCase):
     def setUp(self):
