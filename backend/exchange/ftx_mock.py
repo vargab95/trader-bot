@@ -8,7 +8,6 @@ import exchange.mock_base
 
 
 class FtxMock(exchange.mock_base.MockBase):
-    base_coin = "USDT"
     api_url = "https://ftx.com/api/"
     markets_url = api_url + "markets/"
 

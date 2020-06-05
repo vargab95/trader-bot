@@ -4,10 +4,10 @@ import logging
 
 import binance.client
 
-import config.exchange
 import exchange.base
 import exchange.interface
 import exchange.guard
+import config.exchange
 
 
 class BinanceController(exchange.base.ExchangeBase):

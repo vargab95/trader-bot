@@ -10,11 +10,9 @@ import exchange.mock_base
 
 
 class BinanceMock(exchange.mock_base.MockBase):
-    base_coin = "USDT"
-
     def __init__(self, exchange_config: config.exchange.ExchangeConfig,
                  testing_config: config.testing.TestingConfig):
-        super().__init__(exchange_config, testing_config)
+        super().__init__(testing_config)
         self._client = binance.client.Client(exchange_config.public_key,
                                              exchange_config.private_key)
 

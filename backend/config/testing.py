@@ -10,6 +10,7 @@ class TestingConfig:
         self.start_money: float = config.get("start_money", 100.0)
         self.fee: float = config.get("fee", 0.001)
         self.balance_store: str = config.get("balance_store", "balances.json")
+        self.base_asset: str = config.get("base_asset", "USDT")
 
     def __str__(self):
         return "\nTesting:" + \
