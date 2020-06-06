@@ -2,7 +2,7 @@
 
 import unittest
 
-from detector.factory import DetectorFactory
+from detector.factory import DetectorFactory, InvalidDetectorConfiguration
 from detector.falling_edge import FallingEdgeDetector
 from detector.moving_threshold import MovingThresholdRisingEdgeDetector
 from detector.rising_edge import RisingEdgeDetector
@@ -71,3 +71,31 @@ class FilterFactoryTest(unittest.TestCase):
         instance = DetectorFactory.create(config)
         self.assertTrue(isinstance(
             instance, StatelessRisingEdgeDetector))
+
+    def test_create_stateless_falling_edge(self):
+        config = DetectorConfig({})
+
+        config.stateless = True
+        config.falling_edge = True
+        config.bearish_threshold = -0.4
+        config.bullish_threshold = 0.4
+
+        try:
+            DetectorFactory.create(config)
+            self.fail()
+        except InvalidDetectorConfiguration:
+            pass
+
+    def test_create_stateless_follower(self):
+        config = DetectorConfig({})
+
+        config.stateless = True
+        config.follower = True
+        config.bearish_threshold = -0.4
+        config.bullish_threshold = 0.4
+
+        try:
+            DetectorFactory.create(config)
+            self.fail()
+        except InvalidDetectorConfiguration:
+            pass

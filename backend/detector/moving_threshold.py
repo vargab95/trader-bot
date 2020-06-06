@@ -29,10 +29,10 @@ class MovingThresholdRisingEdgeDetector(detector.rising_edge.RisingEdgeDetector
         self.gatherer.fetch_technical_indicator()
         long_term_indicator = self.gatherer.get_technical_indicator()
 
-        self._bearish_threshold = self.__saturate(
-            self.__original_bearish_threshold - long_term_indicator, 1.0)
-        self._bullish_threshold = self.__saturate(
-            self.__original_bullish_threshold - long_term_indicator, 1.0)
+        self.set_threshold(
+            self.__saturate(self.__original_bearish_threshold -
+                            long_term_indicator, 1.0),
+            self.__saturate(self.__original_bullish_threshold - long_term_indicator, 1.0))
 
         logging.info(
             "New moving threshold: Long term = %f, Bearish = %f, Bullish = %f",

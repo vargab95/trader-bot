@@ -102,3 +102,26 @@ class MovingEdgeDetectorTest(unittest.TestCase):
         for line in test_data:
             self.gatherer.indicator = line[0]
             self.assertEqual(test_detector.check(line[1]), line[2], str(line))
+
+    def test_move_threshold_above_and_below_1(self):
+        test_detector = \
+            detector.moving_threshold.MovingThresholdRisingEdgeDetector(
+                0.0, 0.0, self.gatherer)
+        test_data = [
+            [0.0, -0.066667, detector.common.TradingAction.BEARISH_SIGNAL],
+            [1.2, -0.166667, detector.common.TradingAction.BULLISH_SIGNAL],
+            [-1.2, -0.266667, detector.common.TradingAction.BEARISH_SIGNAL]
+        ]
+
+        for line in test_data:
+            self.gatherer.indicator = line[0]
+            self.assertEqual(test_detector.check(line[1]), line[2], str(line))
+
+    def test_hold_at_startup(self):
+        test_detector = \
+            detector.moving_threshold.MovingThresholdRisingEdgeDetector(
+                -0.1, 0.1, self.gatherer)
+
+        self.gatherer.indicator = 0.0
+        self.assertEqual(test_detector.check(
+            0.0), detector.common.TradingAction.HOLD_SIGNAL)
