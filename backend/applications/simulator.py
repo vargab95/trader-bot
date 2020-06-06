@@ -29,12 +29,12 @@ class SimulatorApplication(applications.base.ApplicationBase):
 
     def _run_application_logic(self):
         simulator_input = self._ticker_storage.get(TickerSignalDescriptor(
-            market=self._configuration.trader.market, limit=1000000))
-        for indicator in simulator_input:
-            self._exchange.price_mock["BULLUSDT"] = indicator.price
-            self._exchange.price_mock["BEARUSDT"] = indicator.price
-            self._exchange.price_mock["BTCUSDT"] = indicator.price
-            self.__filter.put(indicator.price)
+            market=self._configuration.exchange.watched_market, limit=10000))
+        for indicator in simulator_input.data:
+            self._exchange.price_mock["BULLUSDT"] = indicator.value
+            self._exchange.price_mock["BEARUSDT"] = indicator.value
+            self._exchange.price_mock["BTCUSDT"] = indicator.value
+            self.__filter.put(indicator.value)
             if self.__filter.get():
                 self.__trader.perform(self.__filter.get())
 

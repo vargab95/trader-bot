@@ -23,9 +23,9 @@ logging:
   path: "simulator.log"
 mail:
   name: TradingViewBot
-  password: ""
+  password: "Asguto95"
   port: 25
-  receiver: ""
+  receiver: "vargab95@gmail.com"
   sender: tvb@vbj.hu
   smtp_server: smtp.vbj.hu
 server:
@@ -34,7 +34,7 @@ server:
   secret_key: ""
 testing:
   balance_store: balances.json
-  enabled: false
+  enabled: true
   fee: 0.001
   real_time: false
   start_money: 100.0
