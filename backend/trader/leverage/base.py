@@ -23,12 +23,9 @@ class LeverageTraderBase(trader.base.TraderBase):
         self._use_stateless_detector = False
 
     def initialize(self):
-        for threshold in self._configuration.trader.thresholds:
+        for detector_config in self._configuration.trader.detectors:
             self._detectors.append(
-                detector.factory.DetectorFactory.create(
-                    threshold["bear"], threshold["bull"],
-                    self._configuration.trader.falling_edge_detection,
-                    self._use_stateless_detector))
+                detector.factory.DetectorFactory.create(detector_config))
 
     def perform(self, value: float):
         actions = []

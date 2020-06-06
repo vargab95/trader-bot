@@ -10,7 +10,8 @@ import detector.moving_threshold
 import detector.falling_edge
 from detector.stateless_rising_edge import StatelessRisingEdgeDetector
 from detector.stateless_reverse_rising_edge \
-        import StatelessReverseRisingEdgeDetector
+    import StatelessReverseRisingEdgeDetector
+from config.detector import DetectorConfig
 
 
 class InvalidDetectorConfiguration(Exception):
@@ -18,46 +19,42 @@ class InvalidDetectorConfiguration(Exception):
 
 
 class DetectorFactory:
-    @classmethod
-    def create(cls,
-               bearish_threshold: float,
-               bullish_threshold: float,
-               falling_edge_detection: bool = False,
-               use_stateless_detector: bool = False,
+    @staticmethod
+    def create(configuration: DetectorConfig,
                gatherer: fetcher.single.TradingViewFetcherSingle = None):
-        if falling_edge_detection:
-            if use_stateless_detector:
+        if configuration.falling_edge:
+            if configuration.stateless:
                 raise InvalidDetectorConfiguration
 
             logging.info("Falling edge detector has been created.")
             return detector.falling_edge.FallingEdgeDetector(
-                bearish_threshold, bullish_threshold)
+                configuration.bearish_threshold, configuration.bullish_threshold)
 
-        if gatherer:
-            if use_stateless_detector:
+        if configuration.follower:
+            if configuration.stateless:
                 raise InvalidDetectorConfiguration
 
             logging.info("Moving threshold detector has been created.")
             return detector.moving_threshold.MovingThresholdRisingEdgeDetector(
-                bearish_threshold, bullish_threshold, gatherer)
+                configuration.bearish_threshold, configuration.bullish_threshold, gatherer)
 
-        if bullish_threshold >= bearish_threshold:
-            if use_stateless_detector:
+        if configuration.bullish_threshold >= configuration.bearish_threshold:
+            if configuration.stateless:
                 logging.info(
                     "Stateless rising edge detector has been created.")
-                return StatelessRisingEdgeDetector(bearish_threshold,
-                                                   bullish_threshold)
+                return StatelessRisingEdgeDetector(configuration.bearish_threshold,
+                                                   configuration.bullish_threshold)
 
             logging.info("Rising edge detector has been created.")
             return detector.rising_edge.RisingEdgeDetector(
-                bearish_threshold, bullish_threshold)
+                configuration.bearish_threshold, configuration.bullish_threshold)
 
-        if use_stateless_detector:
+        if configuration.stateless:
             logging.info("Stateless reverse rising_edge detector"
                          " has been created.")
-            return StatelessReverseRisingEdgeDetector(bearish_threshold,
-                                                      bullish_threshold)
+            return StatelessReverseRisingEdgeDetector(configuration.bearish_threshold,
+                                                      configuration.bullish_threshold)
 
         logging.info("Reverse rising_edge detector has been created.")
         return detector.reverse_rising_edge.ReverseRisingEdgeDetector(
-            bearish_threshold, bullish_threshold)
+            configuration.bearish_threshold, configuration.bullish_threshold)

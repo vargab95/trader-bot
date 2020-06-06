@@ -6,15 +6,13 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 import applications.base
-import api.common
+import api.signals
 import api.indicator
 import api.ticker
 import api.auth.login
 import api.auth.signup
 
 import storage.user
-
-DATE_TIME_FORMAT = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 
 class ServerApplication(applications.base.ApplicationBase):
@@ -33,7 +31,7 @@ class ServerApplication(applications.base.ApplicationBase):
         self.__initialize_api_routes()
 
         # FIXME This manipulation with class variables can be better
-        api.common.DATE_TIME_FORMAT = \
+        api.signals.Signal.DATE_TIME_FORMAT = \
             self._configuration.server.datetime_format
 
         api.ticker.Ticker.storage = self._ticker_storage

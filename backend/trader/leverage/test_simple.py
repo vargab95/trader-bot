@@ -4,6 +4,7 @@ import unittest
 import unittest.mock
 
 import config.application
+import config.detector
 import trader.leverage.simple
 import exchange.interface
 import exchange.factory
@@ -19,7 +20,12 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.trader.thresholds = [{"bull": -0.4, "bear": 0.4}]
+        cls.config.trader.detectors = [
+            config.detector.DetectorConfig({
+                "bullish_threshold": -0.4,
+                "bearish_threshold": 0.4
+            })
+        ]
 
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format
@@ -151,7 +157,12 @@ class MultiDetectorSimpleLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.trader.thresholds = [{"bull": -0.4, "bear": 0.4}]
+        cls.config.trader.detectors = [
+            config.detector.DetectorConfig({
+                "bullish_threshold": -0.4,
+                "bearish_threshold": 0.4
+            })
+        ]
 
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format

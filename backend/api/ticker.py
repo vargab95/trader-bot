@@ -4,34 +4,19 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 
 import filters.factory
-from api.common import filter_results, get_default_parser, convert_date_time
+from signals.trading_signal import TickerSignalDescriptor
+from api.signals import Signal
 
 
-class Ticker(Resource):
-    storage = None
-    datetime_format = None
-
-    def __init__(self):
-        self.parser = get_default_parser()
-
-    @jwt_required
-    def post(self):
-        request = self.parser.parse_args()
-        step = request['step']
-        filter_list = request['filter']
-        start_date = convert_date_time(request['dateSpan']['start'])
-        end_date = convert_date_time(request['dateSpan']['end'])
-
-        result = self.storage.get(request['market'], start_date, end_date,
-                                  request['limit'])
-
-        for row in result:
-            row['date'] = row['date'].strftime(self.datetime_format)
-
-        if filter_list:
-            result = filter_results(result, filter_list, 'price')
-
-        return result[::step]
+class Ticker(Signal):
+    def _compose_descriptor(self, request) -> TickerSignalDescriptor:
+        return TickerSignalDescriptor(
+            market=request['market'],
+            start_date=self._convert_date_time(request['dateSpan']['start']),
+            end_date=self._convert_date_time(request['dateSpan']['end']),
+            limit=request['limit'],
+            step=request['step']
+        )
 
 
 class TickerOptions(Resource):

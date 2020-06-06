@@ -6,7 +6,7 @@ import trader.factory
 import filters.base
 import filters.factory
 
-from signals.trading_signal import IndicatorSignalDescriptor, TickerSignalDescriptor, TradingSignalPoint
+from signals.trading_signal import TickerSignalDescriptor
 
 
 class SimulatorApplication(applications.base.ApplicationBase):
