@@ -58,6 +58,7 @@ class IndicatorsStorage:
 
         result = storage.common.sort_and_limit_result(result, limit)
 
+        # TODO Add a new class and a list of instances
         return [{
             "date": line["date"],
             "value": line["value"]
