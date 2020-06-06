@@ -12,12 +12,12 @@ class ConfigurationParser:
         self.configuration: ApplicationConfig = None
 
     def read(self, path):
-        with open(path, "r") as config_file:
-            try:
+        try:
+            with open(path, "r") as config_file:
                 configuration = yaml.safe_load(config_file)
-            except yaml.constructor.ConstructorError as exception:
-                logging.error(
-                    "Exception occured during parsing configuration: %s",
-                    str(exception))
-                raise InvalidConfigurationException
-            self.configuration = ApplicationConfig(configuration)
+        except (FileNotFoundError, yaml.constructor.ConstructorError) as exception:
+            logging.error(
+                "Exception occured during parsing configuration: %s",
+                str(exception))
+            raise InvalidConfigurationException
+        self.configuration = ApplicationConfig(configuration)
