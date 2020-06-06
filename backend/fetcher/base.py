@@ -29,16 +29,16 @@ class TradingViewFetcherBase:
         "oscillator": "Recommend.Other"
     }
 
-    def __init__(self, trader_config: config.trader.TraderConfig, candle_size: float):
+    def __init__(self, trader_config: config.trader.TraderConfig):
         self.request = None
-        self.response = None
+        self.response = {}
         self.check_interval = trader_config.check_interval
         self.market_name = trader_config.market
-        self.candle_size = candle_size
+        self.candle_size = trader_config.candle_size
         self.indicator_name = trader_config.indicator
 
     def safe_fetch(self):
-        while True:
+        for _ in range(1000):
             try:
                 self.fetch_technical_indicator()
                 break
@@ -52,7 +52,7 @@ class TradingViewFetcherBase:
         self.response = self.response.json()
 
     def get_technical_indicator(self) -> float:
-        pass
+        pass  # pragma: no cover
 
     def sleep_until_next_data(self):
-        time.sleep(self.check_interval)
+        time.sleep(self.check_interval)  # pragma: no cover
