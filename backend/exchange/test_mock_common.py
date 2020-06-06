@@ -178,6 +178,14 @@ class CommonMockTest(unittest.TestCase):
 
         self.assertEqual(self.controller.get_money("USDT"), 55.0)
 
+    def test_buy_too_much(self):
+        self.assertFalse(self.controller.buy(
+            exchange.interface.Market.create_from_string("BULL-USDT"), 2000.0))
+
+    def test_sell_too_much(self):
+        self.assertFalse(self.controller.sell(
+            exchange.interface.Market.create_from_string("BULL-USDT"), 2000.0))
+
     @unittest.skipIf(TESTS_USING_NETWORK, "FALSE")
     def test_get_price_real_time(self):
         self.controller.set_real_time(True)
