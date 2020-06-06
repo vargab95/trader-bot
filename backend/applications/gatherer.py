@@ -47,8 +47,8 @@ class GathererApplication(applications.base.ApplicationBase):
                 if indicators:
                     self._indicator_storage.add(
                         IndicatorSignalDescriptor(
-                            market=self._configuration.trader.name,
-                            indicator=self._configuration.trader.indicator_name,
+                            market=self._configuration.trader.market,
+                            indicator=self._configuration.trader.indicator,
                             candle_size=self._configuration.trader.candle_size),
                         TradingSignalPoint(
                             value=indicators))

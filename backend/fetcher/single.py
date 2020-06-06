@@ -15,11 +15,11 @@ class TradingViewFetcherSingle(fetcher.base.TradingViewFetcherBase):
         if candle_size not in list(self.candle_size_map.keys()):
             raise fetcher.common.InvalidConfigurationException
 
-        if market.indicator_name not in self.indicator_name_map.keys():
+        if market.indicator not in self.indicator_name_map.keys():
             raise fetcher.common.InvalidConfigurationException
 
-        if not isinstance(market.name, str) or \
-                not isinstance(market.indicator_name, str) or \
+        if not isinstance(market.market, str) or \
+                not isinstance(market.indicator, str) or \
                 not isinstance(market.candle_size, str):
             logging.critical("If one of the configurations is list, then "
                              "a multi fetcher should be used")
@@ -27,7 +27,7 @@ class TradingViewFetcherSingle(fetcher.base.TradingViewFetcherBase):
 
         self.request = {
             "symbols": {
-                "tickers": [market.name],
+                "tickers": [market.market],
                 "query": {
                     "types": []
                 }
