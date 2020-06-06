@@ -28,10 +28,11 @@ class Postman:
                 self.__server.ehlo()
                 self.__server.login(self.__configuration.sender,
                                     self.__configuration.password)
-                break
+                return True
             except (TimeoutError, ConnectionRefusedError, socket.timeout):
                 logging.error("Cannot connect to the mail server.")
                 time.sleep(5)
+        return False
 
     def send(self, message: mailing.message.Message) -> bool:
         msg = EmailMessage()
@@ -41,7 +42,8 @@ class Postman:
         msg.set_content(message.get())
         for _ in range(10):
             try:
-                self.connect()
+                if not self.connect():
+                    return False
                 self.__server.send_message(msg)
                 self.__server.quit()
                 return True

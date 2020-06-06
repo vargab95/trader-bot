@@ -1,5 +1,9 @@
 import unittest
 import unittest.mock
+
+import smtplib
+
+import mailing.message
 import mailing.postman
 import mailing.error
 import mailing.statistics
@@ -40,3 +44,37 @@ class MailingTest(unittest.TestCase):
         handle.login.assert_called_once()
         handle.send_message.assert_called_once()
         handle.quit.assert_called_once()
+
+    def test_empty_message(self, _):
+        message = mailing.error.ErrorMessage()
+        try:
+            self.postman.send(message)
+            self.fail()
+        except mailing.message.InvalidMessageException:
+            pass
+
+    @unittest.mock.patch("time.sleep")
+    def test_connection_error(self, _, smtp_mock):
+        message = mailing.error.ErrorMessage()
+        message.compose({"error": "Error"})
+
+        def raise_error(_, a):
+            raise ConnectionRefusedError('Test')
+
+        mocked_obj = smtp_mock.return_value
+        mocked_obj.connect.side_effect = raise_error
+
+        self.assertFalse(self.postman.send(message))
+
+    @unittest.mock.patch("time.sleep")
+    def test_send_message_error(self, _, smtp_mock):
+        message = mailing.error.ErrorMessage()
+        message.compose({"error": "Error"})
+
+        def raise_error(_):
+            raise smtplib.SMTPException('Test')
+
+        mocked_obj = smtp_mock.return_value
+        mocked_obj.send_message.side_effect = raise_error
+
+        self.assertFalse(self.postman.send(message))
