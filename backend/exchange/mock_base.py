@@ -61,6 +61,9 @@ class MockBase(exchange.interface.ExchangeInterface):
         if testing_config.enabled and not self._is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
 
+    def set_real_time(self, real_time: bool) -> None:
+        self._is_real_time = real_time
+
     def reset(self):
         self._balances = {}
         self._balances[self.base_coin] = self.__start_money

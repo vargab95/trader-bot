@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import unittest.mock
+
 import config.application
 import exchange.factory
 import exchange.interface
@@ -21,3 +23,30 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
             cls.config.exchange.market_name_format
         cls.controller = exchange.factory.ExchangeControllerFactory.create(
             cls.config)
+
+    @unittest.mock.patch("requests.get")
+    def test_get_price_unsuccessful(self, get_mock):
+        get_mock.return_value = unittest.mock.Mock()
+        get_mock.return_value.json.return_value = {}
+
+        self.controller.set_real_time(True)
+        with unittest.mock.patch("time.sleep"):
+            self.assertFalse(self.controller.get_price(
+                exchange.interface.Market.create_from_string("BEAR-USDT")))
+        self.controller.set_real_time(False)
+
+    @unittest.mock.patch("requests.get")
+    def test_get_price_successful(self, get_mock):
+        get_mock.return_value = unittest.mock.Mock()
+        get_mock.return_value.json.return_value = {
+            "success": True,
+            "result": {
+                "last": 1.2
+            }
+        }
+
+        self.controller.set_real_time(True)
+        with unittest.mock.patch("time.sleep"):
+            self.assertAlmostEqual(self.controller.get_price(
+                exchange.interface.Market.create_from_string("BEAR-USDT")), 1.2)
+        self.controller.set_real_time(False)
