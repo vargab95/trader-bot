@@ -3,37 +3,13 @@
 import unittest
 import unittest.mock
 
-import pymongo.errors
-
 import storage.user
-
-
-class MongoUserTableMock:
-    insert_call_count = 0
-    find_call_count = 0
-    simulate_duplicate = False
-
-    def insert_one(self, _):
-        MongoUserTableMock.insert_call_count += 1
-        if self.simulate_duplicate:
-            raise pymongo.errors.DuplicateKeyError("A")
-
-    @staticmethod
-    def find_one(_):
-        MongoUserTableMock.find_call_count += 1
-
-
-class DatabaseMock:
-    @property
-    def users(self):
-        return MongoUserTableMock()
+from storage.mocks import MongoUserTableMock, DatabaseMock
 
 
 class UserStorageTest(unittest.TestCase):
     def setUp(self):
-        MongoUserTableMock.find_call_count = 0
-        MongoUserTableMock.insert_call_count = 0
-        MongoUserTableMock.simulate_duplicate = False
+        MongoUserTableMock.reset()
 
     def test_insert_pass(self):
         store = storage.user.UserStorage(DatabaseMock())
