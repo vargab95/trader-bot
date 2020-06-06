@@ -4,7 +4,7 @@ import unittest
 import unittest.mock
 
 import storage.user
-from storage.mocks import MongoUserTableMock, DatabaseMock
+from storage.test_mocks import MongoUserTableMock, DatabaseMock
 
 
 class UserStorageTest(unittest.TestCase):

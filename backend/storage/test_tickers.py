@@ -7,7 +7,7 @@ import datetime
 
 from signals.trading_signal import TradingSignalPoint, TickerSignalDescriptor, TradingSignalPoint
 from storage.tickers import TickersStorage
-from storage.mocks import MongoSignalTableMock, MongoSignalResult, DatabaseMock
+from storage.test_mocks import MongoSignalTableMock, MongoSignalResult, DatabaseMock
 
 
 TICKER_DATA = [
