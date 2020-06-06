@@ -46,7 +46,7 @@ trader:
   follower_enabled: false
   indicator: all
   indicator_sma: 1
-  name: BTCUSD
+  name: GEMINI:BTCUSD
   max_steps: 5
   method: simple
   thresholds:

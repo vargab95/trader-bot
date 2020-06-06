@@ -6,6 +6,8 @@ import trader.factory
 import filters.base
 import filters.factory
 
+from signals.trading_signal import IndicatorSignalDescriptor, TickerSignalDescriptor, TradingSignalPoint
+
 
 class SimulatorApplication(applications.base.ApplicationBase):
     def __init__(self):
@@ -26,13 +28,13 @@ class SimulatorApplication(applications.base.ApplicationBase):
             self._configuration.filter)
 
     def _run_application_logic(self):
-        simulator_input = self._ticker_storage.get(
-            self._configuration.trader.market, limit=1000000)
+        simulator_input = self._ticker_storage.get(TickerSignalDescriptor(
+            market=self._configuration.trader.market, limit=1000000))
         for indicator in simulator_input:
-            self._exchange.price_mock["BULLUSDT"] = indicator["price"]
-            self._exchange.price_mock["BEARUSDT"] = indicator["price"]
-            self._exchange.price_mock["BTCUSDT"] = indicator["price"]
-            self.__filter.put(indicator["price"])
+            self._exchange.price_mock["BULLUSDT"] = indicator.price
+            self._exchange.price_mock["BEARUSDT"] = indicator.price
+            self._exchange.price_mock["BTCUSDT"] = indicator.price
+            self.__filter.put(indicator.price)
             if self.__filter.get():
                 self.__trader.perform(self.__filter.get())
 
