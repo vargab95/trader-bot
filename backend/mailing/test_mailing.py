@@ -58,7 +58,7 @@ class MailingTest(unittest.TestCase):
         message = mailing.error.ErrorMessage()
         message.compose({"error": "Error"})
 
-        def raise_error(_, a):
+        def raise_error(_, something):
             raise ConnectionRefusedError('Test')
 
         mocked_obj = smtp_mock.return_value
