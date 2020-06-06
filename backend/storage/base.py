@@ -81,9 +81,9 @@ class StorageBase:
     # TODO add typing
     @abc.abstractmethod
     def _generate_signal(self, fetched_signal) -> TradingSignal:
-        pass
+        pass  # pragma: no cover
 
     # TODO add typing
     @abc.abstractmethod
     def _get_collection(self, descriptor: TradingSignalDescriptor):
-        pass
+        pass  # pragma: no cover
