@@ -17,12 +17,9 @@ class Message(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def compose(self, data: typing.Dict) -> bool:
-        pass
+        pass  # pragma: no cover
 
     def get(self) -> str:
         if not self._message:
             raise InvalidMessageException()
         return self._message
-
-    def reset(self):
-        self._message = None
