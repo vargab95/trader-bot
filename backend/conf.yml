@@ -34,7 +34,7 @@ server:
   secret_key: ""
 testing:
   balance_store: balances.json
-  enabled: true
+  enabled: false
   fee: 0.001
   real_time: false
   start_money: 100.0

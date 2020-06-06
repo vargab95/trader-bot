@@ -29,13 +29,13 @@ class TradingViewFetcherBase:
         "oscillator": "Recommend.Other"
     }
 
-    def __init__(self, market: config.trader.TraderConfig, candle_size: float):
+    def __init__(self, trader_config: config.trader.TraderConfig, candle_size: float):
         self.request = None
         self.response = None
-        self.check_interval = market.check_interval
-        self.market_name = market.name
+        self.check_interval = trader_config.check_interval
+        self.market_name = trader_config.market
         self.candle_size = candle_size
-        self.indicator_name = market.indicator_name
+        self.indicator_name = trader_config.indicator
 
     def safe_fetch(self):
         while True:
