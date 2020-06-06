@@ -26,28 +26,15 @@ class Market:
         return self.name_format.format(base=self.base, target=self.target)
 
 
-class Balances:
-    def __init__(self):
-        self.__store: typing.Dict[str, float] = {}
-
-    def __getitem__(self, key):
-        return self.__store[key]
-
-    def __setitem__(self, key, value):
-        self.__store[key] = value
-
+class Balances(dict):
     def __str__(self):
         return "\nBalances:" + \
                "\n   " + \
                "\n   ".join([
                    "{}: {}".format(name, value)
                    for name, value
-                   in self.__store.items()
+                   in self.items()
                ])
-
-    def items(self):
-        for name, balance in self.__store.items():
-            yield name, balance
 
 
 class ExchangeError(Exception):
@@ -57,24 +44,24 @@ class ExchangeError(Exception):
 class ExchangeInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def buy(self, market: Market, amount: float) -> bool:
-        pass
+        pass  # pragma: no cover
 
     @abc.abstractmethod
     def sell(self, market: Market, amount: float) -> bool:
-        pass
+        pass  # pragma: no cover
 
     @abc.abstractmethod
     def get_balances(self) -> Balances:
-        pass
+        pass  # pragma: no cover
 
     @abc.abstractmethod
     def get_balance(self, market: str) -> float:
-        pass
+        pass  # pragma: no cover
 
     @abc.abstractmethod
     def get_price(self, market: Market) -> float:
-        pass
+        pass  # pragma: no cover
 
     @abc.abstractmethod
     def get_money(self, base: str) -> float:
-        pass
+        pass  # pragma: no cover
