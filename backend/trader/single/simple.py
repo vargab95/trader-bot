@@ -37,12 +37,14 @@ class SimpleSingleMarketTrader(TraderBase):
         logging.debug("Detector(s) has returned %s", str(actions))
         logging.debug("Current state is %s", str(self._state))
 
-        if self._state == TraderState.BUYING_BULLISH or (detector.common.TradingAction.BULLISH_SIGNAL in actions and self._state != TraderState.BULLISH):
+        if self._state == TraderState.BUYING_BULLISH or \
+                (detector.common.TradingAction.BULLISH_SIGNAL in actions and self._state != TraderState.BULLISH):
             if self._buy(self._configuration.exchange.watched_market):
                 self._state = TraderState.BULLISH
             else:
                 self._state = TraderState.BUYING_BULLISH
-        elif self._state == TraderState.SELLING_BULLISH or (detector.common.TradingAction.BEARISH_SIGNAL in actions and self._state != TraderState.BASE):
+        elif self._state == TraderState.SELLING_BULLISH or \
+                (detector.common.TradingAction.BEARISH_SIGNAL in actions and self._state != TraderState.BASE):
             if self._sell(self._configuration.exchange.watched_market):
                 self._state = TraderState.BASE
             else:

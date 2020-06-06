@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import logging
-
 import applications.base
 import trader.base
 import trader.factory
@@ -15,6 +13,7 @@ class SimulatorApplication(applications.base.ApplicationBase):
         self.__trader: trader.base.TraderBase
         self.__filter: filters.base.Filter
         self.__all_money_history = []
+        self.__last_money = 0.0
 
     def _initialize_application_logic(self):
         self._initialize_client()
