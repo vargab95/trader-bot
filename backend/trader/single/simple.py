@@ -21,7 +21,7 @@ class SimpleSingleMarketTrader(TraderBase):
         self._use_stateless_detector = False
 
     def initialize(self):
-        # TODO Refactor to have a sell and buy value instead of bear and bull to have a
+        # TODO Refactor to have a sell and buy value instead of bear and bull
         for threshold in self._configuration.trader.thresholds:
             self._detectors.append(
                 detector.factory.DetectorFactory.create(
@@ -37,11 +37,15 @@ class SimpleSingleMarketTrader(TraderBase):
         logging.debug("Detector(s) has returned %s", str(actions))
         logging.debug("Current state is %s", str(self._state))
 
-        if detector.common.TradingAction.BULLISH_SIGNAL in actions and self._state != TraderState.BULLISH:
-            self._buy(self._configuration.exchange.watched_market)
-            self._state = TraderState.BULLISH
-        elif detector.common.TradingAction.BEARISH_SIGNAL in actions and self._state != TraderState.BASE:
-            self._sell(self._configuration.exchange.watched_market)
-            self._state = TraderState.BASE
+        if self._state == TraderState.BUYING_BULLISH or (detector.common.TradingAction.BULLISH_SIGNAL in actions and self._state != TraderState.BULLISH):
+            if self._buy(self._configuration.exchange.watched_market):
+                self._state = TraderState.BULLISH
+            else:
+                self._state = TraderState.BUYING_BULLISH
+        elif self._state == TraderState.SELLING_BULLISH or (detector.common.TradingAction.BEARISH_SIGNAL in actions and self._state != TraderState.BASE):
+            if self._sell(self._configuration.exchange.watched_market):
+                self._state = TraderState.BASE
+            else:
+                self._state = TraderState.SELLING_BULLISH
 
         logging.debug("New state is %s", str(self._state))
