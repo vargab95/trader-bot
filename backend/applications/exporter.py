@@ -39,26 +39,22 @@ class ExporterApplication(applications.base.ApplicationBase):
             "watched":
             self._ticker_storage.get(
                 TickerSignalDescriptor(market=self._configuration.exchange.watched_market.key,
-                                       limit=self._configuration.database.limit,
-                                       start_date=datetime.datetime(2020, 5, 1))),
+                                       limit=self._configuration.database.limit)),
             "bearish":
             self._ticker_storage.get(
                 TickerSignalDescriptor(market=self._configuration.exchange.bearish_market.key,
-                                       limit=self._configuration.database.limit,
-                                       start_date=datetime.datetime(2020, 5, 1))),
+                                       limit=self._configuration.database.limit)),
             "bullish":
             self._ticker_storage.get(
                 TickerSignalDescriptor(market=self._configuration.exchange.bullish_market.key,
-                                       limit=self._configuration.database.limit,
-                                       start_date=datetime.datetime(2020, 5, 1))),
+                                       limit=self._configuration.database.limit)),
             "indicator":
             self._indicator_storage.get(
                 IndicatorSignalDescriptor(
                     market=self._configuration.trader.market,
                     indicator="all",
                     candle_size=self._configuration.trader.candle_size,
-                    limit=self._configuration.database.limit,
-                    start_date=datetime.datetime(2020, 5, 1)))
+                    limit=self._configuration.database.limit))
         }
 
     @staticmethod
