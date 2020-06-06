@@ -2,9 +2,12 @@
 
 import sys
 import json
+import datetime
 
 import applications.base
 import utils.estimators
+
+from signals.trading_signal import IndicatorSignalDescriptor, TickerSignalDescriptor
 
 
 class ExporterApplication(applications.base.ApplicationBase):
@@ -13,6 +16,7 @@ class ExporterApplication(applications.base.ApplicationBase):
         self._output_file_path: str
 
     def _initialize_application_logic(self):
+        self._initialize_client()
         self._initialize_storages()
 
     def _process_command_line_arguments(self):
@@ -34,28 +38,33 @@ class ExporterApplication(applications.base.ApplicationBase):
         return {
             "watched":
             self._ticker_storage.get(
-                market=self._configuration.exchange.watched_market.key,
-                limit=self._configuration.database.limit),
+                TickerSignalDescriptor(market=self._configuration.exchange.watched_market.key,
+                                       limit=self._configuration.database.limit,
+                                       start_date=datetime.datetime(2020, 5, 1))),
             "bearish":
             self._ticker_storage.get(
-                market=self._configuration.exchange.bearish_market.key,
-                limit=self._configuration.database.limit),
+                TickerSignalDescriptor(market=self._configuration.exchange.bearish_market.key,
+                                       limit=self._configuration.database.limit,
+                                       start_date=datetime.datetime(2020, 5, 1))),
             "bullish":
             self._ticker_storage.get(
-                market=self._configuration.exchange.bullish_market.key,
-                limit=self._configuration.database.limit),
+                TickerSignalDescriptor(market=self._configuration.exchange.bullish_market.key,
+                                       limit=self._configuration.database.limit,
+                                       start_date=datetime.datetime(2020, 5, 1))),
             "indicator":
             self._indicator_storage.get(
-                market=self._configuration.trader.name,
-                indicator="all",
-                candle_size=self._configuration.trader.candle_size,
-                limit=self._configuration.database.limit)
+                IndicatorSignalDescriptor(
+                    market=self._configuration.trader.market,
+                    indicator="all",
+                    candle_size=self._configuration.trader.candle_size,
+                    limit=self._configuration.database.limit,
+                    start_date=datetime.datetime(2020, 5, 1)))
         }
 
     @staticmethod
     def __sort(data_to_export):
         for data in data_to_export.values():
-            data = sorted(data, key=lambda item: item["date"])
+            data.data = sorted(data.data, key=lambda item: item.date)
 
     def __normalize(self, data):
         normalized = {
@@ -66,25 +75,25 @@ class ExporterApplication(applications.base.ApplicationBase):
         }
 
         idx = {"bearish": 0, "bullish": 0, "indicator": 0}
-        for line in data["watched"]:
+        for line in data["watched"].data:
             self.__update_indices(data, idx, line)
 
-            if not self.__all_exists(data, idx):
-                continue
+            # if not self.__all_exists(data, idx):
+            #     continue
 
             normalized["watched"].append(line)
             for key in idx:
                 normalized[key].append(
                     utils.estimators.calculate_third_point(
-                        data[key][idx[key]], data[key][idx[key] - 1],
-                        line["date"]))
+                        data[key].data[idx[key]], data[key].data[idx[key] - 1],
+                        line.date))
 
         return normalized
 
     @staticmethod
     def __update_indices(data, idx, line):
         for key in idx:
-            while data[key][idx[key]]["date"] < line["date"]:
+            while data[key].data[idx[key]].date < line.date:
                 idx[key] += 1
 
     def __all_exists(self, data, idx):
@@ -105,8 +114,8 @@ class ExporterApplication(applications.base.ApplicationBase):
         result = []
         for i in range(len(normalized["watched"])):
             result.append({
-                "date": normalized["watched"][i]["date"].isoformat(),
-                "watched": normalized["watched"][i]["price"],
+                "date": normalized["watched"][i].date.isoformat(),
+                "watched": normalized["watched"][i].value,
                 "bearish": normalized["bearish"][i],
                 "bullish": normalized["bullish"][i],
                 "indicator": normalized["indicator"][i]

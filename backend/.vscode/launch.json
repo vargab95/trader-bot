@@ -5,6 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Exporter",
+      "type": "python",
+      "request": "launch",
+      "program": "main.py",
+      "console": "integratedTerminal",
+      "args": ["exporter", "./conf.yml", "./output"]
+    },
+    {
       "name": "Simulator",
       "type": "python",
       "request": "launch",

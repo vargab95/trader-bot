@@ -1,50 +1,18 @@
 #!/usr/bin/python3
 
-import datetime
+import storage.base
+from signals.trading_signal import TickerSignalDescriptor, TradingSignal, TradingSignalPoint
 
-import storage.common
 
-
-class TickersStorage:
+class TickersStorage(storage.base.StorageBase):
     def __init__(self, db):
-        self.__collection = db.tickers
+        super().__init__(db)
+        self._value_key = "price"
 
-    def add(self, market: str, price: float, date=None) -> bool:
-        market_collection = self.__collection[market]
-        market_collection.insert_one({
-            "date":
-            datetime.datetime.utcnow() if not date else date,
-            "price":
-            price
-        })
+    def _generate_signal(self, fetched_signal) -> TradingSignal:
+        return TradingSignal(data=[TradingSignalPoint(date=line["date"], value=line["price"])
+                                   for line in fetched_signal], descriptor=None)
 
-    def get(self, market="", start_date=None, end_date=None, limit=-1):
-
-        if not market:
-            return None
-
-        market_collection = self.__collection[market]
-
-        result = None
-        if start_date and end_date:
-            result = market_collection.find(
-                {'date': {
-                    '$gte': start_date,
-                    '$lt': end_date
-                }})
-        elif start_date:
-            result = market_collection.find({'date': {
-                '$gte': start_date,
-            }})
-        elif end_date:
-            result = market_collection.find({'time': {'$lt': end_date}})
-        else:
-            result = market_collection.find()
-
-        result = storage.common.sort_and_limit_result(result, limit)
-
-        # TODO Add a new class and a list of instances
-        return [{
-            "date": line["date"],
-            "price": line["price"]
-        } for line in result]
+    def _get_collection(self, descriptor: TickerSignalDescriptor):
+        tickers_collection = self._db.tickers
+        return tickers_collection[descriptor.market]

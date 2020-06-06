@@ -8,6 +8,8 @@ import fetcher.multi
 
 import applications.base
 
+from signals.trading_signal import IndicatorSignalDescriptor, TickerSignalDescriptor, TradingSignalPoint
+
 
 class GathererApplication(applications.base.ApplicationBase):
     def __init__(self):
@@ -33,7 +35,9 @@ class GathererApplication(applications.base.ApplicationBase):
         while True:
             for market in self._market_list:
                 price = self._exchange.get_price(market)
-                self._ticker_storage.add(market.target + market.base, price)
+                self._ticker_storage.add(
+                    TickerSignalDescriptor(market=market.target + market.base),
+                    TradingSignalPoint(value=price))
 
             self._fetcher.safe_fetch()
             indicators = self._fetcher.get_technical_indicator()
@@ -42,9 +46,12 @@ class GathererApplication(applications.base.ApplicationBase):
                           fetcher.single.TradingViewFetcherSingle):
                 if indicators:
                     self._indicator_storage.add(
-                        self._configuration.trader.name,
-                        self._configuration.trader.indicator_name,
-                        self._configuration.trader.candle_size, indicators)
+                        IndicatorSignalDescriptor(
+                            market=self._configuration.trader.name,
+                            indicator=self._configuration.trader.indicator_name,
+                            candle_size=self._configuration.trader.candle_size),
+                        TradingSignalPoint(
+                            value=indicators))
             else:
                 self.__process_indicator_response(indicators)
 
@@ -56,5 +63,8 @@ class GathererApplication(applications.base.ApplicationBase):
                 for candle in self._configuration.trader.candle_size:
                     if indicators[market][indicator][candle]:
                         self._indicator_storage.add(
-                            market, indicator, candle,
-                            indicators[market][indicator][candle])
+                            IndicatorSignalDescriptor(
+                                market=market, indicator=indicator, candle_size=candle),
+                            TradingSignalPoint(
+                                value=indicators[market][indicator][candle])
+                        )

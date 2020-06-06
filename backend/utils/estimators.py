@@ -1,15 +1,11 @@
 #!/usr/bin/python3
 
-
-def determine_key(data):
-    if "value" in data.keys():
-        return "value"
-    return "price"
+import datetime
+from signals.trading_signal import TradingSignalPoint
 
 
-def calculate_third_point(p_0, p_1, date):
-    key = determine_key(p_0)
-    nominator = p_1[key] - p_0[key]
-    denumerator = p_1["date"].timestamp() - p_0["date"].timestamp()
-    multiplier = date.timestamp() - p_0["date"].timestamp()
-    return (nominator / denumerator) * multiplier + p_0[key]
+def calculate_third_point(p_0: TradingSignalPoint, p_1: TradingSignalPoint, date: datetime.datetime):
+    nominator = p_1.value - p_0.value
+    denumerator = p_1.date.timestamp() - p_0.date.timestamp()
+    multiplier = date.timestamp() - p_0.date.timestamp()
+    return (nominator / denumerator) * multiplier + p_0.value
