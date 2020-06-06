@@ -2,7 +2,6 @@
 
 import sys
 import json
-import datetime
 
 import applications.base
 import utils.estimators

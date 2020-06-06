@@ -5,49 +5,38 @@ from flask_jwt_extended import jwt_required
 
 import fetcher.base
 import filters.factory
-from api.common import filter_results, get_default_parser, convert_date_time
+from signals.trading_signal import IndicatorSignalDescriptor
+from api.signals import Signal
 
 
-class Indicator(Resource):
-    storage = None
-    datetime_format = None
-
+class Indicator(Signal):
     def __init__(self):
-        self.parser = get_default_parser()
+        super().__init__()
 
-        self.parser.add_argument(
+        self._parser.add_argument(
             'indicator',
             type=str,
             choices=tuple(
                 fetcher.base.TradingViewFetcherBase.indicator_name_map.keys()),
             required=True)
 
-        self.parser.add_argument(
+        self._parser.add_argument(
             'candleSize',
             type=str,
             choices=tuple(
                 fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
             required=True)
 
-    @jwt_required
-    def post(self):
-        request = self.parser.parse_args()
-        filter_list = request['filter']
-        step = request['step']
-        start_date = convert_date_time(request['dateSpan']['start'])
-        end_date = convert_date_time(request['dateSpan']['end'])
-
-        result = self.storage.get(request['market'], request['indicator'],
-                                  request['candleSize'], start_date, end_date,
-                                  request['limit'])
-
-        for row in result:
-            row['date'] = row['date'].strftime(self.datetime_format)
-
-        if filter_list:
-            result = filter_results(result, filter_list, 'value')
-
-        return result[::step]
+    def _compose_descriptor(self, request) -> IndicatorSignalDescriptor:
+        return IndicatorSignalDescriptor(
+            market=request['market'],
+            indicator=request['indicator'],
+            candle_size=request['candleSize'],
+            start_date=self._convert_date_time(request['dateSpan']['start']),
+            end_date=self._convert_date_time(request['dateSpan']['end']),
+            limit=request['limit'],
+            step=request['step']
+        )
 
 
 class IndicatorOptions(Resource):

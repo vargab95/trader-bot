@@ -4,6 +4,7 @@ import unittest
 import unittest.mock
 
 import config.application
+import config.detector
 import trader.leverage.stepped
 import exchange.interface
 import exchange.factory
@@ -19,7 +20,13 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.trader.thresholds = [{"bull": -0.4, "bear": 0.4}]
+        cls.config.trader.detectors = [
+            config.detector.DetectorConfig({
+                "bullish_threshold": -0.4,
+                "bearish_threshold": 0.4,
+                "stateless": True
+            })
+        ]
         cls.config.trader.max_steps = 10
 
         exchange.interface.Market.name_format = \
@@ -127,16 +134,23 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.trader.thresholds = [{
-            "bull": -0.4,
-            "bear": 0.4
-        }, {
-            "bull": -0.5,
-            "bear": 0.5
-        }, {
-            "bull": -0.6,
-            "bear": 0.6
-        }]
+        cls.config.trader.detectors = [
+            config.detector.DetectorConfig({
+                "bullish_threshold": -0.4,
+                "bearish_threshold": 0.4,
+                "stateless": True
+            }),
+            config.detector.DetectorConfig({
+                "bullish_threshold": -0.5,
+                "bearish_threshold": 0.5,
+                "stateless": True
+            }),
+            config.detector.DetectorConfig({
+                "bullish_threshold": -0.6,
+                "bearish_threshold": 0.6,
+                "stateless": True
+            })
+        ]
         cls.config.trader.max_steps = 10
 
         exchange.interface.Market.name_format = \
