@@ -21,6 +21,7 @@ class BinanceMockTest(exchange.test_mock_common.CommonMockTest):
         cls.config.exchange.name = "binance"
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format
+        # TODO with unittest.mock.patch("exchange.binance.binance.client.Client"):
         cls.controller = exchange.factory.ExchangeControllerFactory.create(
             cls.config)
 

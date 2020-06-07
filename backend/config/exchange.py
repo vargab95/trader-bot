@@ -10,8 +10,8 @@ class ExchangeConfig:
 
     def __init__(self, config: typing.Dict):
         self.name = config.get("name", "binance")
-        self.public_key = config.get("api_key", "")
-        self.private_key = config.get("api_secret", "")
+        self.public_key = config.get("public_key", "")
+        self.private_key = config.get("private_key", "")
         self.watched_market: exchange.interface.Market = \
             exchange.interface.Market.create_from_string(
                 config.get("watched_market", "BTC-USDT"))

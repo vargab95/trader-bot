@@ -8,7 +8,7 @@ class DatabaseConfig:
         self.url = config.get("url", "")
         self.user = config.get("user", "")
         self.password = config.get("password", "")
-        self.limit = config.get("query_limit", -1)
+        self.limit = config.get("limit", -1)
 
     def __str__(self):
         return "\nDatabase:" + \

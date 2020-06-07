@@ -7,7 +7,7 @@ class MailConfig:
     def __init__(self, config: typing.Dict):
         self.name = config.get("name", "TradingViewBot")
         self.port = config.get("port", 25)
-        self.smtp_server = config.get("server", "smtp.vbj.hu")
+        self.smtp_server = config.get("smtp_server", "smtp.vbj.hu")
         self.sender = config.get("sender", "tvb@vbj.hu")
         self.receiver = config.get("receiver", "")
         self.password = config.get("password", "")
