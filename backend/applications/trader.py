@@ -43,6 +43,7 @@ class TraderApplication(applications.base.ApplicationBase):
             # TODO current_indicator = self.__get_indicator()
             current_indicator = self.__get_price()
 
+            # TODO Initialize based on previous data
             if current_indicator:
                 all_money = self.__get_all_money()
                 self.__log_all_money(all_money)
@@ -76,10 +77,16 @@ class TraderApplication(applications.base.ApplicationBase):
 
     def __apply_filter(self, indicator):
         self.__filter.put(indicator)
-        sma = self.__filter.get()
-        if not sma:
-            logging.info("Waiting for SMA to be filled.")
-        return self.__filter.get()
+        filtered = self.__filter.get()
+        if not filtered:
+            logging.info("Waiting for filter to be filled.\n"
+                         "    Input: %f\n"
+                         "    Filtered: %f\n"
+                         "    Length: %d",
+                         indicator,
+                         filtered,
+                         self.__filter.length)
+        return filtered
 
     def __log_all_money(self, all_money):
         logging.info("All money: %f", all_money)
