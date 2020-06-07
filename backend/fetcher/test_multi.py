@@ -122,13 +122,17 @@ class MultiFetcherTest(unittest.TestCase):
 
         fetcher = TradingViewFetcherMulti(configuration)
         fetcher.safe_fetch()
-        self.assertEqual(fetcher.get_technical_indicator(), {
-                         'lll': {
-                             'all': {
-                                 '1m': [1.2, 1.3, 1.4],
-                                 '1h': [2.2, 2.3, 2.4]
-                             }
-                         }})
+        self.assertEqual(
+            fetcher.get_technical_indicator(),
+            {
+                'lll': {
+                    'all': {
+                        '1m': [1.2, 1.3, 1.4],
+                        '1h': [2.2, 2.3, 2.4]
+                    }
+                }
+            }
+        )
 
     def test_invalid_candle_size_value(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()
@@ -179,8 +183,16 @@ class MultiFetcherTest(unittest.TestCase):
 
         fetcher = TradingViewFetcherMulti(configuration)
         fetcher.safe_fetch()
-        self.assertEqual(fetcher.get_technical_indicator(), {
-                         'lll': {'all': {'1m': [1.2, 1.3, 1.4]}}})
+        self.assertEqual(
+            fetcher.get_technical_indicator(),
+            {
+                'lll': {
+                    'all': {
+                        '1m': [1.2, 1.3, 1.4]
+                    }
+                }
+            }
+        )
 
     def test_safe_fetch_fails(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()

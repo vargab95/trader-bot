@@ -5,7 +5,7 @@ import unittest.mock
 
 import datetime
 
-from signals.trading_signal import TradingSignalPoint, TickerSignalDescriptor, TradingSignalPoint
+from signals.trading_signal import TradingSignalPoint, TickerSignalDescriptor
 from storage.tickers import TickersStorage
 from storage.test_mocks import MongoSignalTableMock, MongoSignalResult, DatabaseMock
 
@@ -60,11 +60,11 @@ class TickersStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "market")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(TICKER_DATA)):
+        for i, ticker in enumerate(TICKER_DATA):
             self.assertEqual(
-                result.data[i].date, TICKER_DATA[i]["date"])
+                result.data[i].date, ticker["date"])
             self.assertAlmostEqual(
-                result.data[i].value, TICKER_DATA[i]["price"])
+                result.data[i].value, ticker["price"])
 
         self.assertEqual(MongoSignalTableMock.last_find_request, None)
         self.assertEqual(MongoSignalResult.limit_call_count, 0)
@@ -79,14 +79,20 @@ class TickersStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "market")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(TICKER_DATA)):
+        for i, ticker in enumerate(TICKER_DATA):
             self.assertEqual(
-                result.data[i].date, TICKER_DATA[i]["date"])
+                result.data[i].date, ticker["date"])
             self.assertAlmostEqual(
-                result.data[i].value, TICKER_DATA[i]["price"])
+                result.data[i].value, ticker["price"])
 
-        self.assertEqual(MongoSignalTableMock.last_find_request, {
-                         'date': {'$gte': datetime.datetime(1999, 1, 1, 0, 0)}})
+        self.assertEqual(
+            MongoSignalTableMock.last_find_request,
+            {
+                'date': {
+                    '$gte': datetime.datetime(1999, 1, 1, 0, 0)
+                }
+            }
+        )
         self.assertEqual(MongoSignalResult.limit_call_count, 0)
         self.assertEqual(MongoSignalResult.sort_call_count, 1)
 
@@ -99,14 +105,20 @@ class TickersStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "market")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(TICKER_DATA)):
+        for i, ticker in enumerate(TICKER_DATA):
             self.assertEqual(
-                result.data[i].date, TICKER_DATA[i]["date"])
+                result.data[i].date, ticker["date"])
             self.assertAlmostEqual(
-                result.data[i].value, TICKER_DATA[i]["price"])
+                result.data[i].value, ticker["price"])
 
-        self.assertEqual(MongoSignalTableMock.last_find_request, {
-                         'date': {'$lt': datetime.datetime(1999, 1, 1, 0, 0)}})
+        self.assertEqual(
+            MongoSignalTableMock.last_find_request,
+            {
+                'date': {
+                    '$lt': datetime.datetime(1999, 1, 1, 0, 0)
+                }
+            }
+        )
         self.assertEqual(MongoSignalResult.limit_call_count, 0)
         self.assertEqual(MongoSignalResult.sort_call_count, 1)
 
@@ -120,11 +132,11 @@ class TickersStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "market")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(TICKER_DATA)):
+        for i, ticker in enumerate(TICKER_DATA):
             self.assertEqual(
-                result.data[i].date, TICKER_DATA[i]["date"])
+                result.data[i].date, ticker["date"])
             self.assertAlmostEqual(
-                result.data[i].value, TICKER_DATA[i]["price"])
+                result.data[i].value, ticker["price"])
 
         self.assertEqual(MongoSignalTableMock.last_find_request, {
             'date': {

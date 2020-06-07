@@ -17,7 +17,7 @@ class TradeTest(unittest.TestCase):
         trade = Trade(Market("Base", "Target"))
         trade.enter(1, 1)
         try:
-            trade.profit
+            print(trade.profit)
             self.fail()
         except InvalidTradeResultRequestException:
             pass
