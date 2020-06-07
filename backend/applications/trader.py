@@ -78,7 +78,7 @@ class TraderApplication(applications.base.ApplicationBase):
     def __apply_filter(self, indicator):
         self.__filter.put(indicator)
         filtered = self.__filter.get()
-        if not filtered:
+        if filtered is None:
             logging.info("Waiting for filter to be filled.\n"
                          "    Input: %f\n"
                          "    Filtered: %s\n"
