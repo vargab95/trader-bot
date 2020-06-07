@@ -64,11 +64,7 @@ class TraderApplication(applications.base.ApplicationBase):
         self.__filter.put(indicator)
         sma = self.__filter.get()
         if not sma:
-            logging.info(
-                "Waiting for SMA to be filled. "
-                "Current length: %d "
-                "Final length: %d ", self.__filter.length,
-                self._configuration.trader.indicator_sma)
+            logging.info("Waiting for SMA to be filled.")
         return self.__filter.get()
 
     def __log_all_money(self, all_money):
