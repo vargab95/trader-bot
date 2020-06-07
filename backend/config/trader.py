@@ -14,6 +14,7 @@ class TraderConfig:
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
         self.max_steps = config.get("max_steps", 5)
+        self.initial_values = config.get("initial_values", [])
         self.detectors = [DetectorConfig(detector_config)
                           for detector_config in config.get("detectors", [])]
 
