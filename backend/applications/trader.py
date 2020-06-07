@@ -30,6 +30,8 @@ class TraderApplication(applications.base.ApplicationBase):
         if self._configuration.filter:
             self.__filter = filters.factory.FilterFactory.create_complex(
                 self._configuration.filter)
+            for value in self._configuration.trader.initial_values:
+                self.__filter.put(value)
         else:
             self.__filter = None
 
