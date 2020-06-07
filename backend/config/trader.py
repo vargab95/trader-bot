@@ -7,13 +7,13 @@ from config.detector import DetectorConfig
 
 class TraderConfig:
     def __init__(self, config: typing.Dict):
-        self.market = config.get("name", "GEMINI:BTCUSD")
+        self.market = config.get("market", "GEMINI:BTCUSD")
         self.indicator = config.get("indicator", "all")
         self.check_interval = config.get("check_interval", 60)
         self.candle_size = config.get("candle_size", "1h")
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
-        self.max_steps = config.get("step_count", 5)
+        self.max_steps = config.get("max_steps", 5)
         self.detectors = [DetectorConfig(detector_config)
                           for detector_config in config.get("detectors", [])]
 

@@ -5,8 +5,8 @@ import typing
 
 class SimulatorConfig:
     def __init__(self, config: typing.Dict):
-        self.start_date: str = config.get("type", "sma")
-        self.end_date: int = config.get("length", 2)
+        self.start_date: str = config.get("start_date", "sma")
+        self.end_date: int = config.get("end_date", 2)
 
     def __str__(self):
         return "\nSimulator:" + \

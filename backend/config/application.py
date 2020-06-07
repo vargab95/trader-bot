@@ -22,7 +22,7 @@ class ApplicationConfig:
         self.database = DatabaseConfig(configuration.get("database", {}))
         self.server = ServerConfig(configuration.get("server", {}))
         self.filter = [FilterConfig(filter_element)
-                       for filter_element in configuration.get("filters", [])]
+                       for filter_element in configuration.get("filter", [])]
 
     def __str__(self):
         return ''.join(
