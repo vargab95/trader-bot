@@ -31,6 +31,9 @@ class BinanceController(exchange.base.ExchangeBase):
 
     @exchange.guard.exchange_guard()
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
+        if amount <= 0.0:
+            return False
+
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "buy")
 
@@ -48,6 +51,9 @@ class BinanceController(exchange.base.ExchangeBase):
 
     @exchange.guard.exchange_guard()
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
+        if amount <= 0.0:
+            return False
+
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "sell")
 
