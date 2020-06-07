@@ -44,9 +44,12 @@ class TraderApplication(applications.base.ApplicationBase):
             current_indicator = self.__get_price()
 
             # TODO Initialize based on previous data
-            if current_indicator:
+            if current_indicator is not None:
                 all_money = self.__get_all_money()
-                self.__log_all_money(all_money)
+                logging.info("Indicator: %f", current_indicator)
+                logging.info("All money: %f", all_money)
+                logging.info("State: %s", self.__trader.state)
+                logging.info(self._exchange.get_balances())
                 self.__trader.perform(current_indicator)
                 self.__send_statistics_email(all_money)
 
@@ -87,10 +90,6 @@ class TraderApplication(applications.base.ApplicationBase):
                          str(filtered),
                          self.__filter.length)
         return filtered
-
-    def __log_all_money(self, all_money):
-        logging.info("All money: %f", all_money)
-        logging.debug(self._exchange.get_balances())
 
     def __get_all_money(self):
         return self._exchange.get_money(
