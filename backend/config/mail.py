@@ -18,5 +18,5 @@ class MailConfig:
                "\n    Port:     " + str(self.port) + \
                "\n    Server:   " + self.smtp_server + \
                "\n    Sender:   " + self.sender + \
-               "\n    Receiver: " + self.receiver + \
+               "\n    Receiver: " + str(self.receiver) + \
                "\n    Password: " + str("*" * len(self.password))
