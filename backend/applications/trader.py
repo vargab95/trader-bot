@@ -40,7 +40,8 @@ class TraderApplication(applications.base.ApplicationBase):
 
     def _run_application_logic(self):
         while True:
-            current_indicator = self.__get_indicator()
+            # TODO current_indicator = self.__get_indicator()
+            current_indicator = self.__get_price()
 
             if current_indicator:
                 all_money = self.__get_all_money()
@@ -50,11 +51,24 @@ class TraderApplication(applications.base.ApplicationBase):
 
             self._fetcher.sleep_until_next_data()
 
+    # TODO Make it configurable which signal to use.
+    # A new class should be created, for example, signal provider
+    # which can provide both, trading view signals and signals for
+    # exchanges.
+    # For this purpose, the trading signals classes should be introduced
+    # there too.
     def __get_indicator(self):
         indicator = self.__fetch_indicator()
         if self.__filter:
             return self.__apply_filter(indicator)
         return indicator
+
+    def __get_price(self):
+        ticker = self._exchange.get_price(
+            self._configuration.exchange.watched_market)
+        if self.__filter:
+            return self.__apply_filter(ticker)
+        return ticker
 
     def __fetch_indicator(self):
         self._fetcher.safe_fetch()
