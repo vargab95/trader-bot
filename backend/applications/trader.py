@@ -81,10 +81,10 @@ class TraderApplication(applications.base.ApplicationBase):
         if not filtered:
             logging.info("Waiting for filter to be filled.\n"
                          "    Input: %f\n"
-                         "    Filtered: %f\n"
+                         "    Filtered: %s\n"
                          "    Length: %d",
                          indicator,
-                         filtered,
+                         str(filtered),
                          self.__filter.length)
         return filtered
 
