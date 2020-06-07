@@ -19,7 +19,7 @@ class TraderApplication(applications.base.ApplicationBase):
     def __init__(self):
         super().__init__()
         self.__long_term_fetcher: fetcher.base.TradingViewFetcherBase
-        self.__sma: filters.sma.SMA
+        self.__filter: filters.base.Filter
         self.__trader: trader.base.TraderBase
         self.__last_sent_time: datetime
 
@@ -27,11 +27,11 @@ class TraderApplication(applications.base.ApplicationBase):
         self._initialize_exchange()
         self._initialize_fetcher()
 
-        if self._configuration.trader.indicator_sma > 1:
-            self.__sma = filters.sma.SMA(
-                self._configuration.trader.indicator_sma)
+        if self._configuration.filter:
+            self.__filter = filters.factory.FilterFactory.create_complex(
+                self._configuration.filter)
         else:
-            self.__sma = None
+            self.__filter = None
 
         self.__trader = trader.factory.TraderFactory.create(
             self._configuration, self._exchange)
@@ -52,24 +52,24 @@ class TraderApplication(applications.base.ApplicationBase):
 
     def __get_indicator(self):
         indicator = self.__fetch_indicator()
-        if self.__sma:
-            return self.__apply_sma(indicator)
+        if self.__filter:
+            return self.__apply_filter(indicator)
         return indicator
 
     def __fetch_indicator(self):
         self._fetcher.safe_fetch()
         return self._fetcher.get_technical_indicator()
 
-    def __apply_sma(self, indicator):
-        self.__sma.put(indicator)
-        sma = self.__sma.get()
+    def __apply_filter(self, indicator):
+        self.__filter.put(indicator)
+        sma = self.__filter.get()
         if not sma:
             logging.info(
                 "Waiting for SMA to be filled. "
                 "Current length: %d "
-                "Final length: %d ", self.__sma.length,
+                "Final length: %d ", self.__filter.length,
                 self._configuration.trader.indicator_sma)
-        return self.__sma.get()
+        return self.__filter.get()
 
     def __log_all_money(self, all_money):
         logging.info("All money: %f", all_money)
