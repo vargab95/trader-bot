@@ -28,4 +28,4 @@ class TraderConfig:
                "\n    Step count:             " + str(self.max_steps) + \
                "\n    Check interval:         " + str(self.check_interval) + \
                "\n    Detectors:              " + \
-            [str(detector) for detector in self.detectors]
+            ', '.join([str(detector) for detector in self.detectors])
