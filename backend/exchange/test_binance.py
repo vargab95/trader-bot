@@ -2,6 +2,7 @@
 
 import unittest
 import unittest.mock
+import binance.client
 
 import config.application
 import exchange.factory
@@ -20,23 +21,306 @@ class BinanceTest(unittest.TestCase):
             cls.config.exchange.market_name_format
 
     def test_buy(self, mock_client):
-        pass
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 5
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 3
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertAlmostEqual(controller.buy(market, 5), True)
+
+        handle.create_order.assert_called_once_with(
+            symbol=market.key,
+            quantity='5.',
+            side=binance.client.Client.SIDE_BUY,
+            type=binance.client.Client.ORDER_TYPE_MARKET)
+
+    def test_buy_rounding(self, mock_client):
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 0.0001
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 0.001
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertAlmostEqual(controller.buy(market, 1.23456789), True)
+
+        handle.create_order.assert_called_once_with(
+            symbol=market.key,
+            quantity='1.2345',
+            side=binance.client.Client.SIDE_BUY,
+            type=binance.client.Client.ORDER_TYPE_MARKET)
+
+    def test_buy_round_to_zero(self, mock_client):
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 0.0001
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 0.001
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertFalse(controller.buy(market, 0.0000123))
+
+    def test_buy_below_notional(self, mock_client):
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_ticker.return_value = {"lastPrice": 1.0}
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 0.0000001
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 0.001
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertFalse(controller.buy(market, 0.0000123))
 
     def test_sell(self, mock_client):
-        pass
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 5
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 3
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertAlmostEqual(controller.sell(market, 5), True)
+
+        handle.create_order.assert_called_once_with(
+            symbol=market.key,
+            quantity='5.',
+            side=binance.client.Client.SIDE_SELL,
+            type=binance.client.Client.ORDER_TYPE_MARKET)
+
+    def test_sell_round_to_zero(self, mock_client):
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 0.0001
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 0.001
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertFalse(controller.sell(market, 0.0000123))
+
+    def test_buy_negative(self, mock_client):
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 5
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 3
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertFalse(controller.buy(market, -5))
+
+    def test_sell_negative(self, mock_client):
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 5
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 3
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertFalse(controller.sell(market, -5))
+
+    def test_buy_not_enough_quantity(self, mock_client):
+        market = exchange.interface.Market("ETH", "BTC")
+        handle = mock_client()
+        handle.create_order.return_value = True
+        handle.get_exchange_info.return_value = {
+            "symbols": [
+                {
+                    "symbol": market.key,
+                    "filters": [
+                        {
+                            "filterType": "LOT_SIZE",
+                            "minQty": 5000
+                        },
+                        {
+                            "filterType": "MIN_NOTIONAL",
+                            "minNotional": 3
+                        }
+                    ]
+                }
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertFalse(controller.buy(market, 5))
 
     def test_get_balances(self, mock_client):
-        pass
+        handle = mock_client()
+        handle.get_account.return_value = {
+            "balances": [
+                {"asset": "BTC", "free": 10.0},
+                {"asset": "ETH", "free": 20.0}
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertEqual(controller.get_balances(), {"ETH": 20.0, "BTC": 10.0})
+
+        handle.get_account.assert_called_once()
 
     def test_get_balance(self, mock_client):
-        pass
-        # controller = exchange.factory.ExchangeControllerFactory.create(
-        #     self.config)
-        # controller.get_balance("ETH")
-        # mock_client.Client.get_asset_balance.assert_called_once()
+        handle = mock_client()
+        handle.get_asset_balance.return_value = {"free": 20.0}
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertAlmostEqual(controller.get_balance("ETH"), 20.0)
+
+        handle.get_asset_balance.assert_called_once_with(asset="ETH")
 
     def test_get_price(self, mock_client):
-        pass
+        handle = mock_client()
+        handle.get_ticker.return_value = {"lastPrice": 20.0}
+        market = exchange.interface.Market("ETH", "BTC")
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertAlmostEqual(controller.get_price(market), 20.0)
+
+        handle.get_ticker.assert_called_once_with(symbol=market.key)
 
     def test_get_money(self, mock_client):
-        pass
+        handle = mock_client()
+        handle.get_account.return_value = {
+            "balances": [
+                {"asset": "BTC", "free": 10.0},
+                {"asset": "ETH", "free": 20.0}
+            ]
+        }
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+        self.assertEqual(controller.get_money("BTC"), 30.0)
+
+        handle.get_account.assert_called_once()
+        handle.get_ticker.assert_called_with(symbol='ETHBTC')

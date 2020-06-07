@@ -46,7 +46,7 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         if not self._is_enough_amount(market, corrected_amount):
             logging.warning("%s failed due to insufficient resources.",
                             operation)
-            return corrected_amount
+            return 0.0
 
         corrected_amount_str = "{:.12f}".format(corrected_amount).rstrip('0')
         logging.debug("Corrected amount string: %s", corrected_amount_str)
@@ -70,16 +70,16 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         return all_money
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        pass
+        pass  # pragma: no cover
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        pass
+        pass  # pragma: no cover
 
     def get_balances(self) -> exchange.interface.Balances:
-        pass
+        pass  # pragma: no cover
 
     def get_balance(self, market: str) -> float:
-        pass
+        pass  # pragma: no cover
 
     def get_price(self, market: exchange.interface.Market) -> float:
-        return -1.0
+        return -1.0  # pragma: no cover

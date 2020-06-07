@@ -33,21 +33,25 @@ class FtxController(exchange.base.ExchangeBase):
                           market["minProvideSize"], market["priceIncrement"])
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
+        if amount <= 0.0:
+            return False
+
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "buy")
 
         if corrected_amount <= 0.0:
             return False
 
-        self.__send_authenticated_request('POST',
-                                          self.orders_url,
-                                          data={
-                                              "market": market.key,
-                                              "side": "buy",
-                                              "type": "market",
-                                              "size": corrected_amount,
-                                              "price": None
-                                          })
+        if not self.__send_authenticated_request('POST',
+                                                 self.orders_url,
+                                                 data={
+                                                     "market": market.key,
+                                                     "side": "buy",
+                                                     "type": "market",
+                                                     "size": corrected_amount,
+                                                     "price": None
+                                                 }):
+            return False
 
         logging.info("%.10f %s was successfully bought", corrected_amount,
                      market.key)
@@ -55,21 +59,25 @@ class FtxController(exchange.base.ExchangeBase):
         return True
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
+        if amount <= 0.0:
+            return False
+
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "sell")
 
         if corrected_amount <= 0.0:
             return False
 
-        self.__send_authenticated_request('POST',
-                                          self.orders_url,
-                                          data={
-                                              "market": market.key,
-                                              "side": "sell",
-                                              "type": "market",
-                                              "size": corrected_amount,
-                                              "price": None
-                                          })
+        if not self.__send_authenticated_request('POST',
+                                                 self.orders_url,
+                                                 data={
+                                                     "market": market.key,
+                                                     "side": "sell",
+                                                     "type": "market",
+                                                     "size": corrected_amount,
+                                                     "price": None
+                                                 }):
+            return False
 
         logging.info("%.10f %s was successfully sold", corrected_amount,
                      market.key)
@@ -91,7 +99,7 @@ class FtxController(exchange.base.ExchangeBase):
         balances = self.get_balances()
 
         for key, value in balances.items():
-            if key == market:
+            if key == market.key:
                 return value
 
         return 0.0
@@ -107,7 +115,7 @@ class FtxController(exchange.base.ExchangeBase):
         logging.error("Could not get price of %s", str(market))
         logging.error("%s\n\n%s", str(data["error"]),
                       ''.join(traceback.format_stack()))
-        raise exchange.interface.ExchangeError(response["error"])
+        raise exchange.interface.ExchangeError(data["error"])
 
     @exchange.guard.exchange_guard()
     def __send_authenticated_request(self, method, endpoint, data=None):
