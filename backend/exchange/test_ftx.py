@@ -2,7 +2,6 @@
 
 import unittest
 import unittest.mock
-import binance.client
 
 import config.application
 import exchange.factory
@@ -22,7 +21,7 @@ class BinanceTest(unittest.TestCase):
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format
 
-    def init_controller(self, session_mock, get_mock, min_size, min_notional):
+    def init_controller(self, _, get_mock, min_size, min_notional):
         get_mock.return_value = unittest.mock.Mock()
         get_mock.return_value.json.return_value = {
             "success": True,
@@ -38,7 +37,7 @@ class BinanceTest(unittest.TestCase):
         return exchange.factory.ExchangeControllerFactory.create(
             self.config)
 
-    def test_init_failure(self, session_mock, get_mock):
+    def test_init_failure(self, _, get_mock):
         get_mock.return_value = unittest.mock.Mock()
         get_mock.return_value.json.return_value = {
             "success": False,

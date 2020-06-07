@@ -5,7 +5,7 @@ import unittest.mock
 
 import datetime
 
-from signals.trading_signal import TradingSignalPoint, IndicatorSignalDescriptor, TradingSignalPoint
+from signals.trading_signal import TradingSignalPoint, IndicatorSignalDescriptor
 from storage.indicators import IndicatorsStorage
 from storage.test_mocks import MongoSignalTableMock, MongoSignalResult, DatabaseMock
 
@@ -63,11 +63,11 @@ class IndicatorsStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "candle_size")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(INDICATOR_DATA)):
+        for i, indicator in enumerate(INDICATOR_DATA):
             self.assertEqual(
-                result.data[i].date, INDICATOR_DATA[i]["date"])
+                result.data[i].date, indicator["date"])
             self.assertAlmostEqual(
-                result.data[i].value, INDICATOR_DATA[i]["value"])
+                result.data[i].value, indicator["value"])
 
         self.assertEqual(MongoSignalTableMock.last_find_request, None)
         self.assertEqual(MongoSignalResult.limit_call_count, 0)
@@ -84,14 +84,20 @@ class IndicatorsStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "candle_size")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(INDICATOR_DATA)):
+        for i, indicator in enumerate(INDICATOR_DATA):
             self.assertEqual(
-                result.data[i].date, INDICATOR_DATA[i]["date"])
+                result.data[i].date, indicator["date"])
             self.assertAlmostEqual(
-                result.data[i].value, INDICATOR_DATA[i]["value"])
+                result.data[i].value, indicator["value"])
 
-        self.assertEqual(MongoSignalTableMock.last_find_request, {
-                         'date': {'$gte': datetime.datetime(1999, 1, 1, 0, 0)}})
+        self.assertEqual(
+            MongoSignalTableMock.last_find_request,
+            {
+                'date': {
+                    '$gte': datetime.datetime(1999, 1, 1, 0, 0)
+                }
+            }
+        )
         self.assertEqual(MongoSignalResult.limit_call_count, 0)
         self.assertEqual(MongoSignalResult.sort_call_count, 1)
 
@@ -106,14 +112,20 @@ class IndicatorsStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "candle_size")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(INDICATOR_DATA)):
+        for i, indicator in enumerate(INDICATOR_DATA):
             self.assertEqual(
-                result.data[i].date, INDICATOR_DATA[i]["date"])
+                result.data[i].date, indicator["date"])
             self.assertAlmostEqual(
-                result.data[i].value, INDICATOR_DATA[i]["value"])
+                result.data[i].value, indicator["value"])
 
-        self.assertEqual(MongoSignalTableMock.last_find_request, {
-                         'date': {'$lt': datetime.datetime(1999, 1, 1, 0, 0)}})
+        self.assertEqual(
+            MongoSignalTableMock.last_find_request,
+            {
+                'date': {
+                    '$lt': datetime.datetime(1999, 1, 1, 0, 0)
+                }
+            }
+        )
         self.assertEqual(MongoSignalResult.limit_call_count, 0)
         self.assertEqual(MongoSignalResult.sort_call_count, 1)
 
@@ -129,11 +141,11 @@ class IndicatorsStorageTest(unittest.TestCase):
         self.assertEqual(MongoSignalTableMock.table_name, "candle_size")
         self.assertEqual(MongoSignalTableMock.find_call_count, 1)
 
-        for i in range(len(INDICATOR_DATA)):
+        for i, indicator in enumerate(INDICATOR_DATA):
             self.assertEqual(
-                result.data[i].date, INDICATOR_DATA[i]["date"])
+                result.data[i].date, indicator["date"])
             self.assertAlmostEqual(
-                result.data[i].value, INDICATOR_DATA[i]["value"])
+                result.data[i].value, indicator["value"])
 
         self.assertEqual(MongoSignalTableMock.last_find_request, {
             'date': {

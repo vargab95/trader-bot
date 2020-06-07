@@ -56,32 +56,35 @@ class TradingViewFetcherMulti(fetcher.base.TradingViewFetcherBase):
             raise fetcher.common.InvalidConfigurationException()
 
     def get_technical_indicator(self) -> float:
-        data = {}
-
         try:
-            for market_data in self.response["data"]:
-                data[market_data["s"]] = {}
-                i = 0
-                for value in market_data["d"]:
-                    elements = self.request["columns"][i].split('|')
-                    for key, name in self.indicator_name_map.items():
-                        if name == elements[0]:
-                            indicator = key
-                    if len(elements) == 1:
-                        candle_size = "1D"
-                    else:
-                        for key, candle in self.candle_size_map.items():
-                            if candle == ('|' + elements[1]):
-                                candle_size = key
-
-                    if indicator not in data[market_data["s"]].keys():
-                        data[market_data["s"]][indicator] = {}
-
-                    data[market_data["s"]][indicator][candle_size] = value
-                    i += 1
+            return self.__process_response()
         except KeyError:
             logging.warning(
                 "Key error occured while processing trading view response %s", str(self.response))
-            return []
 
+        return []
+
+    def __process_response(self):
+        data = {}
+        for market_data in self.response["data"]:
+            data[market_data["s"]] = {}
+            i = 0
+            for value in market_data["d"]:
+                elements = self.request["columns"][i].split('|')
+                for key, name in self.indicator_name_map.items():
+                    if name == elements[0]:
+                        indicator = key
+
+                if len(elements) == 1:
+                    candle_size = "1D"
+                else:
+                    for key, candle in self.candle_size_map.items():
+                        if candle == ('|' + elements[1]):
+                            candle_size = key
+
+                if indicator not in data[market_data["s"]].keys():
+                    data[market_data["s"]][indicator] = {}
+
+                data[market_data["s"]][indicator][candle_size] = value
+                i += 1
         return data

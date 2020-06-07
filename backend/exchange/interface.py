@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import abc
-import typing
 
 
 class Market:

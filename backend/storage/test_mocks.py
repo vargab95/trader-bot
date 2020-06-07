@@ -49,7 +49,7 @@ class MongoSignalResult:
             return self.data[:limit]
         return self.data
 
-    def sort(self, key):
+    def sort(self, _):
         MongoSignalResult.sort_call_count += 1
         return self
 
