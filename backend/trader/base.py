@@ -3,11 +3,17 @@
 import abc
 
 import exchange.interface
+from trader.common import TraderState
 
 
 class TraderBase:
     def __init__(self, used_exchange: exchange.interface.ExchangeInterface):
         self._exchange = used_exchange
+        self._state: TraderState
+
+    @property
+    def state(self):
+        return self._state
 
     @abc.abstractmethod
     def initialize(self):

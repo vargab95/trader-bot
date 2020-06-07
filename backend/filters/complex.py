@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import logging
 import typing
 
 import filters.base
@@ -21,7 +22,9 @@ class Complex(filters.base.Filter):
 
     def put(self, value: float):
         value_to_use = value
+        logging.debug("Complex filter internal values:")
         for filt in self.__filters:
+            logging.debug("    - %f", filt.get())
             if value_to_use is not None:
                 filt.put(value_to_use)
             value_to_use = filt.get()
