@@ -89,12 +89,12 @@ class BinanceTest(unittest.TestCase):
             "result": [
                 {
                     "free": 1.2,
-                    "coin": market.key
+                    "coin": market.target
                 }
             ]
         }
 
-        self.assertAlmostEqual(controller.get_balance(market), 1.2)
+        self.assertAlmostEqual(controller.get_balance(market.target), 1.2)
 
     def test_get_non_existing_balance(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)

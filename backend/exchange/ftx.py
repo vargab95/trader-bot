@@ -99,7 +99,7 @@ class FtxController(exchange.base.ExchangeBase):
         balances = self.get_balances()
 
         for key, value in balances.items():
-            if key == market.key:
+            if key == market:
                 return value
 
         return 0.0
