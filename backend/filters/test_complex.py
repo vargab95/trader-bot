@@ -5,6 +5,7 @@ import unittest
 import filters.complex
 import filters.sma
 import filters.wma
+import filters.hma
 import filters.derivative
 
 
@@ -88,3 +89,21 @@ class ComplexTest(unittest.TestCase):
 
             if deriv.get():
                 self.assertAlmostEqual(deriv.get(), complex_filter.get())
+
+    def test_with_real_values(self):
+        test_data = [418.9, 424.1, 417.7, 418.3, 417.1, 418.8, 418.8, 417.0, 416.8, 417.1, 418.8, 418.8,
+                     418.8, 414.5, 416.6, 409.9, 406.4, 404.7, 408.4, 416.0, 412.2, 414.8, 413.7, 415.6,
+                     416.6, 420.5, 425.5, 427.6, 428.9, 430.0, 430.6, 433.7, 430.0, 425.2, 432.3, 432.4,
+                     435.5, 433.6, 432.4, 432.4, 434.4, 436.3, 439.4, 442.2, 442.2, 442.2, 442.2, 444.6,
+                     442.2, 442.2, 440.3, 438.2, 422.9, 406.5, 404.9, 411.1, 405.1, 409.7, 417.6, 418.9]
+
+        complex_filter = filters.complex.Complex()
+
+        complex_filter.add_filter(filters.hma.HMA(42))
+        complex_filter.add_filter(filters.derivative.Derivative(2))
+        complex_filter.add_filter(filters.wma.WMA(4))
+
+        for data in test_data:
+            complex_filter.put(data)
+
+        self.assertAlmostEqual(complex_filter.get(), -3.183375904)
