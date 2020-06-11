@@ -7,7 +7,7 @@ import storage.user
 
 
 class SignupApi(Resource):
-    user_storage: storage.user.UserStorage = None
+    user_storage: storage.user.UserStorage
 
     def __init__(self):
         self.parser = reqparse.RequestParser()

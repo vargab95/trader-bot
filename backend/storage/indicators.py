@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import storage.base
+import storage.mongo_base
 from signals.trading_signal import IndicatorSignalDescriptor, TradingSignal, TradingSignalPoint
 
 
-class IndicatorsStorage(storage.base.StorageBase):
+class IndicatorsStorage(storage.mongo_base.MongoStorageBase):
     def _generate_signal(self, fetched_signal) -> TradingSignal:
         return TradingSignal(data=[TradingSignalPoint(date=line["date"], value=line["value"])
                                    for line in fetched_signal], descriptor=None)

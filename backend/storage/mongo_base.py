@@ -4,10 +4,11 @@ import abc
 import typing
 import datetime
 
+from storage.interface import StorageInterface
 from signals.trading_signal import TradingSignalDescriptor, TradingSignal, TradingSignalPoint
 
 
-class StorageBase:
+class MongoStorageBase(StorageInterface):
     # TODO add typing
     def __init__(self, db):
         self._db = db

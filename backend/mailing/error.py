@@ -22,3 +22,4 @@ class ErrorMessage(mailing.message.Message):
     def compose(self, data: typing.Dict) -> bool:
         self._message = MESSAGE % data["error"]
         self.subject = "{} - Error".format(self.bot_name)
+        return True

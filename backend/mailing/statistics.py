@@ -18,3 +18,4 @@ class StatisticsMessage(mailing.message.Message):
     def compose(self, data: typing.Dict) -> bool:
         self._message = MESSAGE % data["all_money"]
         self.subject = "{} - Statistics".format(self.bot_name)
+        return True

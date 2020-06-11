@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import storage.base
+import storage.mongo_base
 from signals.trading_signal import TickerSignalDescriptor, TradingSignal, TradingSignalPoint
 
 
-class TickersStorage(storage.base.StorageBase):
+class TickersStorage(storage.mongo_base.MongoStorageBase):
     def __init__(self, db):
         super().__init__(db)
         self._value_key = "price"
