@@ -72,6 +72,8 @@ class TraderApplication(applications.base.ApplicationBase):
     def __get_price(self):
         ticker = self._exchange.get_price(
             self._configuration.exchange.watched_market)
+        logging.debug("Unfiltered price of %s: %f",
+                      self._configuration.exchange.watched_market.key, ticker)
         if self.__filter:
             return self.__apply_filter(ticker)
         return ticker
@@ -83,6 +85,8 @@ class TraderApplication(applications.base.ApplicationBase):
     def __apply_filter(self, indicator):
         self.__filter.put(indicator)
         filtered = self.__filter.get()
+        logging.debug("Filtered price of %s: %f",
+                      self._configuration.exchange.watched_market.key, filtered)
         if filtered is None:
             logging.info("Waiting for filter to be filled.\n"
                          "    Input: %f\n"
