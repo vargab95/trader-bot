@@ -50,7 +50,7 @@ class SimulatorApplication(applications.base.ApplicationBase):
                           signal_point.date.strftime("%Y:%m:%d %H:%M:%S"))
             self.__fill_price_mocks(i)
             self.__filter.put(signal_point.value)
-            if self.__filter.get():
+            if self.__filter.get() is not None:
                 self.__trader.perform(self.__filter.get())
 
             self.__all_money_history.append(self._exchange.get_money(
