@@ -2,7 +2,7 @@ exchange:
   bearish_market: "BEARSHIT-USD"
   bullish_market: "BULLSHIT-USD"
   market_name_format: "{target}{base}"
-  name: binance
+  name: ftx
   private_key: ""
   public_key: ""
   watched_market: "BULLSHIT-USD"
@@ -17,9 +17,9 @@ logging:
 mail:
   enabled: false
 simulator:
-  bearish_file_path: "../../crypto-trading-strategy-tester/src/assets/bearshit15m.csv"
-  bullish_file_path: "../../crypto-trading-strategy-tester/src/assets/bullshit15m.csv"
-  watched_file_path: "../../crypto-trading-strategy-tester/src/assets/bullshit15m.csv"
+  bearish_file_path: "../../crypto-trading-strategy-tester/src/assets/testbear.csv"
+  bullish_file_path: "../../crypto-trading-strategy-tester/src/assets/testbull.csv"
+  watched_file_path: "../../crypto-trading-strategy-tester/src/assets/testbull.csv"
 testing:
   balance_store: balances.json
   base_asset: USD
