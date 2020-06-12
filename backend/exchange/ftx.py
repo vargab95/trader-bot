@@ -109,7 +109,12 @@ class FtxController(exchange.base.ExchangeBase):
         response = requests.get(self.api_url + self.markets_url + market.key)
         data = response.json()
 
+        logging.debug(
+            "Price was requested for %s (FTX). Response is %s", market.key, str(data))
+
         if data["success"]:
+            logging.debug("Last FTX price for %s is %f",
+                          market.key, data["result"]["last"])
             return data["result"]["last"]
 
         logging.error("Could not get price of %s", str(market))
