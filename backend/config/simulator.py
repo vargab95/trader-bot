@@ -5,10 +5,12 @@ import typing
 
 class SimulatorConfig:
     def __init__(self, config: typing.Dict):
-        self.start_date: str = config.get("start_date", "sma")
-        self.end_date: int = config.get("end_date", 2)
+        self.bullish_file_path: str = config.get("bullish_file_path", "")
+        self.bearish_file_path: str = config.get("bearish_file_path", "")
+        self.watched_file_path: str = config.get("watched_file_path", "")
 
     def __str__(self):
         return "\nSimulator:" + \
-               "\n    Start date: " + str(self.start_date) + \
-               "\n    End date:   " + str(self.end_date)
+               "\n    Bullish data file: " + str(self.bullish_file_path) + \
+               "\n    Bearish data file: " + str(self.bearish_file_path) + \
+               "\n    Watched data file: " + str(self.watched_file_path)

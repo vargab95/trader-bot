@@ -52,16 +52,6 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         logging.debug("Corrected amount string: %s", corrected_amount_str)
         return corrected_amount
 
-    @staticmethod
-    def _floor(value: float, precision: float) -> float:
-        exponent = -int(math.log10(precision))
-        remainder = value % precision
-        result = value
-        if remainder > (0.5 * precision) and round(remainder, 12) != precision:
-            result -= precision
-        result = round(result, exponent)
-        return abs(result)
-
     def get_money(self, base: str) -> float:
         all_money: float = 0.0
         logging.debug("Calculating all money for %s", base)

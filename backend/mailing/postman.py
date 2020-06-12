@@ -17,6 +17,9 @@ class Postman:
         self.__server = None
 
     def connect(self):
+        if not self.__configuration.enabled:
+            return True
+
         for _ in range(3):
             try:
                 logging.debug("Connecting to mail server")
@@ -35,6 +38,9 @@ class Postman:
         return False
 
     def send(self, message: mailing.message.Message) -> bool:
+        if not self.__configuration.enabled:
+            return True
+
         msg = EmailMessage()
         msg['Subject'] = message.subject
         msg['From'] = self.__configuration.sender
