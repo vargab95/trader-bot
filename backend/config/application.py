@@ -10,6 +10,7 @@ from config.mail import MailConfig
 from config.database import DatabaseConfig
 from config.server import ServerConfig
 from config.filter import FilterConfig
+from config.simulator import SimulatorConfig
 
 
 class ApplicationConfig:
@@ -23,6 +24,7 @@ class ApplicationConfig:
         self.server = ServerConfig(configuration.get("server", {}))
         self.filter = [FilterConfig(filter_element)
                        for filter_element in configuration.get("filter", [])]
+        self.simulator = SimulatorConfig(configuration.get("simulator", {}))
 
     def __str__(self):
         return ''.join(

@@ -9,6 +9,9 @@ import trader.leverage.simple
 import exchange.interface
 import exchange.factory
 
+# TODO Test selling while in buying_bullish state
+# TODO Test bullish signal comes when the trader is in buying_bearish state
+
 
 class SimpleLeverageTraderTest(unittest.TestCase):
     @classmethod

@@ -23,9 +23,9 @@ class InvalidTradeResultRequestException(Exception):
 class Trade:
     def __init__(self, market: exchange.interface.Market):
         self.market: exchange.interface.Market = market
-        self.entry_price: float = 0.0
-        self.final_price: float = 0.0
-        self.amount: float = 0.0
+        self.entry_price: float = None
+        self.final_price: float = None
+        self.amount: float = None
         self.state: TradeState = TradeState.NOT_STARTED
 
     def enter(self, price: float, amount: float):
@@ -57,6 +57,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._is_real_time: bool = testing_config.real_time
         self._fee: float = testing_config.fee
         self._client = None
+        self._precision = testing_config.balance_precision
 
         if testing_config.enabled and not self._is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
@@ -69,7 +70,10 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._balances[self.base_coin] = self.__start_money
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        logging.debug("Trying to buy %f of %s", amount, str(market))
+        logging.debug("Amount to buy: %f", amount)
+        amount = self._floor(amount, self._precision)
+        logging.debug("Amount was rounded to %f", amount)
+        logging.info("Trying to buy %f of %s", amount, str(market))
         self._trade = Trade(market)
         price = self.get_price(market)
         if self.get_balance(market.base) >= amount * price:
@@ -83,22 +87,31 @@ class MockBase(exchange.interface.ExchangeInterface):
             logging.debug("New balance: %s", str(self._balances))
             return True
         logging.error("Could not complete buy %f %s for %f", amount,
-                      market.base, price)
+                      market.target, price)
+        logging.debug("Amount to buy in %s: %f", market.base, amount * price)
+        logging.debug("Balance in %s: %f", market.base,
+                      self.get_balance(market.base))
         return False
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        logging.debug("Trying to sell %f of %s", amount, str(market))
+        logging.debug("Amount to sell: %f", amount)
+        amount = self._floor(amount, self._precision)
+        logging.debug("Amount was rounded to %f", amount)
+        logging.info("Trying to sell %f of %s", amount, str(market))
         price = self.get_price(market)
         if self.get_balance(market.target) >= amount:
             self._trade.finish(price)
             self._balances[market.target] -= amount
             self._balances[market.base] += amount * price * (1 - self._fee)
-            logging.info("%f %s was sold for %f %s", amount, market.base,
-                         price, market.target)
+            logging.info("%f %s was sold for %f %s", amount, market.target,
+                         price, market.base)
             logging.info("Trade was finished profit: %f", self._trade.profit)
             logging.debug("New balance: %s", str(self._balances))
             return True
         logging.error("Could not complete sell %f %s", amount, market.target)
+        logging.debug("Amount to sell in %s: %f", market.base, amount * price)
+        logging.debug("Balance in %s: %f", market.base,
+                      self.get_balance(market.base))
         return False
 
     def get_balance(self, market: str) -> float:

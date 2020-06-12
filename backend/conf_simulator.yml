@@ -1,0 +1,41 @@
+exchange:
+  bearish_market: "BEARSHIT-USD"
+  bullish_market: "BULLSHIT-USD"
+  market_name_format: "{target}{base}"
+  name: binance
+  private_key: ""
+  public_key: ""
+  watched_market: "BULLSHIT-USD"
+filter:
+  - type: hma
+    length: 30
+  - type: derivative
+    length: 2
+logging:
+  level: 1
+  path: "simulator.log"
+mail:
+  enabled: false
+simulator:
+  bearish_file_path: "../../crypto-trading-strategy-tester/src/assets/bearshit15m.csv"
+  bullish_file_path: "../../crypto-trading-strategy-tester/src/assets/bullshit15m.csv"
+  watched_file_path: "../../crypto-trading-strategy-tester/src/assets/bullshit15m.csv"
+testing:
+  balance_store: balances.json
+  base_asset: USD
+  enabled: true
+  fee: 0.0007
+  real_time: false
+  start_money: 100.0
+trader:
+  candle_size: 1h
+  check_interval: 60
+  detectors:
+    - bearish_threshold: 0.0
+      bullish_threshold: 0.0
+  indicator: all
+  initial_values: []
+  leverage: true
+  market: GEMINI:BTCUSD
+  max_steps: 5
+  method: simple

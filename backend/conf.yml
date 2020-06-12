@@ -11,21 +11,20 @@ exchange:
   private_key: ""
   public_key: ""
   watched_market: "BTC-USDT"
-filters:
+filter:
   - type: hma
-    length: 3000
+    length: 42
   - type: derivative
-    length: 20
-  - type: hma
-    length: 300
+    length: 2
 logging:
-  level: 11
+  level: 1
   path: "simulator.log"
 mail:
+  enabled: false
   name: TradingViewBot
-  password: "Asguto95"
+  password: ""
   port: 25
-  receiver: "vargab95@gmail.com"
+  receiver: ""
   sender: tvb@vbj.hu
   smtp_server: smtp.vbj.hu
 server:
@@ -52,3 +51,7 @@ trader:
   thresholds:
     - bear: 0.0
       bull: 0.0
+simulator:
+  bearish_file_path: "../../crypto-trading-strategy-tester/src/assets/bearshit1h.csv"
+  bullish_file_path: "../../crypto-trading-strategy-tester/src/assets/bullshit1h.csv"
+  watched_file_path: "../../crypto-trading-strategy-tester/src/assets/bullshit1h.csv"

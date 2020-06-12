@@ -26,7 +26,7 @@
       "request": "launch",
       "program": "main.py",
       "console": "integratedTerminal",
-      "args": ["simulator", "./conf.yml"]
+      "args": ["simulator", "./conf_simulator.yml"]
     }
   ]
 }

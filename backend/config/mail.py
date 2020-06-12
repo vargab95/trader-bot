@@ -5,6 +5,7 @@ import typing
 
 class MailConfig:
     def __init__(self, config: typing.Dict):
+        self.enabled = config.get("enabled", True)
         self.name = config.get("name", "TradingViewBot")
         self.port = config.get("port", 25)
         self.smtp_server = config.get("smtp_server", "smtp.vbj.hu")
@@ -14,6 +15,7 @@ class MailConfig:
 
     def __str__(self):
         return "\nMail:" + \
+               "\n    Enabled:  " + str(self.enabled) + \
                "\n    Name:     " + self.name + \
                "\n    Port:     " + str(self.port) + \
                "\n    Server:   " + self.smtp_server + \

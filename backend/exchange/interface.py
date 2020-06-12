@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import abc
+import math
 
 
 class Market:
@@ -64,3 +65,13 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_money(self, base: str) -> float:
         pass  # pragma: no cover
+
+    @staticmethod
+    def _floor(value: float, precision: float) -> float:
+        exponent = -int(math.log10(precision))
+        remainder = value % precision
+        result = value
+        if remainder > (0.5 * precision) and round(remainder, 12) != precision:
+            result -= precision
+        result = round(result, exponent)
+        return abs(result)

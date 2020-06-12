@@ -3,7 +3,11 @@
 python3 -m coverage run --source=. --omit="*test_*.py","*tools/*" -m unittest
 python3 -m coverage report -m
 
+echo; echo
 python3 -m pylint --reports=y --rcfile .pylintrc `find . -type f -name "*.py" -printf "%P\n" | grep -v ".vscode"`
+
+echo; echo
+mypy .
 
 echo; echo
 git grep TODO
