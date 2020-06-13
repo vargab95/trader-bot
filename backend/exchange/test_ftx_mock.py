@@ -41,7 +41,8 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
         get_mock.return_value.json.return_value = {
             "success": True,
             "result": {
-                "last": 1.2
+                "last": 1.3,
+                "price": 1.2
             }
         }
 
