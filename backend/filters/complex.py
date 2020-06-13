@@ -22,12 +22,13 @@ class Complex(filters.base.Filter):
 
     def put(self, value: float):
         value_to_use = value
+        logging.debug("Complex filter was fed with: %f", value)
         logging.debug("Complex filter internal values:")
         for filt in self.__filters:
-            logging.debug("    - %s", str(filt.get()))
             if value_to_use is not None:
                 filt.put(value_to_use)
             value_to_use = filt.get()
+            logging.debug("    - %s", str(filt.get()))
 
     def get(self) -> float:
         try:
