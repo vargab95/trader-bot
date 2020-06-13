@@ -58,7 +58,8 @@ class BinanceTest(unittest.TestCase):
         get_mock.return_value.json.return_value = {
             "success": True,
             "result": {
-                "last": 1.2
+                "last": 1.3,
+                "price": 1.2
             }
         }
 
@@ -126,7 +127,8 @@ class BinanceTest(unittest.TestCase):
         get_mock.return_value.json.return_value = {
             "success": True,
             "result": {
-                "last": 1.2
+                "last": 1.3,
+                "price": 1.2
             }
         }
 
@@ -145,7 +147,8 @@ class BinanceTest(unittest.TestCase):
         get_mock.return_value.json.return_value = {
             "success": True,
             "result": {
-                "last": 1.2
+                "last": 1.3,
+                "price": 1.2
             }
         }
 
@@ -175,7 +178,8 @@ class BinanceTest(unittest.TestCase):
         get_mock.return_value.json.return_value = {
             "success": True,
             "result": {
-                "last": 1.2
+                "last": 1.3,
+                "price": 1.2
             }
         }
 
@@ -194,7 +198,8 @@ class BinanceTest(unittest.TestCase):
         get_mock.return_value.json.return_value = {
             "success": True,
             "result": {
-                "last": 1.2
+                "last": 1.3,
+                "price": 1.2
             }
         }
 

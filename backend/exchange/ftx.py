@@ -114,8 +114,8 @@ class FtxController(exchange.base.ExchangeBase):
 
         if data["success"]:
             logging.debug("Last FTX price for %s is %f",
-                          market.key, data["result"]["last"])
-            return data["result"]["last"]
+                          market.key, data["result"]["price"])
+            return data["result"]["price"]
 
         logging.error("Could not get price of %s", str(market))
         logging.error("%s\n\n%s", str(data["error"]),
