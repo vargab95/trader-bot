@@ -74,10 +74,12 @@ class SimulatorApplication(applications.base.ApplicationBase):
     def __read_input_file(self, path, key):
         self.__input[key] = []
         with open(path, "r") as csvfile:
+            logging.debug("Loading %s", path)
             data = csv.reader(csvfile, delimiter=";")
             for line in data:
                 self.__input[key].append(TradingSignalPoint(
                     value=float(line[1]), date=datetime.datetime.strptime(line[0], '%Y-%m-%dT%H:%M:%S+00:00')))
+            logging.debug("%s was loaded successfully", path)
 
     def __fill_price_mocks(self, i):
         for key, signal_points in self.__input.items():
