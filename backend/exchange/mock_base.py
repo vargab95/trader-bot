@@ -122,7 +122,7 @@ class MockBase(exchange.interface.ExchangeInterface):
     def get_balances(self) -> exchange.interface.Balances:
         return self._balances.copy()
 
-    def get_price(self, market: exchange.interface.Market) -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "") -> float:
         return 0.0  # pragma: no cover
 
     def get_money(self, base: str) -> float:

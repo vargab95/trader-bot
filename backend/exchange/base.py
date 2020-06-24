@@ -71,5 +71,5 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
     def get_balance(self, market: str) -> float:
         pass  # pragma: no cover
 
-    def get_price(self, market: exchange.interface.Market) -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "") -> float:
         return -1.0  # pragma: no cover

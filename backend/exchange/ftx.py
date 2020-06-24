@@ -105,7 +105,7 @@ class FtxController(exchange.base.ExchangeBase):
         return 0.0
 
     @exchange.guard.exchange_guard()
-    def get_price(self, market: exchange.interface.Market) -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:
         response = requests.get(self.api_url + self.markets_url + market.key)
         data = response.json()
 
@@ -114,8 +114,8 @@ class FtxController(exchange.base.ExchangeBase):
 
         if data["success"]:
             logging.debug("Last FTX price for %s is %f",
-                          market.key, data["result"]["price"])
-            return data["result"]["price"]
+                          market.key, data["result"][keyword])
+            return data["result"][keyword]
 
         logging.error("Could not get price of %s", str(market))
         logging.error("%s\n\n%s", str(data["error"]),

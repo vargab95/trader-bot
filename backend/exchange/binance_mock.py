@@ -17,8 +17,8 @@ class BinanceMock(exchange.mock_base.MockBase):
                                              exchange_config.private_key)
 
     @exchange.guard.exchange_guard()
-    def get_price(self, market: exchange.interface.Market) -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "lastPrice") -> float:
         if self._is_real_time:
             return float(
-                self._client.get_ticker(symbol=market.key)["lastPrice"])
+                self._client.get_ticker(symbol=market.key)[keyword])
         return self.price_mock[market.key]

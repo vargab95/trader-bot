@@ -13,7 +13,7 @@ class FtxMock(exchange.mock_base.MockBase):
     markets_url = api_url + "markets/"
 
     @exchange.guard.exchange_guard()
-    def get_price(self, market: exchange.interface.Market) -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:
         if self._is_real_time:
             response = requests.get(self.markets_url + market.target + "/" +
                                     market.base)
@@ -24,6 +24,6 @@ class FtxMock(exchange.mock_base.MockBase):
 
             if data["success"]:
                 logging.debug("Last FTX price for %s is %f",
-                              market.key, data["result"]["price"])
-                return data["result"]["price"]
+                              market.key, data["result"][keyword])
+                return data["result"][keyword]
         return self.price_mock[market.key]
