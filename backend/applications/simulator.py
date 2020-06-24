@@ -19,7 +19,6 @@ class SimulatorApplication(applications.base.ApplicationBase):
         super().__init__()
         self.__trader: trader.base.TraderBase
         self.__filter: filters.base.Filter
-        self.__all_money_history = []
         self.__last_money = 0.0
         self.__input = {}
 
@@ -45,18 +44,35 @@ class SimulatorApplication(applications.base.ApplicationBase):
 
     def _run_application_logic(self):
         simulator_input = self.__input[self._configuration.exchange.watched_market.key]
-        for i, signal_point in enumerate(simulator_input):
-            logging.debug("Simulating date %s",
-                          signal_point.date.strftime("%Y:%m:%d %H:%M:%S"))
-            self.__fill_price_mocks(i)
-            self.__filter.put(signal_point.value)
-            if self.__filter.get() is not None:
-                self.__trader.perform(self.__filter.get())
 
-            self.__all_money_history.append(self._exchange.get_money(
-                self._configuration.exchange.watched_market.base))
-            self.__last_money = self.__all_money_history[-1]
-        print(self.__all_money_history)
+        with open(self._configuration.simulator.log_output_path, 'w') as log_output_file, open(self._configuration.simulator.actions_output_path, 'w') as actions_output_file:
+            log_output = csv.writer(log_output_file)
+            actions_output = csv.writer(actions_output_file)
+            last_state = trader.common.TraderState.BASE
+
+            for i, signal_point in enumerate(simulator_input):
+                logging.debug("Simulating date %s",
+                              signal_point.date.strftime("%Y:%m:%d %H:%M:%S"))
+                self.__fill_price_mocks(i)
+                self.__filter.put(signal_point.value)
+                if self.__filter.get() is not None:
+                    self.__trader.perform(self.__filter.get())
+                    if last_state != self.__trader.state:
+                        actions_output.writerow([
+                            signal_point.date.strftime("%Y:%m:%d %H:%M:%S"),
+                            last_state,
+                            self.__trader.state
+                        ])
+                        last_state = self.__trader.state
+
+                log_output.writerow([
+                    signal_point.date.strftime("%Y:%m:%d %H:%M:%S"),
+                    signal_point.value,
+                    self.__filter.get(),
+                    self.__trader.state,
+                    self._exchange.get_money(
+                        self._configuration.exchange.watched_market.base)
+                ])
 
     def __validate_input(self):
         input_lengths = [len(input) for input in self.__input.values()]
