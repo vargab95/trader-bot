@@ -13,6 +13,7 @@ import filters.sma
 import trader.base
 import trader.factory
 import trader.common
+from trader.common import TraderState
 
 
 class TraderApplication(applications.base.ApplicationBase):
@@ -71,8 +72,16 @@ class TraderApplication(applications.base.ApplicationBase):
         return indicator
 
     def __get_price(self):
+        used_keyword = self._configuration.exchange.default_price_keyword
+
+        if self.__trader.state in [TraderState.BULLISH, TraderState.BUYING_BULLISH]:
+            used_keyword = self._configuration.exchange.bullish_price_keyword
+
+        if self.__trader.state in [TraderState.BEARISH, TraderState.BUYING_BEARISH]:
+            used_keyword = self._configuration.exchange.bearish_price_keyword
+
         ticker = self._exchange.get_price(
-            self._configuration.exchange.watched_market)
+            self._configuration.exchange.watched_market, keyword=used_keyword)
         logging.debug("Unfiltered price of %s: %f",
                       self._configuration.exchange.watched_market.key, ticker)
         if self.__filter:

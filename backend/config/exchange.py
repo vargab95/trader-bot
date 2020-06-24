@@ -21,6 +21,13 @@ class ExchangeConfig:
         self.bullish_market: exchange.interface.Market = \
             exchange.interface.Market.create_from_string(
                 config.get("bullish_market", "BULL-USDT"))
+        # TODO it may should be evaluated as an enum instead of simple string!
+        self.default_price_keyword = config.get(
+            "default_price_keyword", "price")
+        self.bullish_price_keyword = config.get(
+            "bullish_price_keyword", "price")
+        self.bearish_price_keyword = config.get(
+            "bearish_price_keyword", "price")
         self.market_name_format = config.get("market_name_format",
                                              "{target}-{base}")
 
