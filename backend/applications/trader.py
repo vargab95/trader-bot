@@ -22,6 +22,7 @@ class TraderApplication(applications.base.ApplicationBase):
         self.__filter: filters.base.Filter
         self.__trader: trader.base.TraderBase
         self.__last_sent_time: datetime
+        self.__first_mail_sent: bool = False
 
     def _initialize_application_logic(self):
         self._initialize_exchange()
@@ -44,17 +45,17 @@ class TraderApplication(applications.base.ApplicationBase):
         while True:
             # TODO current_indicator = self.__get_indicator()
             current_indicator = self.__get_price()
+            all_money = self.__get_all_money()
 
             # TODO Initialize based on previous data
             if current_indicator is not None:
-                all_money = self.__get_all_money()
                 logging.info("Indicator: %f", current_indicator)
                 logging.info("All money: %f", all_money)
                 logging.info("State: %s", self.__trader.state)
                 logging.info(self._exchange.get_balances())
                 self.__trader.perform(current_indicator)
-                self.__send_statistics_email(all_money)
 
+            self.__send_statistics_email(all_money)
             self._fetcher.sleep_until_next_data()
 
     # TODO Make it configurable which signal to use.
@@ -85,8 +86,8 @@ class TraderApplication(applications.base.ApplicationBase):
     def __apply_filter(self, indicator):
         self.__filter.put(indicator)
         filtered = self.__filter.get()
-        logging.debug("Filtered price of %s: %f",
-                      self._configuration.exchange.watched_market.key, filtered)
+        logging.debug("Filtered price of %s: %s",
+                      self._configuration.exchange.watched_market.key, str(filtered))
         if filtered is None:
             logging.info("Waiting for filter to be filled.\n"
                          "    Input: %f\n"
@@ -103,14 +104,10 @@ class TraderApplication(applications.base.ApplicationBase):
 
     def __send_statistics_email(self, all_money):
         current_time = datetime.today()
-        if current_time > self.__last_sent_time:
-            self.__last_sent_time = current_time.replace(day=current_time.day +
-                                                         1,
-                                                         hour=1,
-                                                         minute=0,
-                                                         second=0,
-                                                         microsecond=0)
-
+        if (not self.__first_mail_sent) or (current_time > (self.__last_sent_time + datetime.timedelta(days=1))):
+            logging.debug("Mail period exceeded or first mail is to sent out")
+            self.__first_mail_sent = True
+            self.__last_sent_time = current_time
             message = mailing.statistics.StatisticsMessage()
             message.compose({"all_money": all_money})
             self._postman.send(message)
