@@ -33,10 +33,14 @@ class ExchangeConfig:
 
     def __str__(self):
         return "\nExchange:" + \
-               "\n    Name:                " + self.name + \
-               "\n    Public key:          " + self.public_key + \
-               "\n    Private key:         " + "*" * len(self.private_key) + \
-               "\n    Watched market name: " + str(self.watched_market) + \
-               "\n    Bullish market name: " + str(self.bullish_market) + \
-               "\n    Bearish market name: " + str(self.bearish_market) + \
-               "\n    Market name format:  " + str(self.market_name_format)
+               "\n    Name:                  " + self.name + \
+               "\n    Public key:            " + self.public_key + \
+               "\n    Private key:           " + "*" * len(self.private_key) + \
+               "\n    Watched market name:   " + str(self.watched_market) + \
+               "\n    Bullish market name:   " + str(self.bullish_market) + \
+               "\n    Bearish market name:   " + str(self.bearish_market) + \
+               "\n    Market name format:    " + str(self.market_name_format) + \
+               "\n    Default price keyword: " + str(self.default_price_keyword) + \
+               "\n    Bearish price keyword: " + str(self.bearish_price_keyword) + \
+               "\n    Bullish price keyword: " + \
+            str(self.bullish_price_keyword)
