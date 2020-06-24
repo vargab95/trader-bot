@@ -3,6 +3,7 @@
 import logging
 
 from datetime import datetime
+from datetime import timedelta
 
 import fetcher.single
 import mailing.postman
@@ -113,7 +114,7 @@ class TraderApplication(applications.base.ApplicationBase):
 
     def __send_statistics_email(self, all_money):
         current_time = datetime.today()
-        if (not self.__first_mail_sent) or (current_time > (self.__last_sent_time + datetime.timedelta(days=1))):
+        if (not self.__first_mail_sent) or (current_time > (self.__last_sent_time + timedelta(days=1))):
             logging.debug("Mail period exceeded or first mail is to sent out")
             self.__first_mail_sent = True
             self.__last_sent_time = current_time
