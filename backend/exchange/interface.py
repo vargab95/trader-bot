@@ -3,6 +3,8 @@
 import abc
 import math
 
+from signals.trading_signal import TradingSignal, TickerSignalDescriptor
+
 
 class Market:
     name_format = ""
@@ -61,6 +63,10 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def get_price(self, market: Market, keyword: str = "") -> float:
         pass  # pragma: no cover
+
+    @abc.abstractmethod
+    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+        pass
 
     @abc.abstractmethod
     def get_money(self, base: str) -> float:

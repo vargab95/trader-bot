@@ -18,6 +18,7 @@ class TradingSignalDescriptor:
     end_date: datetime.datetime = None
     limit: int = -1
     step: int = 1
+    resolution: datetime.timedelta = None
 
 
 @dataclass

@@ -15,6 +15,7 @@ import trader.base
 import trader.factory
 import trader.common
 from trader.common import TraderState
+import signals.trading_signal
 
 
 class TraderApplication(applications.base.ApplicationBase):
@@ -30,11 +31,12 @@ class TraderApplication(applications.base.ApplicationBase):
         self._initialize_exchange()
         self._initialize_fetcher()
 
+        self.__initialize_real_time()
         if self._configuration.filter:
             self.__filter = filters.factory.FilterFactory.create_complex(
                 self._configuration.filter)
-            for value in self._configuration.trader.initial_values:
-                self.__filter.put(value)
+            for point in self._configuration.trader.initial_values:
+                self.__filter.put(point.value)
         else:
             self.__filter = None
 
@@ -42,6 +44,28 @@ class TraderApplication(applications.base.ApplicationBase):
             self._configuration, self._exchange)
         self.__trader.initialize()
         self.__last_sent_time = datetime.today()
+
+    __candle_size_resolution_map = {
+        "1m": timedelta(seconds=60),
+        "5m": timedelta(seconds=60 * 5),
+        "15m": timedelta(seconds=60 * 15),
+        "1h": timedelta(seconds=3600),
+        "4h": timedelta(seconds=3600 * 4),
+        "1D": timedelta(seconds=3600 * 24),
+        "1W": timedelta(seconds=3600 * 24 * 7),
+        "1M": timedelta(seconds=3600 * 24 * 30)
+    }
+
+    def __initialize_real_time(self):
+        if self._configuration.trader.initial_values == []:
+            resolution = self.__candle_size_resolution_map[self._configuration.trader.candle_size]
+            descriptor = signals.trading_signal.TickerSignalDescriptor(
+                market=self._configuration.exchange.watched_market,
+                limit=self._configuration.trader.initial_length,
+                resolution=resolution,
+                start_date=datetime.now() - resolution * self._configuration.trader.initial_length)
+            self._configuration.trader.initial_values = self._exchange.get_price_history(
+                descriptor, self._configuration.trader.initial_keyword).data
 
     def _run_application_logic(self):
         while True:

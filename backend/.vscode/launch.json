@@ -27,6 +27,14 @@
       "program": "main.py",
       "console": "integratedTerminal",
       "args": ["simulator", "./conf_simulator.yml"]
+    },
+    {
+      "name": "Trader",
+      "type": "python",
+      "request": "launch",
+      "program": "main.py",
+      "console": "integratedTerminal",
+      "args": ["trader", "./conf.yml"]
     }
   ]
 }

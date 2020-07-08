@@ -9,6 +9,9 @@ import config.testing
 import exchange.interface
 import exchange.guard
 
+from exchange.interface import Market
+from signals.trading_signal import TradingSignal, TickerSignalDescriptor
+
 
 class TradeState(enum.Enum):
     NOT_STARTED = 0
@@ -124,6 +127,9 @@ class MockBase(exchange.interface.ExchangeInterface):
 
     def get_price(self, market: exchange.interface.Market, keyword: str = "") -> float:
         return 0.0  # pragma: no cover
+
+    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+        pass
 
     def get_money(self, base: str) -> float:
         all_money: float = 0.0

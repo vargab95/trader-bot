@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import time
+import datetime
 import hmac
 import logging
 import traceback
@@ -11,12 +12,16 @@ import exchange.base
 import exchange.interface
 import exchange.guard
 
+from exchange.interface import Market
+from signals.trading_signal import TradingSignal, TickerSignalDescriptor, TradingSignalPoint
+
 
 class FtxController(exchange.base.ExchangeBase):
     api_url = "https://ftx.com/api/"
     markets_url = "markets/"
     balances_url = "wallet/balances"
     orders_url = "orders"
+    datetime_format = "%Y-%m-%dT%H:%M:%S+00:00"
 
     def __init__(self, configuration: config.exchange.ExchangeConfig):
         super().__init__(configuration)
@@ -123,6 +128,53 @@ class FtxController(exchange.base.ExchangeBase):
         raise exchange.interface.ExchangeError(data["error"])
 
     @exchange.guard.exchange_guard()
+    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+        # /markets/{market_name}/candles?resolution={resolution}&limit={limit}&start_time={start_time}&end_time={end_time}
+        valid_resolutions = [15, 60, 300, 900, 3600, 14400, 86400]
+
+        if descriptor.resolution.total_seconds() not in valid_resolutions:
+            raise ValueError(
+                "Resolution time gap should be in " + str(valid_resolutions))
+
+        request_url = self.api_url + self.markets_url + descriptor.market.key + "/candles"
+        request_url += "?resolution=" + \
+            str(int(descriptor.resolution.total_seconds()))
+
+        if descriptor.limit > 0:
+            request_url += "&limit=" + str(descriptor.limit)
+
+        if descriptor.start_date is not None:
+            request_url += "&start_time=" + \
+                descriptor.start_date.strftime(self.datetime_format)
+
+        if descriptor.end_date is not None:
+            request_url += "&end_time=" + \
+                descriptor.end_date.strftime(self.datetime_format)
+
+        logging.debug("FTX price history request: %s", request_url)
+        response = requests.get(request_url)
+        data = response.json()
+
+        if not data["success"]:
+            logging.error("Could not get historical data of %s",
+                          str(descriptor.market))
+            logging.error("%s\n\n%s", str(data["error"]),
+                          ''.join(traceback.format_stack()))
+            raise exchange.interface.ExchangeError(data["error"])
+
+        logging.debug("FTX price history request result: %s", str(data))
+
+        history = []
+        for item in data["result"]:
+            point = TradingSignalPoint()
+            point.value = float(item[keyword])
+            point.date = datetime.datetime.strptime(
+                item["startTime"], self.datetime_format)
+            history.append(point)
+
+        return TradingSignal(history, descriptor)
+
+    @exchange.guard.exchange_guard()
     def __send_authenticated_request(self, method, endpoint, data=None):
         timestamp = int(time.time() * 1000)
 
@@ -131,8 +183,8 @@ class FtxController(exchange.base.ExchangeBase):
         request.json = data
 
         prepared = request.prepare()
-        signature_payload = \
-            f'{timestamp}{prepared.method}{prepared.path_url}'.encode()
+        signature_payload = f'{timestamp}{prepared.method}{prepared.path_url}'.encode(
+        )
         if prepared.body:
             signature_payload += prepared.body
         signature = hmac.new(self._private_key.encode(), signature_payload,

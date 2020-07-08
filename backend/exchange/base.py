@@ -6,6 +6,9 @@ import config.exchange
 import exchange.interface
 import exchange.guard
 
+from exchange.interface import Market
+from signals.trading_signal import TradingSignal, TickerSignalDescriptor
+
 
 class ExchangeBase(exchange.interface.ExchangeInterface):
     def __init__(self, configuration: config.exchange.ExchangeConfig):
@@ -72,3 +75,6 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
 
     def get_price(self, market: exchange.interface.Market, keyword: str = "") -> float:
         return -1.0  # pragma: no cover
+
+    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+        pass  # pragma: no cover

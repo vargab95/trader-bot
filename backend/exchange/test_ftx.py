@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 
+import datetime
 import unittest
 import unittest.mock
 
 import config.application
 import exchange.factory
 import exchange.interface
+import signals.trading_signal
 
 
 @unittest.mock.patch("requests.get")
@@ -17,7 +19,7 @@ class BinanceTest(unittest.TestCase):
         })
         cls.config.testing.enabled = False
         cls.config.exchange.name = "ftx"
-        cls.config.exchange.market_name_format = "{target}{base}"
+        cls.config.exchange.market_name_format = "{target}/{base}"
         exchange.interface.Market.name_format = \
             cls.config.exchange.market_name_format
 
@@ -27,7 +29,7 @@ class BinanceTest(unittest.TestCase):
             "success": True,
             "result": [
                 {
-                    "name": "BTCETH",
+                    "name": "BTC/ETH",
                     "minProvideSize": min_size,
                     "priceIncrement": min_notional
                 }
@@ -107,7 +109,7 @@ class BinanceTest(unittest.TestCase):
             "result": [
                 {
                     "free": 1.2,
-                    "coin": "BTCETH"
+                    "coin": "BTC/ETH"
                 }
             ]
         }
@@ -215,3 +217,30 @@ class BinanceTest(unittest.TestCase):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
         market = exchange.interface.Market("ETH", "BTC")
         self.assertFalse(controller.sell(market, 0.1))
+
+    def test_historical_price(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+        market = exchange.interface.Market("USD", "BTC")
+
+        get_mock.return_value.json.return_value = {
+            "success": True,
+            "result": [
+                {
+                    "close": 11055.25,
+                    "high": 11089.0,
+                    "low": 11043.5,
+                    "open": 11059.25,
+                    "startTime": "2019-06-24T17:15:00+00:00",
+                    "volume": 464193.95725
+                }
+            ]
+        }
+
+        descriptor = signals.trading_signal.TickerSignalDescriptor(
+            market, None, None, 50, 1, datetime.timedelta(seconds=15))
+        self.assertListEqual(
+            [signals.trading_signal.TradingSignalPoint(
+                value=11055.25, date=datetime.datetime(2019, 6, 24, 17, 15))],
+            controller.get_price_history(
+                descriptor, keyword="close").data
+        )

@@ -2,11 +2,13 @@
 
 import unittest
 import unittest.mock
+import datetime
 import binance.client
 
 import config.application
 import exchange.factory
 import exchange.interface
+import signals.trading_signal
 
 
 @unittest.mock.patch("exchange.binance.binance.client.Client")
@@ -324,3 +326,38 @@ class BinanceTest(unittest.TestCase):
 
         handle.get_account.assert_called_once()
         handle.get_ticker.assert_called_with(symbol='ETHBTC')
+
+    def test_historical_price(self, mock_client):
+        handle = mock_client()
+        handle.get_historical_klines.return_value = [
+            [
+                1499040000000,
+                "0.01634790",
+                "0.80000000",
+                "0.01575800",
+                "0.01577100",
+                "148976.11427815",
+                1499644799999,
+                "2434.19055334",
+                308,
+                "1756.87402397",
+                "28.46694368",
+                "17928899.62484339"
+            ]
+        ]
+
+        controller = exchange.factory.ExchangeControllerFactory.create(
+            self.config)
+
+        market = exchange.interface.Market("USD", "BTC")
+
+        descriptor = signals.trading_signal.TickerSignalDescriptor(
+            market, None, None, 50, 1, datetime.timedelta(seconds=60))
+
+        self.assertListEqual(controller.get_price_history(
+            descriptor, keyword="close").data,
+            [signals.trading_signal.TradingSignalPoint(
+                value=0.015771, date=datetime.datetime(2017, 7, 3, 2, 0))]
+        )
+
+        handle.get_historical_klines.assert_called_once()
