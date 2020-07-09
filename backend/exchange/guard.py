@@ -8,7 +8,7 @@ import traceback
 def exchange_guard(timeout=5):
     def decorator(function):
         def wrapper(*args, **kwargs):
-            for _ in range(10):
+            for _ in range(3):
                 try:
                     return function(*args, **kwargs)
                 except Exception as exception:  # pylint: disable=broad-except

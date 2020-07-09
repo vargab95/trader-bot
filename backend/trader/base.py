@@ -58,10 +58,14 @@ class TraderBase:
     def _buy(self,
              market: exchange.interface.Market,
              ratio: float = 1.0) -> bool:
-        balance = self._exchange.get_balance(market.base)
-        price = self._exchange.get_price(market)
-        amount = balance / price * ratio
-        return self._exchange.buy(market, amount)
+        for _ in range(5):
+            balance = self._exchange.get_balance(market.base)
+            price = self._exchange.get_price(market)
+            amount = balance / price * ratio
+            if self._exchange.buy(market, amount):
+                return True
+            ratio *= 0.99
+        return False
 
     def _is_there_any_pending_transaction(self):
         return self._state in [
