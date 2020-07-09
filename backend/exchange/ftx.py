@@ -145,11 +145,13 @@ class FtxController(exchange.base.ExchangeBase):
 
         if descriptor.start_date is not None:
             request_url += "&start_time=" + \
-                descriptor.start_date.strftime(self.datetime_format)
+                str((descriptor.start_date
+                     - datetime.datetime(1970, 1, 1)).total_seconds() * 1000)
 
         if descriptor.end_date is not None:
             request_url += "&end_time=" + \
-                descriptor.end_date.strftime(self.datetime_format)
+                str((descriptor.end
+                     - datetime.datetime(1970, 1, 1)).total_seconds() * 1000)
 
         logging.debug("FTX price history request: %s", request_url)
         response = requests.get(request_url)
