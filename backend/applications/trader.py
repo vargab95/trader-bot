@@ -71,17 +71,19 @@ class TraderApplication(applications.base.ApplicationBase):
         while True:
             # TODO current_indicator = self.__get_indicator()
             current_indicator = self.__get_price()
-            all_money = self.__get_all_money()
+            # FIXME Check whether an exchange do not have the pair
+            # to calculate all_money
+            # all_money = self.__get_all_money()
 
             # TODO Initialize based on previous data
             if current_indicator is not None:
                 logging.info("Indicator: %f", current_indicator)
-                logging.info("All money: %f", all_money)
+                # logging.info("All money: %f", all_money)
                 logging.info("State: %s", self.__trader.state)
                 logging.info(self._exchange.get_balances())
                 self.__trader.perform(current_indicator)
 
-            self.__send_statistics_email(all_money)
+            # self.__send_statistics_email(all_money)
             self._fetcher.sleep_until_next_data()
 
     # TODO Make it configurable which signal to use.
