@@ -23,11 +23,11 @@ class TraderConfig:
         self.detectors = [DetectorConfig(detector_config)
                           for detector_config in config.get("detectors", [])]
         self.filters = [FilterConfig(filter_element)
-                        for filter_element in config.get("filter", [])]
+                        for filter_element in config.get("filters", [])]
         self.initial_length = config.get("initial_length", 1)
         self.initial_keyword = config.get("initial_keyword", "close")
 
-    def __str__(self):  # TODO Currently filters are not printed out
+    def __str__(self):
         return "\nTrader:" + \
                "\n    Market:                      " + str(self.market) + \
                "\n    Indicator:                   " + str(self.indicator) + \
@@ -38,9 +38,9 @@ class TraderConfig:
                "\n    Step count:                  " + str(self.max_steps) + \
                "\n    Check interval:              " + str(self.check_interval) + \
                "\n    Detectors:                   " + \
-            ', '.join([str(detector) for detector in self.detectors]) + \
-            "\n    Filters:                     " + \
-            ', '.join([str(f) for f in self.filters]) + \
-            "\n    Initialization list length:  " + str(self.initial_length) + \
-            "\n    Initialization list keyword: " + \
-            str(self.initial_keyword)
+               ''.join([str(detector) for detector in self.detectors]) + \
+               "\n    Filters:                     " + \
+               ''.join([str(f) for f in self.filters]) + \
+               "\n    Initialization list length:  " + str(self.initial_length) + \
+               "\n    Initialization list keyword: " + \
+               str(self.initial_keyword)

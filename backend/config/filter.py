@@ -9,6 +9,6 @@ class FilterConfig:
         self.length: int = config.get("length", 2)
 
     def __str__(self):
-        return "\nFilter:" + \
-               "\n    Type:   " + str(self.type) + \
-               "\n    Length: " + str(self.length)
+        return "\n        Filter:" + \
+               "\n            Type:   " + str(self.type) + \
+               "\n            Length: " + str(self.length)

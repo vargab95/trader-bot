@@ -22,8 +22,6 @@ class ApplicationConfig:
         self.mail = MailConfig(configuration.get("mail", {}))
         self.database = DatabaseConfig(configuration.get("database", {}))
         self.server = ServerConfig(configuration.get("server", {}))
-        self.filter = [FilterConfig(filter_element)
-                       for filter_element in configuration.get("filter", [])]
         self.simulator = SimulatorConfig(configuration.get("simulator", {}))
 
     def __str__(self):

@@ -32,9 +32,9 @@ class TraderApplication(applications.base.ApplicationBase):
         self._initialize_fetcher()
 
         self.__initialize_real_time()
-        if self._configuration.filter:
+        if self._configuration.trader.filters:
             self.__filter = filters.factory.FilterFactory.create_complex(
-                self._configuration.filter)
+                self._configuration.trader.filters)
             for point in self._configuration.trader.initial_values:
                 self.__filter.put(point.value)
         else:

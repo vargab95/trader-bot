@@ -14,11 +14,11 @@ class DetectorConfig:
         self.bearish_threshold = config.get("bearish_threshold", 0.0)
 
     def __str__(self):
-        return "\n    Detector:" + \
-               "\n        Follower enabled:       " + str(self.follower) + \
-               "\n        Follower candle size:   " + str(self.follower_candle_size) + \
-               "\n        Falling edge detection: " + str(self.falling_edge) + \
-               "\n        Stateless:              " + str(self.stateless) + \
-               "\n        Bullish threshold:      " + str(self.bullish_threshold) + \
-               "\n        Bearish threshold:      " + \
+        return "\n        Detector:" + \
+               "\n            Follower enabled:       " + str(self.follower) + \
+               "\n            Follower candle size:   " + str(self.follower_candle_size) + \
+               "\n            Falling edge detection: " + str(self.falling_edge) + \
+               "\n            Stateless:              " + str(self.stateless) + \
+               "\n            Bullish threshold:      " + str(self.bullish_threshold) + \
+               "\n            Bearish threshold:      " + \
             str(self.bearish_threshold)

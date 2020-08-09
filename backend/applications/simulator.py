@@ -30,7 +30,7 @@ class SimulatorApplication(applications.base.ApplicationBase):
             self._configuration, self._exchange)
         self.__trader.initialize()
         self.__filter = filters.factory.FilterFactory.create_complex(
-            self._configuration.filter)
+            self._configuration.trader.filters)
         self.__read_input_file(
             self._configuration.simulator.watched_file_path,
             self._configuration.exchange.watched_market.key)
