@@ -6,6 +6,7 @@ import filters.sma
 import filters.wma
 import filters.hma
 import filters.derivative
+import filters.derivative_ratio
 import filters.complex
 import config.filter
 
@@ -15,7 +16,7 @@ class InvalidFilterFactoryParameter(Exception):
 
 
 class FilterFactory:
-    available_types = ["sma", "wma", "hma", "derivative"]
+    available_types = ["sma", "wma", "hma", "derivative", "derivative_ratio"]
 
     @staticmethod
     def create(filter_type: str, length: int = 2):
@@ -34,6 +35,9 @@ class FilterFactory:
 
         if filter_type == "derivative":
             return filters.derivative.Derivative(length)
+
+        if filter_type == "derivative_ratio":
+            return filters.derivative_ratio.DerivativeRatio(length)
 
         raise InvalidFilterFactoryParameter()
 
