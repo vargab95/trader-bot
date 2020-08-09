@@ -97,6 +97,10 @@ class MockBase(exchange.interface.ExchangeInterface):
         return False
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
+        if amount <= 0:  # TODO write unit tests for this scenario
+            logging.error("Trying to sell 0 or less amount")
+            return False
+
         logging.debug("Amount to sell: %f", amount)
         amount = self._floor(amount, self._precision)
         logging.debug("Amount was rounded to %f", amount)
@@ -111,6 +115,7 @@ class MockBase(exchange.interface.ExchangeInterface):
             logging.info("Trade was finished profit: %f", self._trade.profit)
             logging.debug("New balance: %s", str(self._balances))
             return True
+
         logging.error("Could not complete sell %f %s", amount, market.target)
         logging.debug("Amount to sell in %s: %f", market.base, amount * price)
         logging.debug("Balance in %s: %f", market.base,
