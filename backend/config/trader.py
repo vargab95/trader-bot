@@ -17,7 +17,7 @@ class TraderConfig:
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
         self.start_state = TraderState(
-            config.get("start_state", TraderState.BASE))
+            config.get("start_state", TraderState.BASE))  # TODO Process it using string not int
         self.max_steps = config.get("max_steps", 5)
         self.initial_values = config.get("initial_values", [])
         self.detectors = [DetectorConfig(detector_config)
