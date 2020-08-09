@@ -5,6 +5,8 @@ import typing
 from config.detector import DetectorConfig
 from config.filter import FilterConfig
 
+from trader.common import TraderState
+
 
 class TraderConfig:
     def __init__(self, config: typing.Dict):
@@ -14,6 +16,8 @@ class TraderConfig:
         self.candle_size = config.get("candle_size", "1h")
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
+        self.start_state = TraderState(
+            config.get("start_state", TraderState.BASE))
         self.max_steps = config.get("max_steps", 5)
         self.initial_values = config.get("initial_values", [])
         self.detectors = [DetectorConfig(detector_config)
@@ -30,6 +34,7 @@ class TraderConfig:
                "\n    Candle size:                 " + str(self.candle_size) + \
                "\n    Method:                      " + str(self.method) + \
                "\n    Leverage:                    " + str(self.leverage) + \
+               "\n    Start state:                 " + str(self.start_state) + \
                "\n    Step count:                  " + str(self.max_steps) + \
                "\n    Check interval:              " + str(self.check_interval) + \
                "\n    Detectors:                   " + \

@@ -17,7 +17,7 @@ class TraderBase:
                  configuration: config.application.ApplicationConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         self._exchange = used_exchange
-        self._state: TraderState = TraderState.BASE
+        self._state: TraderState = configuration.trader.start_state
         self._configuration = configuration
         self._detectors: typing.List[detector.interface.DetectorInterface] = []
         self._use_stateless_detector = False
