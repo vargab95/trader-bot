@@ -52,21 +52,21 @@ class SimulatorApplication(applications.base.ApplicationBase):
 
             for i, signal_point in enumerate(simulator_input):
                 logging.debug("Simulating date %s",
-                              signal_point.date.strftime("%Y:%m:%d %H:%M:%S"))
+                              signal_point.date.strftime("%Y.%m.%d %H:%M:%S"))
                 self.__fill_price_mocks(i)
                 self.__filter.put(signal_point.value)
                 if self.__filter.get() is not None:
                     self.__trader.perform(self.__filter.get())
                     if last_state != self.__trader.state:
                         actions_output.writerow([
-                            signal_point.date.strftime("%Y:%m:%d %H:%M:%S"),
+                            signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
                             last_state,
                             self.__trader.state
                         ])
                         last_state = self.__trader.state
 
                 log_output.writerow([
-                    signal_point.date.strftime("%Y:%m:%d %H:%M:%S"),
+                    signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
                     signal_point.value,
                     self.__filter.get(),
                     self.__trader.state,
