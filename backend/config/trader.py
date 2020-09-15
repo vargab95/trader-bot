@@ -7,6 +7,14 @@ from config.filter import FilterConfig
 
 from trader.common import TraderState
 
+# TODO Replace these with dataclasses
+# Instead of __str__ the yaml dump can be used
+# Validate in __post_init__ method
+# Write a blog post on multi level config implementation using dataclasses
+# post_init to validate every level helps a lot. This way when a lower level class was initialized,
+# it can throw an invalid config exception
+# Every layer can be analyzed in a bottom-to-top manner
+
 
 class TraderConfig:
     def __init__(self, config: typing.Dict):
