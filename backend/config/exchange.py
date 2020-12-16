@@ -30,6 +30,7 @@ class ExchangeConfig:
             "bearish_price_keyword", "price")
         self.market_name_format = config.get("market_name_format",
                                              "{target}-{base}")
+        self.future = config.get("future", False)
 
     def __str__(self):
         return "\nExchange:" + \
@@ -42,5 +43,5 @@ class ExchangeConfig:
                "\n    Market name format:    " + str(self.market_name_format) + \
                "\n    Default price keyword: " + str(self.default_price_keyword) + \
                "\n    Bearish price keyword: " + str(self.bearish_price_keyword) + \
-               "\n    Bullish price keyword: " + \
-            str(self.bullish_price_keyword)
+               "\n    Bullish price keyword: " + str(self.bullish_price_keyword) + \
+               "\n    Future:                " + str(self.future)

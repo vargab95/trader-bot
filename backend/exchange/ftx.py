@@ -21,6 +21,7 @@ class FtxController(exchange.base.ExchangeBase):
     markets_url = "markets/"
     balances_url = "wallet/balances"
     orders_url = "orders"
+    futures_url = "futures/"
     datetime_format = "%Y-%m-%dT%H:%M:%S+00:00"
 
     def __init__(self, configuration: config.exchange.ExchangeConfig):
@@ -36,6 +37,7 @@ class FtxController(exchange.base.ExchangeBase):
             self._min_notional[market["name"]] = market["priceIncrement"]
             logging.debug("\t%s amount: %.12f price: %.12f", market["name"],
                           market["minProvideSize"], market["priceIncrement"])
+        self.futures_enabled = configuration.future
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         if amount <= 0.0:
@@ -111,7 +113,8 @@ class FtxController(exchange.base.ExchangeBase):
 
     @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:
-        response = requests.get(self.api_url + self.markets_url + market.key)
+        used_url = self.futures_url if self.futures_enabled else self.markets_url
+        response = requests.get(self.api_url + used_url + market.key)
         data = response.json()
 
         logging.debug(
