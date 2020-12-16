@@ -84,3 +84,9 @@ class FtxMock(exchange.mock_base.MockBase):
             return TradingSignal(history, descriptor)
         raise NotImplementedError(
             "Mocked price history has not been implemented yet")
+
+    def get_positions(self) -> exchange.interface.Balances:
+        raise NotImplementedError
+
+    def get_position(self, market: str) -> float:
+        raise NotImplementedError

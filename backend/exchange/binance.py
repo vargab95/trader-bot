@@ -151,3 +151,9 @@ class BinanceController(exchange.base.ExchangeBase):
             history.append(point)
 
         return TradingSignal(history, descriptor)
+
+    def get_positions(self) -> exchange.interface.Balances:
+        raise NotImplementedError
+
+    def get_position(self, market: str) -> float:
+        raise NotImplementedError

@@ -22,6 +22,7 @@ class FtxController(exchange.base.ExchangeBase):
     balances_url = "wallet/balances"
     orders_url = "orders"
     futures_url = "futures/"
+    positions_url = "positions"
     datetime_format = "%Y-%m-%dT%H:%M:%S+00:00"
 
     def __init__(self, configuration: config.exchange.ExchangeConfig):
@@ -60,8 +61,7 @@ class FtxController(exchange.base.ExchangeBase):
                                                  }):
             return False
 
-        logging.info("%.10f %s was successfully bought", corrected_amount,
-                     market.key)
+        logging.info("%.10f %s was successfully bought", corrected_amount, market.key)
 
         return True
 
@@ -69,8 +69,7 @@ class FtxController(exchange.base.ExchangeBase):
         if amount <= 0.0:
             return False
 
-        corrected_amount = self._check_and_log_corrected_amount(
-            market, amount, "sell")
+        corrected_amount = self._check_and_log_corrected_amount(market, amount, "sell")
 
         if corrected_amount <= 0.0:
             return False
@@ -86,8 +85,7 @@ class FtxController(exchange.base.ExchangeBase):
                                                  }):
             return False
 
-        logging.info("%.10f %s was successfully sold", corrected_amount,
-                     market.key)
+        logging.info("%.10f %s was successfully sold", corrected_amount, market.key)
 
         return True
 
@@ -104,6 +102,26 @@ class FtxController(exchange.base.ExchangeBase):
 
     def get_balance(self, market: str) -> float:
         balances = self.get_balances()
+
+        for key, value in balances.items():
+            if key == market:
+                return value
+
+        return 0.0
+
+    def get_positions(self) -> exchange.interface.Balances:
+        balances = self.__send_authenticated_request('GET', self.positions_url)
+
+        result = exchange.interface.Balances()
+        for balance in balances:
+            free = float(balance["size"])
+            if free > 1e-7:
+                result[balance["future"]] = free
+
+        return result
+
+    def get_position(self, market: str) -> float:
+        balances = self.get_positions()
 
         for key, value in balances.items():
             if key == market:
