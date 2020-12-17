@@ -114,9 +114,9 @@ class FtxController(exchange.base.ExchangeBase):
 
         result = exchange.interface.Balances()
         for balance in balances:
-            free = float(balance["size"])
-            if free > 1e-7:
-                result[balance["future"]] = free
+            net_size = float(balance["netSize"])
+            if abs(net_size) > 1e-7:
+                result[balance["future"]] = net_size
 
         return result
 
