@@ -131,7 +131,12 @@ class FtxController(exchange.base.ExchangeBase):
 
     @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:
-        used_url = self.futures_url if self.futures_enabled else self.markets_url
+        if self.futures_enabled:
+            used_url = self.futures_url
+            # XXX There is no price on futures...
+            keyword = "ask"
+        else:
+            used_url = self.markets_url
         response = requests.get(self.api_url + used_url + market.key)
         data = response.json()
 
