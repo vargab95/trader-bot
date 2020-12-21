@@ -63,9 +63,12 @@ class TraderApplication(applications.base.ApplicationBase):
                 market=self._configuration.exchange.watched_market,
                 limit=self._configuration.trader.initial_length,
                 resolution=resolution,
-                start_date=datetime.now() - resolution * self._configuration.trader.initial_length)
+                start_date=datetime.now() - resolution * \
+                                            self._configuration.trader.initial_length * \
+                                            self._configuration.trader.initial_step)
             self._configuration.trader.initial_values = self._exchange.get_price_history(
-                descriptor, self._configuration.trader.initial_keyword).data
+                descriptor,
+                self._configuration.trader.initial_keyword).data[::self._configuration.trader.initial_step]
 
     def _run_application_logic(self):
         while True:

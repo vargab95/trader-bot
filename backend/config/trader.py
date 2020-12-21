@@ -34,6 +34,7 @@ class TraderConfig:
                         for filter_element in config.get("filters", [])]
         self.initial_length = config.get("initial_length", 1)
         self.initial_keyword = config.get("initial_keyword", "close")
+        self.initial_step = config.get("initial_step", 1)
 
     def __str__(self):
         return "\nTrader:" + \
