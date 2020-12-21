@@ -37,7 +37,7 @@ class FutureTraderBase(trader.base.TraderBase):
         base_asset = self._configuration.exchange.future_base_asset
         balance = self._exchange.get_balance(base_asset)
         price = self._exchange.get_price(market, self._configuration.exchange.bearish_price_keyword)
-        amount = balance / price * ratio
+        amount = balance / price * ratio * 2.8
         logging.info("%f of %s was sold to go to bearish position",
                      amount, market.key)
         return self._exchange.sell(market, amount)
@@ -54,7 +54,7 @@ class FutureTraderBase(trader.base.TraderBase):
         base_asset = self._configuration.exchange.future_base_asset
         balance = self._exchange.get_balance(base_asset)
         price = self._exchange.get_price(market, self._configuration.exchange.bullish_price_keyword)
-        amount = balance / price * ratio
+        amount = balance / price * ratio * 2.8
         logging.info("%f of %s was bought to go to bullish position",
                      amount, market.key)
         return self._exchange.buy(market, amount)

@@ -59,9 +59,11 @@ class TraderApplication(applications.base.ApplicationBase):
     def __initialize_real_time(self):
         if self._configuration.trader.initial_values == []:
             resolution = self.__candle_size_resolution_map[self._configuration.trader.candle_size]
+            logging.debug("Initialize real time: resolution: %d, initial_length: %d, initial_step: %d",
+                          resolution, self._configuration.trader.initial_length, self._configuration.trader.initial_step)
             descriptor = signals.trading_signal.TickerSignalDescriptor(
                 market=self._configuration.exchange.watched_market,
-                limit=self._configuration.trader.initial_length,
+                limit=self._configuration.trader.initial_length * self._configuration.trader.initial_step,
                 resolution=resolution,
                 start_date=datetime.now() - resolution * \
                                             self._configuration.trader.initial_length * \
@@ -69,6 +71,7 @@ class TraderApplication(applications.base.ApplicationBase):
             self._configuration.trader.initial_values = self._exchange.get_price_history(
                 descriptor,
                 self._configuration.trader.initial_keyword).data[::self._configuration.trader.initial_step]
+            logging.debug("Fetched elements: %s", str(self._configuration.trader.initial_values))
 
     def _run_application_logic(self):
         while True:
