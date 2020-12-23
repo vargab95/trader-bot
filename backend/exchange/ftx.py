@@ -4,6 +4,7 @@ import time
 import datetime
 import hmac
 import logging
+import json
 import traceback
 import requests
 
@@ -140,22 +141,18 @@ class FtxController(exchange.base.ExchangeBase):
         response = requests.get(self.api_url + used_url + market.key)
         data = response.json()
 
-        logging.debug(
-            "Price was requested for %s (FTX). Response is %s", market.key, str(data))
+        logging.debug("Price was requested for %s (FTX). Response is %s", market.key, str(data))
 
         if data["success"]:
-            logging.debug("Last FTX price for %s is %f",
-                          market.key, data["result"][keyword])
+            logging.debug("Last FTX price for %s is %f", market.key, data["result"][keyword])
             return data["result"][keyword]
 
         logging.error("Could not get price of %s", str(market))
-        logging.error("%s\n\n%s", str(data["error"]),
-                      ''.join(traceback.format_stack()))
+        logging.error("%s\n\n%s", str(data["error"]), ''.join(traceback.format_stack()))
         raise exchange.interface.ExchangeError(data["error"])
 
     @exchange.guard.exchange_guard()
     def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
-        # /markets/{market_name}/candles?resolution={resolution}&limit={limit}&start_time={start_time}&end_time={end_time}
         valid_resolutions = [15, 60, 300, 900, 3600, 14400, 86400]
 
         if descriptor.resolution.total_seconds() not in valid_resolutions:
@@ -171,23 +168,19 @@ class FtxController(exchange.base.ExchangeBase):
 
             if descriptor.start_date is not None:
                 request_url += "&start_time=" + \
-                    str(int((descriptor.start_date
-                             - datetime.datetime(1970, 1, 1)).total_seconds()))
+                    str(int((descriptor.start_date - datetime.datetime(1970, 1, 1)).total_seconds()))
 
             if descriptor.end_date is not None:
                 request_url += "&end_time=" + \
-                    str(int((descriptor.end
-                             - datetime.datetime(1970, 1, 1)).total_seconds()))
+                    str(int((descriptor.end - datetime.datetime(1970, 1, 1)).total_seconds()))
 
         logging.debug("FTX price history request: %s", request_url)
         response = requests.get(request_url)
         data = response.json()
 
         if not data["success"]:
-            logging.error("Could not get historical data of %s",
-                          str(descriptor.market))
-            logging.error("%s\n\n%s", str(data["error"]),
-                          ''.join(traceback.format_stack()))
+            logging.error("Could not get historical data of %s", str(descriptor.market))
+            logging.error("%s\n\n%s", str(data["error"]), ''.join(traceback.format_stack()))
             raise exchange.interface.ExchangeError(data["error"])
 
         logging.debug("FTX price history request result: %s", str(data))
@@ -196,8 +189,7 @@ class FtxController(exchange.base.ExchangeBase):
         for item in data["result"]:
             point = TradingSignalPoint()
             point.value = float(item[keyword])
-            point.date = datetime.datetime.strptime(
-                item["startTime"], self.datetime_format)
+            point.date = datetime.datetime.strptime(item["startTime"], self.datetime_format)
             history.append(point)
 
         return TradingSignal(history, descriptor)
@@ -211,21 +203,23 @@ class FtxController(exchange.base.ExchangeBase):
         request.json = data
 
         prepared = request.prepare()
-        signature_payload = f'{timestamp}{prepared.method}{prepared.path_url}'.encode(
-        )
+        signature_payload = f'{timestamp}{prepared.method}{prepared.path_url}'.encode()
         if prepared.body:
             signature_payload += prepared.body
-        signature = hmac.new(self._private_key.encode(), signature_payload,
-                             'sha256').hexdigest()
+        signature = hmac.new(self._private_key.encode(), signature_payload, 'sha256').hexdigest()
 
         prepared.headers['FTX-KEY'] = self._public_key
         prepared.headers['FTX-SIGN'] = signature
         prepared.headers['FTX-TS'] = str(timestamp)
         prepared.headers['Content-type'] = 'application/json'
 
-        response = session.send(prepared).json()
+        response = session.send(prepared)
+        response_body = response.json()
 
-        if not response["success"]:
-            raise exchange.interface.ExchangeError(response["error"])
+        logging.debug("[%s] %s (%s) -> %d\n%s", method, endpoint, str(data),
+                      response.status_code, json.dumps(response_body, indent=4))
 
-        return response["result"]
+        if not response_body["success"]:
+            raise exchange.interface.ExchangeError(response_body["error"])
+
+        return response_body["result"]
