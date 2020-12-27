@@ -76,7 +76,7 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
     def get_positions(self) -> exchange.interface.Balances:
         pass  # pragma: no cover
 
-    def get_position(self, market: str) -> float:
+    def get_position(self, market: exchange.interface.Market) -> float:
         pass  # pragma: no cover
 
     def get_price(self, market: exchange.interface.Market, keyword: str = "") -> float:

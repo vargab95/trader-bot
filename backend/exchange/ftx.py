@@ -121,11 +121,11 @@ class FtxController(exchange.base.ExchangeBase):
 
         return result
 
-    def get_position(self, market: str) -> float:
+    def get_position(self, market: exchange.interface.Market) -> float:
         balances = self.get_positions()
 
         for key, value in balances.items():
-            if key == market:
+            if key == market.key:
                 return value
 
         return 0.0
