@@ -24,6 +24,7 @@ class FtxController(exchange.base.ExchangeBase):
     orders_url = "orders"
     futures_url = "futures/"
     positions_url = "positions"
+    account_url = "account"
     datetime_format = "%Y-%m-%dT%H:%M:%S+00:00"
 
     def __init__(self, configuration: config.exchange.ExchangeConfig):
@@ -129,6 +130,11 @@ class FtxController(exchange.base.ExchangeBase):
                 return value
 
         return 0.0
+
+    def get_leverage_balance(self) -> float:
+        account_info = self.__send_authenticated_request("GET", self.account_url)
+
+        return account_info["totalAccountValue"] * account_info["leverage"]
 
     @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:

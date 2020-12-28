@@ -45,9 +45,9 @@ class FutureTraderBase(trader.base.TraderBase):
              market: exchange.interface.Market,
              ratio: float = 1.0) -> bool:
         base_asset = self._configuration.exchange.future_base_asset
-        balance = self._exchange.get_balance(base_asset)
+        balance = self._exchange.get_leverage_balance()
         price = self._exchange.get_price(market, self._configuration.exchange.bullish_price_keyword)
-        amount = balance / price * ratio * 2.8
+        amount = balance / price * ratio
         logging.debug("Base asset: %s, balance: %f, price: %f, amount: %f", base_asset, balance, price, amount)
 
         if self._state == TraderState.BUYING_BEARISH:

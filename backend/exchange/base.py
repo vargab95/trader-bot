@@ -62,22 +62,25 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         return all_money
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        pass  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        pass  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
     def get_balances(self) -> exchange.interface.Balances:
-        pass  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
     def get_balance(self, market: str) -> float:
-        pass  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
     def get_positions(self) -> exchange.interface.Balances:
-        pass  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
 
     def get_position(self, market: exchange.interface.Market) -> float:
-        pass  # pragma: no cover
+        raise NotImplementedError  # pragma: no cover
+
+    def get_leverage_balance(self) -> float:
+        raise NotImplementedError  # pragma: no cover
 
     def get_price(self, market: exchange.interface.Market, keyword: str = "") -> float:
         return -1.0  # pragma: no cover
