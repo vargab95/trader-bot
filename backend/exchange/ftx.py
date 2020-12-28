@@ -134,7 +134,7 @@ class FtxController(exchange.base.ExchangeBase):
     def get_leverage_balance(self) -> float:
         account_info = self.__send_authenticated_request("GET", self.account_url)
 
-        return account_info["totalAccountValue"] * account_info["leverage"]
+        return account_info["totalAccountValue"] * account_info["leverage"] - account_info["totalPositionSize"]
 
     @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:

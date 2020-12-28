@@ -50,12 +50,16 @@ class FutureTraderBase(trader.base.TraderBase):
         amount = balance / price * ratio
         logging.debug("Base asset: %s, balance: %f, price: %f, amount: %f", base_asset, balance, price, amount)
 
-        if self._state == TraderState.BUYING_BEARISH:
-            logging.info("%f of %s was sold to go to bearish position",
-                         amount, market.key)
-            return self._exchange.sell(market, amount)
-        elif self._state == TraderState.BUYING_BULLISH:
-            logging.info("%f of %s was bought to go to bullish position",
-                         amount, market.key)
-            return self._exchange.buy(market, amount)
+        for _ in range(10):
+            if self._state == TraderState.BUYING_BEARISH:
+                logging.info("%f of %s was sold to go to bearish position",
+                             amount, market.key)
+                result = self._exchange.sell(market, amount)
+            elif self._state == TraderState.BUYING_BULLISH:
+                logging.info("%f of %s was bought to go to bullish position",
+                             amount, market.key)
+                result = self._exchange.buy(market, amount)
+            if result:
+                return True
+            amount *= 0.99
         return False
