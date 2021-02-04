@@ -81,7 +81,6 @@ class TraderApplication(applications.base.ApplicationBase):
             # to calculate all_money
             # all_money = self.__get_all_money()
 
-            # TODO Initialize based on previous data
             if current_indicator is not None:
                 logging.info("Indicator: %f", current_indicator)
                 # logging.info("All money: %f", all_money)
