@@ -9,7 +9,6 @@ from signals.trading_signal import TradingSignalDescriptor, TradingSignal, Tradi
 
 
 class MongoStorageBase(StorageInterface):
-    # TODO add typing
     def __init__(self, db):
         self._db = db
         self._date_key = "date"
@@ -63,28 +62,23 @@ class MongoStorageBase(StorageInterface):
 
         return None
 
-    # TODO add typing
     @staticmethod
     def _fetch_signal(collection, generated_filter: typing.Dict):
         if generated_filter:
             return collection.find(generated_filter)
         return collection.find()
 
-    # TODO add typing
     def _sort_by_date(self, result):
         return result.sort([(self._date_key, 1)])
 
-    # TODO add typing
     @staticmethod
-    def _limit(result, limit):
+    def _limit(result, limit: int):
         return result.limit(limit)
 
-    # TODO add typing
     @abc.abstractmethod
     def _generate_signal(self, fetched_signal) -> TradingSignal:
         pass  # pragma: no cover
 
-    # TODO add typing
     @abc.abstractmethod
     def _get_collection(self, descriptor: TradingSignalDescriptor):
         pass  # pragma: no cover

@@ -139,7 +139,7 @@ class FtxController(exchange.base.ExchangeBase):
     def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:
         if self.futures_enabled:
             used_url = self.futures_url
-            # XXX There is no price on futures...
+            # There is no price key on futures...
             keyword = "ask"
         else:
             used_url = self.markets_url
