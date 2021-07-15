@@ -1,10 +1,7 @@
 #!/usr/bin/python3
 
-import logging
 import typing
 
-import config.application
-import exchange.interface
 import detector.interface
 
 from trader.common import TraderState

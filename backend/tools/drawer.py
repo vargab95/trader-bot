@@ -126,7 +126,7 @@ def main():
                         bear_sell_trigger)
 
     fig, ax1 = plt.subplots()
-    ax2 = ax1.twinx()
+    # ax2 = ax1.twinx()
     ax1.plot(np.array(list(range(1,
                                  len(price_1h) + 1))), np.array(price_1h),
              'g-')

@@ -45,7 +45,8 @@ class SimulatorApplication(applications.base.ApplicationBase):
     def _run_application_logic(self):
         simulator_input = self.__input[self._configuration.exchange.watched_market.key]
 
-        with open(self._configuration.simulator.log_output_path, 'w') as log_output_file, open(self._configuration.simulator.actions_output_path, 'w') as actions_output_file:
+        with open(self._configuration.simulator.log_output_path, 'w') as log_output_file, \
+             open(self._configuration.simulator.actions_output_path, 'w') as actions_output_file:
             log_output = csv.writer(log_output_file)
             actions_output = csv.writer(actions_output_file)
             last_state = trader.common.TraderState.BASE

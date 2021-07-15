@@ -11,7 +11,6 @@ import exchange.interface
 import exchange.guard
 import exchange.mock_base
 
-from exchange.interface import Market
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor, TradingSignalPoint
 
 

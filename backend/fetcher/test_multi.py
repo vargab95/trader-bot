@@ -7,6 +7,7 @@ from config.trader import TraderConfig
 from fetcher.multi import TradingViewFetcherMulti
 from fetcher.common import InvalidConfigurationException
 
+
 # TODO Add assert to tests where that is missing
 @unittest.mock.patch("requests.post")
 class MultiFetcherTest(unittest.TestCase):

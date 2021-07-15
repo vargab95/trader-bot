@@ -6,7 +6,6 @@ import config.exchange
 import exchange.interface
 import exchange.guard
 
-from exchange.interface import Market
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor
 
 

@@ -9,7 +9,6 @@ from config.exchange import ExchangeConfig
 from config.mail import MailConfig
 from config.database import DatabaseConfig
 from config.server import ServerConfig
-from config.filter import FilterConfig
 from config.simulator import SimulatorConfig
 
 
