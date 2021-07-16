@@ -9,7 +9,7 @@ from trader.common import TraderState
 class SimpleLeverageTrader(trader.leverage.base.LeverageTraderBase):
     def _bullish_logic(self):
         if self._state != TraderState.BULLISH:
-            if self._state != TraderState.BASE:
+            if self._state != TraderState.BASE and self._state != TraderState.BUYING_BULLISH:
                 if self._sell(self._configuration.exchange.bearish_market):
                     self._state = TraderState.BUYING_BULLISH
                 else:
@@ -22,7 +22,7 @@ class SimpleLeverageTrader(trader.leverage.base.LeverageTraderBase):
 
     def _bearish_logic(self):
         if self._state != TraderState.BEARISH:
-            if self._state != TraderState.BASE:
+            if self._state != TraderState.BASE and self._state != TraderState.BUYING_BEARISH:
                 if self._sell(self._configuration.exchange.bullish_market):
                     self._state = TraderState.BUYING_BEARISH
                 else:

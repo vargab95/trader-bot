@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import typing
-
 import detector.interface
 
 from trader.common import TraderState
@@ -21,11 +19,10 @@ class SimpleSingleMarketTrader(TraderBase):
         else:
             self._state = TraderState.SELLING_BULLISH
 
-    def _bullish_condition(self, actions: typing.List[detector.common.TradingAction]):
+    def _bullish_condition(self, action: detector.common.TradingAction):
         return self._state == TraderState.BUYING_BULLISH or \
-            (detector.common.TradingAction.BULLISH_SIGNAL in actions and self._state !=
-             TraderState.BULLISH)
+            (detector.common.TradingAction.BULLISH_SIGNAL == action and self._state != TraderState.BULLISH)
 
-    def _bearish_condition(self, actions: typing.List[detector.common.TradingAction]):
+    def _bearish_condition(self, action: detector.common.TradingAction):
         return self._state == TraderState.SELLING_BULLISH or \
-            (detector.common.TradingAction.BEARISH_SIGNAL in actions and self._state != TraderState.BASE)
+            (detector.common.TradingAction.BEARISH_SIGNAL == action and self._state != TraderState.BASE)

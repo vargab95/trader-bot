@@ -8,6 +8,7 @@ import config.application
 import exchange.interface
 import detector.interface
 import detector.factory
+from detector.common import TradingAction
 
 from trader.common import TraderState
 
@@ -19,29 +20,20 @@ class TraderBase:
         self._exchange = used_exchange
         self._state: TraderState = configuration.trader.start_state
         self._configuration = configuration
-        self._detectors: typing.List[detector.interface.DetectorInterface] = []
         self._use_stateless_detector = False
 
     @property
     def state(self):
         return self._state
 
-    def initialize(self):
-        for detector_config in self._configuration.trader.detectors:
-            self._detectors.append(
-                detector.factory.DetectorFactory.create(detector_config))
+    def perform(self, action: TradingAction):
 
-    def perform(self, indicator_signal: float):
-        actions = []
-        for next_detector in self._detectors:
-            actions.append(next_detector.check(indicator_signal))
-
-        logging.debug("Detector(s) has returned %s", str(actions))
+        logging.debug("Detector(s) has returned %s", str(action))
         logging.debug("Current state is %s", str(self._state))
 
-        if self._bullish_condition(actions):
+        if self._bullish_condition(action):
             self._bullish_logic()
-        elif self._bearish_condition(actions):
+        elif self._bearish_condition(action):
             self._bearish_logic()
 
         if self._is_there_any_pending_transaction():
@@ -98,9 +90,9 @@ class TraderBase:
         pass
 
     @abc.abstractmethod
-    def _bullish_condition(self, actions: typing.List[detector.common.TradingAction]):  # pragma: no cover
+    def _bullish_condition(self, action: detector.common.TradingAction):  # pragma: no cover
         pass
 
     @abc.abstractmethod
-    def _bearish_condition(self, actions: typing.List[detector.common.TradingAction]):  # pragma: no cover
+    def _bearish_condition(self, action: detector.common.TradingAction):  # pragma: no cover
         pass

@@ -20,11 +20,11 @@ class FutureTraderBase(trader.base.TraderBase):
     def _bearish_logic(self):  # pragma: no cover
         pass
 
-    def _bullish_condition(self, actions: typing.List[detector.common.TradingAction]):
-        return detector.common.TradingAction.BULLISH_SIGNAL in actions
+    def _bullish_condition(self, action: typing.List[detector.common.TradingAction]):
+        return detector.common.TradingAction.BULLISH_SIGNAL == action
 
-    def _bearish_condition(self, actions: typing.List[detector.common.TradingAction]):
-        return detector.common.TradingAction.BEARISH_SIGNAL in actions
+    def _bearish_condition(self, action: detector.common.TradingAction):
+        return detector.common.TradingAction.BEARISH_SIGNAL == action
 
     def _sell(self,
               market: exchange.interface.Market,
@@ -35,7 +35,7 @@ class FutureTraderBase(trader.base.TraderBase):
             logging.info("%s was on position %f so bullish position was sold",
                          market.key, position)
             return self._exchange.sell(market, position)
-        elif position < 0.0:
+        if position < 0.0:
             logging.info("%s was on position %f so bearish position was sold",
                          market.key, position)
             return self._exchange.buy(market, -position)

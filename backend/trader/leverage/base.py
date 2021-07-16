@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import abc
-import typing
 
 import detector.common
 
@@ -17,8 +16,8 @@ class LeverageTraderBase(trader.base.TraderBase):
     def _bearish_logic(self):  # pragma: no cover
         pass
 
-    def _bullish_condition(self, actions: typing.List[detector.common.TradingAction]):
-        return detector.common.TradingAction.BULLISH_SIGNAL in actions
+    def _bullish_condition(self, action: detector.common.TradingAction):
+        return detector.common.TradingAction.BULLISH_SIGNAL == action
 
-    def _bearish_condition(self, actions: typing.List[detector.common.TradingAction]):
-        return detector.common.TradingAction.BEARISH_SIGNAL in actions
+    def _bearish_condition(self, action: detector.common.TradingAction):
+        return detector.common.TradingAction.BEARISH_SIGNAL == action
