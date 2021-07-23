@@ -5,6 +5,7 @@ import unittest.mock
 
 import config.application
 import config.detector
+from config.trader import TraderConfig
 import trader.leverage.stepped
 import exchange.interface
 import exchange.factory
@@ -20,7 +21,7 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.trader.max_steps = 10
+        cls.trader_config = TraderConfig({"max_steps": 10})
 
         exchange.interface.Market.name_format = cls.config.exchange.market_name_format
         cls.exchange = exchange.factory.ExchangeControllerFactory.create(cls.config)
@@ -29,7 +30,7 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = trader.leverage.stepped.SteppedLeverageTrader(self.config, self.exchange)
+        self.trader = trader.leverage.stepped.SteppedLeverageTrader(self.trader_config, self.exchange)
 
     def tearDown(self):
         self.exchange.reset()
@@ -116,7 +117,7 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 1.0)
 
     def test_exceeds_bullish(self):
-        detector_signals = [TradingAction.BULLISH_SIGNAL for i in range(self.config.trader.max_steps + 1)]
+        detector_signals = [TradingAction.BULLISH_SIGNAL for i in range(self.trader_config.max_steps + 1)]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
         for detector_signal in detector_signals:
@@ -125,7 +126,7 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
 
     def test_exceeds_bearish(self):
-        detector_signals = [TradingAction.BEARISH_SIGNAL for i in range(self.config.trader.max_steps + 1)]
+        detector_signals = [TradingAction.BEARISH_SIGNAL for i in range(self.trader_config.max_steps + 1)]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
         for detector_signal in detector_signals:
@@ -143,7 +144,7 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
-        cls.config.trader.max_steps = 10
+        cls.trader_config = TraderConfig({"max_steps": 10})
 
         exchange.interface.Market.name_format = cls.config.exchange.market_name_format
         cls.exchange = exchange.factory.ExchangeControllerFactory.create(cls.config)
@@ -152,7 +153,7 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = trader.leverage.stepped.SteppedLeverageTrader(self.config, self.exchange)
+        self.trader = trader.leverage.stepped.SteppedLeverageTrader(self.trader_config, self.exchange)
 
     def tearDown(self):
         self.exchange.reset()
@@ -245,7 +246,7 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 2.0)
 
     def test_exceeds_bullish(self):
-        detector_signals = [TradingAction.BULLISH_SIGNAL for i in range(self.config.trader.max_steps + 1)]
+        detector_signals = [TradingAction.BULLISH_SIGNAL for i in range(self.trader_config.max_steps + 1)]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
         for detector_signal in detector_signals:
@@ -254,7 +255,7 @@ class MultiDetectorSteppedLeverageTraderTest(unittest.TestCase):
         self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
 
     def test_exceeds_bearish(self):
-        detector_signals = [TradingAction.BEARISH_SIGNAL for i in range(self.config.trader.max_steps + 1)]
+        detector_signals = [TradingAction.BEARISH_SIGNAL for i in range(self.trader_config.max_steps + 1)]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
         for detector_signal in detector_signals:

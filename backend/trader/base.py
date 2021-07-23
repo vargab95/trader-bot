@@ -17,7 +17,7 @@ class TraderBase:
                  configuration: config.application.ApplicationConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         self._exchange = used_exchange
-        self._state: TraderState = configuration.trader.start_state
+        self._state: TraderState = configuration.start_state
         self._configuration = configuration
         self._use_stateless_detector = False
 
@@ -68,16 +68,16 @@ class TraderBase:
 
     def _do_pending_transaction(self):
         if TraderState.SELLING_BULLISH == self._state:
-            if self._sell(self._configuration.exchange.bullish_market):
+            if self._sell(self._configuration.bullish_market):
                 self._state = TraderState.BUYING_BEARISH
         if TraderState.SELLING_BEARISH == self._state:
-            if self._sell(self._configuration.exchange.bearish_market):
+            if self._sell(self._configuration.bearish_market):
                 self._state = TraderState.BUYING_BULLISH
         if TraderState.BUYING_BEARISH == self._state:
-            if self._buy(self._configuration.exchange.bearish_market):
+            if self._buy(self._configuration.bearish_market):
                 self._state = TraderState.BEARISH
         if TraderState.BUYING_BULLISH == self._state:
-            if self._buy(self._configuration.exchange.bullish_market):
+            if self._buy(self._configuration.bullish_market):
                 self._state = TraderState.BULLISH
 
     @abc.abstractmethod

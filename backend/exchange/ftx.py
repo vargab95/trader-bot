@@ -39,7 +39,6 @@ class FtxController(exchange.base.ExchangeBase):
             self._min_notional[market["name"]] = market["priceIncrement"]
             logging.debug("\t%s amount: %.12f price: %.12f", market["name"],
                           market["minProvideSize"], market["priceIncrement"])
-        self.futures_enabled = configuration.future
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         if amount <= 0.0:
@@ -136,8 +135,8 @@ class FtxController(exchange.base.ExchangeBase):
         return account_info["totalAccountValue"] * account_info["leverage"] - account_info["totalPositionSize"]
 
     @exchange.guard.exchange_guard()
-    def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:
-        if self.futures_enabled:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
+        if future:
             used_url = self.futures_url
             # There is no price key on futures...
             keyword = "ask"

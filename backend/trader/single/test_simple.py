@@ -4,6 +4,7 @@ import unittest
 import unittest.mock
 
 import config.application
+from config.trader import TraderConfig
 import trader.single.simple
 import exchange.interface
 import exchange.factory
@@ -27,7 +28,7 @@ class SimpleSingleTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = trader.single.simple.SimpleSingleMarketTrader(self.config, self.exchange)
+        self.trader = trader.single.simple.SimpleSingleMarketTrader(TraderConfig({}), self.exchange)
 
     def tearDown(self):
         self.exchange.reset()

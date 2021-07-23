@@ -8,13 +8,13 @@ from trader.base import TraderBase
 
 class SimpleSingleMarketTrader(TraderBase):
     def _bullish_logic(self):
-        if self._buy(self._configuration.exchange.watched_market):
+        if self._buy(self._configuration.market):
             self._state = TraderState.BULLISH
         else:
             self._state = TraderState.BUYING_BULLISH
 
     def _bearish_logic(self):
-        if self._sell(self._configuration.exchange.watched_market):
+        if self._sell(self._configuration.market):
             self._state = TraderState.BASE
         else:
             self._state = TraderState.SELLING_BULLISH

@@ -81,7 +81,7 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
     def get_leverage_balance(self) -> float:
         raise NotImplementedError  # pragma: no cover
 
-    def get_price(self, market: exchange.interface.Market, keyword: str = "") -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
         return -1.0  # pragma: no cover
 
     def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
