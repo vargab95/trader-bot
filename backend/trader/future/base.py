@@ -46,7 +46,9 @@ class FutureTraderBase(trader.base.TraderBase):
              ratio: float = 1.0) -> bool:
         base_asset = self._configuration.exchange.future_base_asset
         balance = self._exchange.get_leverage_balance()
-        price = self._exchange.get_price(market, self._configuration.exchange.bullish_price_keyword)
+        price = self._exchange.get_price(market,
+                                         self._configuration.bullish_price_keyword,
+                                         self._configuration.future)
         amount = balance / price * ratio
         logging.debug("Base asset: %s, balance: %f, price: %f, amount: %f", base_asset, balance, price, amount)
 

@@ -51,7 +51,7 @@ class TraderBase:
              ratio: float = 1.0) -> bool:
         for _ in range(5):
             balance = self._exchange.get_balance(market.base)
-            price = self._exchange.get_price(market)
+            price = self._exchange.get_price(market, future=self._configuration.future)
             amount = balance / price * ratio
             if self._exchange.buy(market, amount):
                 return True

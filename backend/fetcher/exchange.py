@@ -13,7 +13,7 @@ class ExchangeFetcher(Fetcher):
         self.__exchange: ExchangeInterface = exchange
 
     def fetch_technical_indicator(self):
-        self.__indicator = self.__exchange.get_price(self.__config.market)
+        self.__indicator = self.__exchange.get_price(self.__config.market, future=self.__config.future)
 
     def get_technical_indicator(self) -> float:
         return self.__indicator
