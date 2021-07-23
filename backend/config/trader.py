@@ -10,14 +10,15 @@ from trader.common import TraderState
 
 class TraderConfig:
     def __init__(self, config: typing.Dict):
+        self.input_signal_id = config.get("input_signal_id", None)
         self.market = config.get("market", "GEMINI:BTCUSD")
         self.indicator = config.get("indicator", "all")
         self.check_interval = config.get("check_interval", 60)
         self.candle_size = config.get("candle_size", "1h")
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
-        self.start_state = TraderState(
-            config.get("start_state", TraderState.BASE))  # TODO Process it using string not int
+        # TODO Process it using string not int
+        self.start_state = TraderState(config.get("start_state", TraderState.BASE))
         self.max_steps = config.get("max_steps", 5)
         self.initial_values = config.get("initial_values", [])
         self.detectors = [DetectorConfig(detector_config)
@@ -30,6 +31,7 @@ class TraderConfig:
 
     def __str__(self):
         return "\nTrader:" + \
+               "\n    Input signal id:             " + str(self.input_signal_id) + \
                "\n    Market:                      " + str(self.market) + \
                "\n    Indicator:                   " + str(self.indicator) + \
                "\n    Candle size:                 " + str(self.candle_size) + \

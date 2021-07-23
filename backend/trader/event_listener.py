@@ -6,7 +6,7 @@ from observer.event import SignalUpdatedEvent
 from detector.common import TradingAction
 
 
-class DetectorSignalListener(Subscriber):
+class TradingActionListener(Subscriber):
     def __init__(self):
         self.__value: TradingAction = TradingAction.HOLD_SIGNAL
 

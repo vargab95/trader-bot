@@ -5,12 +5,12 @@ import unittest
 from observer.event import SignalUpdatedEvent
 from detector.common import TradingAction
 
-from trader.event_listener import DetectorSignalListener
+from trader.event_listener import TradingActionListener
 
 
-class TestDetectorSignalListener(unittest.TestCase):
+class TestTradingActionListener(unittest.TestCase):
     def setUp(self):
-        self.listener = DetectorSignalListener()
+        self.listener = TradingActionListener()
 
     def test_single_hold_signal(self):
         self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.HOLD_SIGNAL))
@@ -47,6 +47,16 @@ class TestDetectorSignalListener(unittest.TestCase):
     def test_hold_after_bear(self):
         self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.BEARISH_SIGNAL))
         self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.HOLD_SIGNAL))
+        self.assertEqual(self.listener.read_and_clear(), TradingAction.BEARISH_SIGNAL)
+
+    def test_bull_after_bear(self):
+        self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.BEARISH_SIGNAL))
+        self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.BULLISH_SIGNAL))
+        self.assertEqual(self.listener.read_and_clear(), TradingAction.BULLISH_SIGNAL)
+
+    def test_bear_after_bull(self):
+        self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.BULLISH_SIGNAL))
+        self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.BEARISH_SIGNAL))
         self.assertEqual(self.listener.read_and_clear(), TradingAction.BEARISH_SIGNAL)
 
     def test_clear_on_read(self):
