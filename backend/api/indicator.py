@@ -3,7 +3,7 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 
-import fetcher.base
+import fetcher.trading_view_base
 import filters.factory
 from signals.trading_signal import IndicatorSignalDescriptor
 from api.signals import Signal
@@ -17,14 +17,14 @@ class Indicator(Signal):
             'indicator',
             type=str,
             choices=tuple(
-                fetcher.base.TradingViewFetcherBase.indicator_name_map.keys()),
+                fetcher.trading_view_base.TradingViewFetcherBase.indicator_name_map.keys()),
             required=True)
 
         self._parser.add_argument(
             'candleSize',
             type=str,
             choices=tuple(
-                fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
+                fetcher.trading_view_base.TradingViewFetcherBase.candle_size_map.keys()),
             required=True)
 
     def _compose_descriptor(self, request) -> IndicatorSignalDescriptor:
@@ -46,10 +46,10 @@ class IndicatorOptions(Resource):
         return {
             'market': ['GEMINI:BTCUSD', 'FTX:BEARUSD', 'FTX:BEARUSDT', 'FTX:BULLUSD', 'FTX:BULLUSDT'],
             'candle_size':
-            list(fetcher.base.TradingViewFetcherBase.candle_size_map.keys()),
+            list(fetcher.trading_view_base.TradingViewFetcherBase.candle_size_map.keys()),
             'indicator':
             list(
-                fetcher.base.TradingViewFetcherBase.indicator_name_map.keys()),
+                fetcher.trading_view_base.TradingViewFetcherBase.indicator_name_map.keys()),
             'filter_types':
             filters.factory.FilterFactory.available_types
         }

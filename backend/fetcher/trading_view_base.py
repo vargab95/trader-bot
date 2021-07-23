@@ -6,8 +6,10 @@ import requests
 
 import config.trader
 
+from fetcher.interface import Fetcher
 
-class TradingViewFetcherBase:
+
+class TradingViewFetcherBase(Fetcher):
     url = "https://scanner.tradingview.com/crypto/scan"
 
     # Recommend.MA

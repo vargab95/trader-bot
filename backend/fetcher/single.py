@@ -4,10 +4,10 @@ import logging
 
 import config.trader
 import fetcher.common
-import fetcher.base
+import fetcher.trading_view_base
 
 
-class TradingViewFetcherSingle(fetcher.base.TradingViewFetcherBase):
+class TradingViewFetcherSingle(fetcher.trading_view_base.TradingViewFetcherBase):
     def __init__(self, trader_config: config.trader.TraderConfig):
         super().__init__(trader_config)
 

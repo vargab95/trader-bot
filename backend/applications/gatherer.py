@@ -2,7 +2,6 @@
 
 import time
 
-import fetcher.base
 import fetcher.single
 import fetcher.multi
 

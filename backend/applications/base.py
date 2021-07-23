@@ -16,7 +16,7 @@ import storage.tickers
 import storage.indicators
 import fetcher.single
 import fetcher.multi
-import fetcher.base
+import fetcher.interface
 
 
 class ApplicationInitializationException(Exception):
@@ -32,7 +32,7 @@ class ApplicationBase:
         self._ticker_storage: storage.tickers.TickersStorage
         self._indicator_storage: storage.indicators.IndicatorsStorage
         self._exchange: exchange.interface.ExchangeInterface
-        self._fetcher: fetcher.base.TradingViewFetcherBase
+        self._fetcher: fetcher.interface.Fetcher
 
     def _initialize_storages(self):
         self._initialize_ticker_storage()
