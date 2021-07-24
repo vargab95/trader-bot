@@ -5,6 +5,7 @@ import unittest.mock
 
 import config.application
 from config.trader import TraderConfig
+from config.exchange import ExchangeConfig
 import trader.single.simple
 import exchange.interface
 import exchange.factory
@@ -19,10 +20,10 @@ class SimpleSingleTraderTest(unittest.TestCase):
         cls.config.testing.real_time = False
         cls.config.testing.start_money = 100.0
         cls.config.testing.fee = 0.0
-        cls.config.exchange.name = "ftx"
 
         exchange.interface.Market.name_format = cls.config.exchange.market_name_format
-        cls.exchange = exchange.factory.ExchangeControllerFactory.create(cls.config)
+        exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
+        cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
         cls.exchange.price_mock["BTC-USDT"] = 100.0
         cls.exchange.price_mock["BEAR-USDT"] = 10.0
         cls.exchange.price_mock["BULL-USDT"] = 5.0
