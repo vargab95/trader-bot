@@ -2,6 +2,7 @@
 
 import typing
 
+from config.base import ConfigComponentBase
 from config.logging import LoggingConfig
 from config.testing import TestingConfig
 from config.exchange import ExchangeConfig
@@ -13,7 +14,7 @@ from config.components import ComponentsConfig
 from config.gatherer import GathererConfig
 
 
-class ApplicationConfig:
+class ApplicationConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict = None):
         self.logging = LoggingConfig(config.get("logging", {}))
         self.testing = TestingConfig(config.get("testing", {}))

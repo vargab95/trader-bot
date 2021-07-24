@@ -2,8 +2,10 @@
 
 import typing
 
+from config.base import ConfigComponentBase
 
-class SimulatorConfig:
+
+class SimulatorConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.bullish_file_path: str = config.get("bullish_file_path", "")
         self.bearish_file_path: str = config.get("bearish_file_path", "")

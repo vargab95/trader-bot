@@ -2,6 +2,7 @@
 
 import typing
 
+from config.base import ConfigComponentBase
 from config.detector import DetectorConfig
 from config.filter import FilterConfig
 from exchange.interface import Market
@@ -9,7 +10,7 @@ from exchange.interface import Market
 from trader.common import TraderState
 
 
-class TraderConfig:
+class TraderConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.input_signal_id = config.get("input_signal_id", None)
         self.indicator = config.get("indicator", "all")
@@ -46,10 +47,6 @@ class TraderConfig:
                "\n    Step count:                  " + str(self.max_steps) + \
                "\n    Check interval:              " + str(self.check_interval) + \
                "\n    Future:                      " + str(self.future) + \
-               "\n    Detectors:                   " + \
-               ''.join([str(detector) for detector in self.detectors]) + \
-               "\n    Filters:                     " + \
-               ''.join([str(f) for f in self.filters]) + \
                "\n    Initialization list length:  " + str(self.initial_length) + \
                "\n    Initialization list keyword: " + \
                str(self.initial_keyword)

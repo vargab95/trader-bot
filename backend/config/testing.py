@@ -2,8 +2,10 @@
 
 import typing
 
+from config.base import ConfigComponentBase
 
-class TestingConfig:
+
+class TestingConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.enabled: bool = config.get("enabled", False)
         self.real_time: bool = config.get("real_time", False)

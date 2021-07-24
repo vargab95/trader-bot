@@ -2,8 +2,10 @@
 
 import typing
 
+from config.base import ConfigComponentBase
 
-class ServerConfig:
+
+class ServerConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.port: int = config.get("port", 5000)
         self.datetime_format: str = config.get("datetime_format",

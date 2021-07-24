@@ -3,9 +3,10 @@
 import typing
 
 from exchange.interface import Market
+from config.base import ConfigComponentBase
 
 
-class FetcherConfig:
+class FetcherConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.output_signal_id: str = config.get("output_signal_id", None)
         self.indicator_name: str = config.get("indicator_name", None)

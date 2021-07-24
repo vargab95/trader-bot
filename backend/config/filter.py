@@ -2,8 +2,10 @@
 
 import typing
 
+from config.base import ConfigComponentBase
 
-class FilterConfig:
+
+class FilterConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.input_signal_id: str = config.get("input_signal_id", None)
         self.output_signal_id: str = config.get("output_signal_id", None)

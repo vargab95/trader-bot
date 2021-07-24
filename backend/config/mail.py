@@ -2,8 +2,10 @@
 
 import typing
 
+from config.base import ConfigComponentBase
 
-class MailConfig:
+
+class MailConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.enabled = config.get("enabled", True)
         self.name = config.get("name", "TradingViewBot")
