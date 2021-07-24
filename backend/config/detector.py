@@ -9,8 +9,7 @@ class DetectorConfig:
         self.output_signal_id = config.get("output_signal_id", None)
         self.follower = config.get("follower", False)
         self.follower_candle_size = config.get("follower_candle_size", "1h")
-        self.falling_edge = config.get("falling_edge",
-                                       False)
+        self.falling_edge = config.get("falling_edge", False)
         self.stateless = config.get("stateless", False)
         self.bullish_threshold = config.get("bullish_threshold", 0.0)
         self.bearish_threshold = config.get("bearish_threshold", 0.0)

@@ -15,14 +15,13 @@ from signals.trading_signal import TradingSignal, TickerSignalDescriptor, Tradin
 
 
 class BinanceMock(exchange.mock_base.MockBase):
-    def __init__(self, exchange_config: config.exchange.ExchangeConfig,
-                 testing_config: config.testing.TestingConfig):
-        super().__init__(testing_config)
+    def __init__(self, exchange_config: config.exchange.ExchangeConfig):
+        super().__init__(config)
         self._client = binance.client.Client(exchange_config.public_key,
                                              exchange_config.private_key)
 
     @exchange.guard.exchange_guard()
-    def get_price(self, market: exchange.interface.Market, keyword: str = "lastPrice") -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "lastPrice", future: bool = False) -> float:
         if self._is_real_time:
             return float(
                 self._client.get_ticker(symbol=market.key)[keyword])

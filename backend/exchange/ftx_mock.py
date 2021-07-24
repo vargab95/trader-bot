@@ -18,7 +18,7 @@ class FtxMock(exchange.mock_base.MockBase):
     datetime_format = "%Y-%m-%dT%H:%M:%S+00:00"
 
     @exchange.guard.exchange_guard()
-    def get_price(self, market: exchange.interface.Market, keyword: str = "price") -> float:
+    def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
         if self._is_real_time:
             response = requests.get(self.markets_url + market.target + "/" +
                                     market.base)

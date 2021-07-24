@@ -5,17 +5,16 @@ import exchange.binance_mock
 import exchange.ftx
 import exchange.ftx_mock
 import exchange.binance
-import config.application
+import config.exchange
 
 
 class ExchangeControllerFactory:
     @classmethod
-    def create(cls, configuration: config.application.ApplicationConfig):
-        if configuration.exchange.name == "ftx":
-            if configuration.testing.enabled:
-                return exchange.ftx_mock.FtxMock(configuration.testing)
-            return exchange.ftx.FtxController(configuration.exchange)
+    def create(cls, configuration: config.exchange.ExchangeConfig, testing: bool = False):
+        if configuration.name == "ftx":
+            if testing:
+                return exchange.ftx_mock.FtxMock(configuration)
+            return exchange.ftx.FtxController(configuration)
         if configuration.testing.enabled:
-            return exchange.binance_mock.BinanceMock(configuration.exchange,
-                                                     configuration.testing)
-        return exchange.binance.BinanceController(configuration.exchange)
+            return exchange.binance_mock.BinanceMock(configuration)
+        return exchange.binance.BinanceController(configuration)

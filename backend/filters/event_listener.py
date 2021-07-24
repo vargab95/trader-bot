@@ -18,8 +18,9 @@ class FilterEventListener(Subscriber):
         self.__filter.put(event.value)
         self.__value = self.__filter.get()
 
-        update_signal = SignalUpdatedEvent(self.__output_signal_id, self.__value)
-        self.__publisher.notify_all_subscribers(update_signal)
+        if self.__value is not None:
+            update_signal = SignalUpdatedEvent(self.__output_signal_id, self.__value)
+            self.__publisher.notify_all_subscribers(update_signal)
 
     def read(self) -> float:
         return self.__value

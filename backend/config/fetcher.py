@@ -13,3 +13,5 @@ class FetcherConfig:
         self.market: Market = Market.create_from_string(config.get("market", None))
         self.check_interval: int = int(config.get("check_interval", None))
         self.candle_size: str = config.get("candle_size", None)
+        self.exchange_id: str = config.get("exchange_id", None)
+        self.type: str = config.get("type", "exchange")

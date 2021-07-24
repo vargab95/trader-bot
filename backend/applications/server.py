@@ -31,8 +31,7 @@ class ServerApplication(applications.base.ApplicationBase):
         self.__initialize_api_routes()
 
         # FIXME This manipulation with class variables can be better
-        api.signals.Signal.DATE_TIME_FORMAT = \
-            self._configuration.server.datetime_format
+        api.signals.Signal.DATE_TIME_FORMAT = self._configuration.server.datetime_format
 
         api.ticker.Ticker.storage = self._ticker_storage
         api.indicator.Indicator.storage = self._indicator_storage
@@ -48,16 +47,14 @@ class ServerApplication(applications.base.ApplicationBase):
 
     def __initialize_flask_objects(self):
         self.__app = Flask(__name__)
-        self.__app.config.update(
-            SECRET_KEY=self._configuration.server.secret_key)
+        self.__app.config.update(SECRET_KEY=self._configuration.server.secret_key)
         self.__cors = CORS(self.__app)
         self.__api = Api(self.__app)
         self.__jwt_manager = JWTManager(self.__app)
 
     def __initialize_api_routes(self):
         self.__api.add_resource(api.indicator.Indicator, '/indicator')
-        self.__api.add_resource(api.indicator.IndicatorOptions,
-                                '/indicator/options')
+        self.__api.add_resource(api.indicator.IndicatorOptions, '/indicator/options')
         self.__api.add_resource(api.ticker.Ticker, '/ticker')
         self.__api.add_resource(api.ticker.TickerOptions, '/ticker/options')
         self.__api.add_resource(api.auth.login.LoginApi, '/auth/login')

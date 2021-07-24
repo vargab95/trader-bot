@@ -9,6 +9,7 @@ class ExchangeConfig:
     available_exchanges = ["ftx", "binance"]
 
     def __init__(self, config: typing.Dict):
+        self.id = config.get("id", None)
         self.name = config.get("name", "binance")
         self.public_key = config.get("public_key", "")
         self.private_key = config.get("private_key", "")

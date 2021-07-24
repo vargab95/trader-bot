@@ -10,6 +10,7 @@ from config.database import DatabaseConfig
 from config.server import ServerConfig
 from config.simulator import SimulatorConfig
 from config.components import ComponentsConfig
+from config.gatherer import GathererConfig
 
 
 class ApplicationConfig:
@@ -20,6 +21,7 @@ class ApplicationConfig:
         self.mail = MailConfig(config.get("mail", {}))
         self.database = DatabaseConfig(config.get("database", {}))
         self.server = ServerConfig(config.get("server", {}))
+        self.gatherer = GathererConfig(config.get("gatherer", {}))
         self.simulator = SimulatorConfig(config.get("simulator", {}))
         self.components = ComponentsConfig(config.get("components", {}))
 

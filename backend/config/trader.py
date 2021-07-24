@@ -32,6 +32,7 @@ class TraderConfig:
         self.default_price_keyword = config.get("default_price_keyword", "price")
         self.bullish_price_keyword = config.get("bullish_price_keyword", "price")
         self.bearish_price_keyword = config.get("bearish_price_keyword", "price")
+        self.exchange = config.get("exchange", "ftx")
 
     def __str__(self):
         return "\nTrader:" + \

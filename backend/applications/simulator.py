@@ -23,57 +23,54 @@ class SimulatorApplication(applications.base.ApplicationBase):
         self.__input = {}
 
     def _initialize_application_logic(self):
+        raise NotImplementedError()
         # self._initialize_client()
         # self._initialize_storages()
-        self._initialize_exchange()
-        self.__trader = trader.factory.TraderFactory.create(
-            self._configuration, self._exchange)
-        self.__trader.initialize()
-        self.__filter = filters.factory.FilterFactory.create_complex(
-            self._configuration.trader.filters)
-        self.__read_input_file(
-            self._configuration.simulator.watched_file_path,
-            self._configuration.exchange.watched_market.key)
-        self.__read_input_file(
-            self._configuration.simulator.bullish_file_path,
-            self._configuration.exchange.bullish_market.key)
-        self.__read_input_file(
-            self._configuration.simulator.bearish_file_path,
-            self._configuration.exchange.bearish_market.key)
-        self.__validate_input()
+        # self._builder.create_exchanges(self._configuration.components.exchanges)
+        # self.__trader = trader.factory.TraderFactory.create(self._configuration, self._exchange)
+        # self.__trader.initialize()
+        # self.__filter = filters.factory.FilterFactory.create_complex(self._configuration.trader.filters)
+        # self.__read_input_file(self._configuration.simulator.watched_file_path,
+        #                        self._configuration.exchange.watched_market.key)
+        # self.__read_input_file(self._configuration.simulator.bullish_file_path,
+        #                        self._configuration.exchange.bullish_market.key)
+        # self.__read_input_file(self._configuration.simulator.bearish_file_path,
+        #                        self._configuration.exchange.bearish_market.key)
+        # self.__validate_input()
 
     def _run_application_logic(self):
-        simulator_input = self.__input[self._configuration.exchange.watched_market.key]
+        raise NotImplementedError()
+        # simulator_input = self.__input[self._configuration.exchange.watched_market.key]
 
-        with open(self._configuration.simulator.log_output_path, 'w') as log_output_file, \
-             open(self._configuration.simulator.actions_output_path, 'w') as actions_output_file:
-            log_output = csv.writer(log_output_file)
-            actions_output = csv.writer(actions_output_file)
-            last_state = trader.common.TraderState.BASE
+        # with open(self._configuration.simulator.log_output_path, 'w') as log_output_file, \
+        #      open(self._configuration.simulator.actions_output_path, 'w') as actions_output_file:
+        #     log_output = csv.writer(log_output_file)
+        #     actions_output = csv.writer(actions_output_file)
+        #     last_state = trader.common.TraderState.BASE
 
-            for i, signal_point in enumerate(simulator_input):
-                logging.debug("Simulating date %s",
-                              signal_point.date.strftime("%Y.%m.%d %H:%M:%S"))
-                self.__fill_price_mocks(i)
-                self.__filter.put(signal_point.value)
-                if self.__filter.get() is not None:
-                    self.__trader.perform(self.__filter.get())
-                    if last_state != self.__trader.state:
-                        actions_output.writerow([
-                            signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
-                            last_state,
-                            self.__trader.state
-                        ])
-                        last_state = self.__trader.state
+        #     for i, signal_point in enumerate(simulator_input):
+        #         logging.debug("Simulating date %s",
+        #                       signal_point.date.strftime("%Y.%m.%d %H:%M:%S"))
+        #         self.__fill_price_mocks(i)
+        #         self.__filter.put(signal_point.value)
+        #         if self.__filter.get() is not None:
+        #             self.__trader.perform(self.__filter.get())
+        #             if last_state != self.__trader.state:
+        #                 actions_output.writerow([
+        #                     signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
+        #                     last_state,
+        #                     self.__trader.state
+        #                 ])
+        #                 last_state = self.__trader.state
 
-                log_output.writerow([
-                    signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
-                    signal_point.value,
-                    self.__filter.get(),
-                    self.__trader.state,
-                    self._exchange.get_money(
-                        self._configuration.exchange.watched_market.base)
-                ])
+        #         log_output.writerow([
+        #             signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
+        #             signal_point.value,
+        #             self.__filter.get(),
+        #             self.__trader.state,
+        #             self._exchange.get_money(
+        #                 self._configuration.exchange.watched_market.base)
+        #         ])
 
     def __validate_input(self):
         input_lengths = [len(input) for input in self.__input.values()]
@@ -99,5 +96,6 @@ class SimulatorApplication(applications.base.ApplicationBase):
             logging.debug("%s was loaded successfully", path)
 
     def __fill_price_mocks(self, i):
-        for key, signal_points in self.__input.items():
-            self._exchange.price_mock[key] = signal_points[i].value
+        pass
+        # for key, signal_points in self.__input.items():
+        #     self._exchange.price_mock[key] = signal_points[i].value

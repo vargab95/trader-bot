@@ -19,8 +19,8 @@ class GathererApplication(applications.base.ApplicationBase):
     def _initialize_application_logic(self):
         self._initialize_client()
         self._initialize_storages()
-        self._initialize_exchange()
-        self._initialize_fetcher()
+        self._builder.create_exchanges(self._configuration.components.exchanges)
+        self._builder.create_fetchers(self._configuration.components.fetchers)
         self.__initialize_market_list()
 
     def __initialize_market_list(self):
@@ -31,30 +31,30 @@ class GathererApplication(applications.base.ApplicationBase):
         ]
 
     def _run_application_logic(self):
-        while True:
-            for market in self._market_list:
-                price = self._exchange.get_price(market)
-                self._ticker_storage.add(
-                    TickerSignalDescriptor(market=market.target + market.base),
-                    TradingSignalPoint(value=price))
+        raise NotImplementedError()
+        # exchange = self._builder.exchanges[self._configuration.gatherer.exchange_id]
 
-            self._fetcher.safe_fetch()
-            indicators = self._fetcher.get_technical_indicator()
+        # TODO Implement gatherer with the new architecture
+        # while True:
+        #     for market in self._market_list:
+        #         price = exchange.get_price(market)
+        #         self._ticker_storage.add(TickerSignalDescriptor(market=market.target + market.base),
+        #                                  TradingSignalPoint(value=price))
 
-            if isinstance(self._fetcher,
-                          fetcher.single.TradingViewFetcherSingle):
-                if indicators:
-                    self._indicator_storage.add(
-                        IndicatorSignalDescriptor(
-                            market=self._configuration.trader.market,
-                            indicator=self._configuration.trader.indicator,
-                            candle_size=self._configuration.trader.candle_size),
-                        TradingSignalPoint(
-                            value=indicators))
-            else:
-                self.__process_indicator_response(indicators)
+        #     self._fetcher.safe_fetch()
+        #     indicators = self._fetcher.get_technical_indicator()
 
-            time.sleep(self._configuration.trader.check_interval)
+        #     if isinstance(self._fetcher, fetcher.single.TradingViewFetcherSingle):
+        #         if indicators:
+        #             self._indicator_storage.add(
+        #                 IndicatorSignalDescriptor(market=self._configuration.trader.market,
+        #                                           indicator=self._configuration.trader.indicator,
+        #                                           candle_size=self._configuration.trader.candle_size),
+        #                 TradingSignalPoint(value=indicators))
+        #     else:
+        #         self.__process_indicator_response(indicators)
+
+        #     time.sleep(self._configuration.trader.check_interval)
 
     def __process_indicator_response(self, indicators):
         for market in self._configuration.trader.name:
@@ -62,8 +62,6 @@ class GathererApplication(applications.base.ApplicationBase):
                 for candle in self._configuration.trader.candle_size:
                     if indicators[market][indicator][candle]:
                         self._indicator_storage.add(
-                            IndicatorSignalDescriptor(
-                                market=market, indicator=indicator, candle_size=candle),
-                            TradingSignalPoint(
-                                value=indicators[market][indicator][candle])
+                            IndicatorSignalDescriptor(market=market, indicator=indicator, candle_size=candle),
+                            TradingSignalPoint(value=indicators[market][indicator][candle])
                         )
