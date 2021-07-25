@@ -14,6 +14,7 @@ import config.mail
 class MailingTest(unittest.TestCase):
     def setUp(self):
         self.postman = mailing.postman.Postman(config.mail.MailConfig({
+            "enabled": True,
             "name": "test",
             "password": "password",
             "receiver": "a@a.com",

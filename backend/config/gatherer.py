@@ -3,6 +3,7 @@
 import typing
 
 from config.base import ConfigComponentBase
+from config.common import InvalidConfigurationException
 
 
 class GathererConfig(ConfigComponentBase):
@@ -13,3 +14,7 @@ class GathererConfig(ConfigComponentBase):
     def __str__(self):
         return "\nGatherer:" + \
                "\n    Exchange id:             " + str(self.exchange_id)
+
+    def validate(self):
+        if self.input_signal_ids is None:
+            raise InvalidConfigurationException("Input signal ids is a mandatory parameter for gatherer")

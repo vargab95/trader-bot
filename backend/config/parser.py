@@ -19,5 +19,5 @@ class ConfigurationParser:
             logging.error(
                 "Exception occured during parsing configuration: %s",
                 str(exception))
-            raise InvalidConfigurationException
+            raise InvalidConfigurationException from exception
         self.configuration = ApplicationConfig(configuration)

@@ -14,3 +14,6 @@ class LoggingConfig(ConfigComponentBase):
         return "\nLogging:" + \
                "\n    Level: " + str(self.level) + \
                "\n    Path:  " + str(self.path)
+
+    def validate(self):
+        pass

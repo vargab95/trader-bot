@@ -18,9 +18,6 @@ class SteppedLeverageTraderTest(unittest.TestCase):
     def setUpClass(cls):
         cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({})
         cls.config.testing.enabled = True
-        cls.config.testing.real_time = False
-        cls.config.testing.start_money = 100.0
-        cls.config.testing.fee = 0.0
         cls.config.exchange.name = "ftx"
         cls.trader_config = TraderConfig({"max_steps": 10})
 

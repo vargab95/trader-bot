@@ -17,9 +17,6 @@ class SimpleSingleTraderTest(unittest.TestCase):
     def setUpClass(cls):
         cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({})
         cls.config.testing.enabled = True
-        cls.config.testing.real_time = False
-        cls.config.testing.start_money = 100.0
-        cls.config.testing.fee = 0.0
 
         exchange.interface.Market.name_format = cls.config.exchange.market_name_format
         exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})

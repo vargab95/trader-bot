@@ -10,10 +10,8 @@ class SimulatorConfig(ConfigComponentBase):
         self.bullish_file_path: str = config.get("bullish_file_path", "")
         self.bearish_file_path: str = config.get("bearish_file_path", "")
         self.watched_file_path: str = config.get("watched_file_path", "")
-        self.log_output_path: str = config.get(
-            "log_output_path", "simulator_log.csv")
-        self.actions_output_path: str = config.get(
-            "actions_output_path", "simulator_actions.csv")
+        self.log_output_path: str = config.get("log_output_path", "simulator_log.csv")
+        self.actions_output_path: str = config.get("actions_output_path", "simulator_actions.csv")
 
     def __str__(self):
         return "\nSimulator:" + \
@@ -22,3 +20,6 @@ class SimulatorConfig(ConfigComponentBase):
                "\n    Watched data file:   " + str(self.watched_file_path) + \
                "\n    Log output path:     " + str(self.log_output_path) + \
                "\n    Actions output path: " + str(self.actions_output_path)
+
+    def validate(self):
+        pass

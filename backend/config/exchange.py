@@ -15,6 +15,8 @@ class ExchangeConfig(ConfigComponentBase):
         self.public_key = config.get("public_key", None)
         self.private_key = config.get("private_key", None)
         self.market_name_format = config.get("market_name_format", "{target}-{base}")
+
+        # Testing mode options
         self.start_money = config.get("start_money", 100.0)
         self.base_asset = config.get("base_asset", "USDT")
         self.real_time = config.get("real_time", True)

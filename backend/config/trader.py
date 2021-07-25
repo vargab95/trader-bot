@@ -3,8 +3,7 @@
 import typing
 
 from config.base import ConfigComponentBase
-from config.detector import DetectorConfig
-from config.filter import FilterConfig
+from config.common import InvalidConfigurationException
 from exchange.interface import Market
 
 from trader.common import TraderState
@@ -18,8 +17,17 @@ class TraderConfig(ConfigComponentBase):
         self.candle_size = config.get("candle_size", "1h")
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
-        # TODO Process it using string not int
-        self.start_state = TraderState(config.get("start_state", TraderState.BASE))
+
+        state_str = config.get("start_state", "base")
+        if state_str == "base":
+            self.start_state = TraderState.BASE
+        elif state_str == "bull":
+            self.start_state = TraderState.BULLISH
+        elif state_str == "bear":
+            self.start_state = TraderState.BEARISH
+        else:
+            self.start_state = None
+
         self.max_steps = config.get("max_steps", 5)
         self.initial_values = config.get("initial_values", [])
         self.initial_length = config.get("initial_length", 1)
@@ -48,5 +56,11 @@ class TraderConfig(ConfigComponentBase):
                "\n    Check interval:              " + str(self.check_interval) + \
                "\n    Future:                      " + str(self.future) + \
                "\n    Initialization list length:  " + str(self.initial_length) + \
-               "\n    Initialization list keyword: " + \
-               str(self.initial_keyword)
+               "\n    Initialization list keyword: " + str(self.initial_keyword)
+
+    def validate(self):
+        if self.input_signal_id is None:
+            raise InvalidConfigurationException("Input signal id is a mandatory parameter for traders")
+
+        if self.start_state is None:
+            raise InvalidConfigurationException("Invalid start state in trader config")
