@@ -15,6 +15,6 @@ class ExchangeControllerFactory:
             if testing:
                 return exchange.ftx_mock.FtxMock(configuration)
             return exchange.ftx.FtxController(configuration)
-        if configuration.testing.enabled:
+        if testing:
             return exchange.binance_mock.BinanceMock(configuration)
         return exchange.binance.BinanceController(configuration)

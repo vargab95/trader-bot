@@ -2,7 +2,7 @@
 
 import unittest.mock
 
-import config.application
+from config.exchange import ExchangeConfig
 import exchange.factory
 import exchange.interface
 
@@ -14,15 +14,14 @@ class BinanceMockTest(exchange.test_mock_common.CommonMockTest):
     @unittest.mock.patch("binance.client.Client.ping")
     @unittest.mock.patch("binance.client.Client.get_ticker")
     def setUpClass(cls, *_):
-        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({})
-        cls.config.testing.enabled = True
-        cls.config.testing.real_time = False
-        cls.config.testing.start_money = 100.0
-        cls.config.testing.fee = 0.0
-        cls.config.exchange.name = "binance"
-        exchange.interface.Market.name_format = cls.config.exchange.market_name_format
+        cls.config: ExchangeConfig = ExchangeConfig({})
+        cls.config.real_time = False
+        cls.config.start_money = 100.0
+        cls.config.fee = 0.0
+        cls.config.name = "binance"
+        exchange.interface.Market.name_format = cls.config.market_name_format
         # TODO with unittest.mock.patch("exchange.binance.binance.client.Client"):
-        cls.controller = exchange.factory.ExchangeControllerFactory.create(cls.config)
+        cls.controller = exchange.factory.ExchangeControllerFactory.create(cls.config, testing=True)
 
     @unittest.mock.patch("binance.client.Client.ping")
     @unittest.mock.patch("binance.client.Client.get_ticker")

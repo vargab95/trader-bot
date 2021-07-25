@@ -7,10 +7,8 @@ import detector.interface
 class FallingEdgeDetector(detector.interface.DetectorInterface):
     def __init__(self, bearish_threshold: float, bullish_threshold: float):
         super().__init__(bearish_threshold, bullish_threshold)
-        self.current_state: detector.common.CurrentState = \
-            detector.common.CurrentState.NONE
-        self.previous_indicator: float = (bullish_threshold +
-                                          bearish_threshold) / 2
+        self.current_state: detector.common.CurrentState = detector.common.CurrentState.NONE
+        self.previous_indicator: float = (bullish_threshold + bearish_threshold) / 2
 
     def check(self, indicator: float) -> detector.common.TradingAction:
         result = detector.common.TradingAction.HOLD_SIGNAL

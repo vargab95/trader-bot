@@ -19,7 +19,7 @@ class ExchangeConfig(ConfigComponentBase):
         self.base_asset = config.get("base_asset", "USDT")
         self.real_time = config.get("real_time", True)
         self.fee = config.get("fee", 0.0)
-        self.balance_precision = config.get("balance_precision", 8)
+        self.balance_precision = config.get("balance_precision", 0.00000001)
 
     def __str__(self):
         return "\nExchange:" + \

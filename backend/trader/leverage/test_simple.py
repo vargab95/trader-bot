@@ -6,6 +6,7 @@ import unittest.mock
 import config.application
 import config.detector
 from config.trader import TraderConfig
+from config.exchange import ExchangeConfig
 import trader.leverage.simple
 import exchange.interface
 import exchange.factory
@@ -26,7 +27,8 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         cls.config.exchange.name = "ftx"
 
         exchange.interface.Market.name_format = cls.config.exchange.market_name_format
-        cls.exchange = exchange.factory.ExchangeControllerFactory.create(cls.config)
+        exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
+        cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
         cls.exchange.price_mock["BTC-USDT"] = 100.0
         cls.exchange.price_mock["BEAR-USDT"] = 10.0
         cls.exchange.price_mock["BULL-USDT"] = 5.0
@@ -164,107 +166,3 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         self.trader.perform(TradingAction.BULLISH_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
         self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 0.0)
-
-
-class MultiDetectorSimpleLeverageTraderTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({})
-        cls.config.testing.enabled = True
-        cls.config.testing.real_time = False
-        cls.config.testing.start_money = 100.0
-        cls.config.testing.fee = 0.0
-        cls.config.exchange.name = "ftx"
-
-        exchange.interface.Market.name_format = cls.config.exchange.market_name_format
-        cls.exchange = exchange.factory.ExchangeControllerFactory.create(cls.config)
-        cls.exchange.price_mock["BTC-USDT"] = 100.0
-        cls.exchange.price_mock["BEAR-USDT"] = 10.0
-        cls.exchange.price_mock["BULL-USDT"] = 5.0
-
-    def setUp(self):
-        self.trader = trader.leverage.simple.SimpleLeverageTrader(TraderConfig({}), self.exchange)
-
-    def tearDown(self):
-        self.exchange.reset()
-
-    def test_startup_hold(self):
-        detector_signals = [
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.HOLD_SIGNAL
-        ]
-
-        for detector_signal in detector_signals:
-            self.trader.perform(detector_signal)
-
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-    def test_startup_bearish(self):
-        detector_signals = [
-            TradingAction.BEARISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.HOLD_SIGNAL
-        ]
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-        for detector_signal in detector_signals:
-            self.trader.perform(detector_signal)
-
-        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
-
-    def test_startup_bullish(self):
-        detector_signals = [
-            TradingAction.BULLISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.HOLD_SIGNAL
-        ]
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-        for detector_signal in detector_signals:
-            self.trader.perform(detector_signal)
-
-        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
-
-    def test_hold(self):
-        detector_signals = [
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.BULLISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL
-        ]
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-        for detector_signal in detector_signals:
-            self.trader.perform(detector_signal)
-
-        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
-
-    def test_switch_to_bullish(self):
-        detector_signals = [
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.BEARISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.BULLISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL
-        ]
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-        for detector_signal in detector_signals:
-            self.trader.perform(detector_signal)
-
-        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
-
-    def test_switch_to_bearish(self):
-        detector_signals = [
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.BULLISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.BEARISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL
-        ]
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-        for detector_signal in detector_signals:
-            self.trader.perform(detector_signal)
-
-        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)

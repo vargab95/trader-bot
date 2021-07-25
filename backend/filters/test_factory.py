@@ -13,19 +13,19 @@ import config.filter
 
 class FilterFactoryTest(unittest.TestCase):
     def test_create_sma(self):
-        instance = filters.factory.FilterFactory.create("sma")
+        instance = filters.factory.FilterFactory.create(config.filter.FilterConfig({"type": "sma", "length": 4}))
         self.assertTrue(isinstance(instance, filters.sma.SMA))
 
     def test_create_wma(self):
-        instance = filters.factory.FilterFactory.create("wma")
+        instance = filters.factory.FilterFactory.create(config.filter.FilterConfig({"type": "wma", "length": 4}))
         self.assertTrue(isinstance(instance, filters.wma.WMA))
 
     def test_create_hma(self):
-        instance = filters.factory.FilterFactory.create("hma")
+        instance = filters.factory.FilterFactory.create(config.filter.FilterConfig({"type": "hma", "length": 4}))
         self.assertTrue(isinstance(instance, filters.hma.HMA))
 
     def test_create_derivative(self):
-        instance = filters.factory.FilterFactory.create("derivative")
+        instance = filters.factory.FilterFactory.create(config.filter.FilterConfig({"type": "derivative", "length": 4}))
         self.assertTrue(isinstance(instance, filters.derivative.Derivative))
 
     def test_create_complex(self):
@@ -72,14 +72,14 @@ class FilterFactoryTest(unittest.TestCase):
 
     def test_invalid_param_filter_type(self):
         try:
-            filters.factory.FilterFactory.create("invalid")
+            filters.factory.FilterFactory.create(config.filter.FilterConfig({"type": "invalid", "length": 4}))
             self.fail()
         except filters.factory.InvalidFilterFactoryParameter:
             pass
 
     def test_invalid_param_filter_length(self):
         try:
-            filters.factory.FilterFactory.create("sma", -1)
+            filters.factory.FilterFactory.create(config.filter.FilterConfig({"type": "sma", "length": -1}))
             self.fail()
         except filters.factory.InvalidFilterFactoryParameter:
             pass

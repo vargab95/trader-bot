@@ -5,7 +5,7 @@ import unittest.mock
 import datetime
 import binance.client
 
-import config.application
+from config.exchange import ExchangeConfig
 import exchange.factory
 import exchange.interface
 import signals.trading_signal
@@ -15,12 +15,12 @@ import signals.trading_signal
 class BinanceTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({
-        })
-        cls.config.testing.enabled = False
-        cls.config.exchange.market_name_format = "{target}{base}"
-        exchange.interface.Market.name_format = \
-            cls.config.exchange.market_name_format
+        cls.config: ExchangeConfig = ExchangeConfig({})
+        cls.config.name = "binance"
+        cls.config.public_key = "test_pub_key"
+        cls.config.private_key = "test_prv_key"
+        cls.config.market_name_format = "{target}{base}"
+        exchange.interface.Market.name_format = cls.config.market_name_format
 
     def test_buy(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -44,15 +44,13 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.buy(market, 5), True)
 
-        handle.create_order.assert_called_once_with(
-            symbol=market.key,
-            quantity='5.',
-            side=binance.client.Client.SIDE_BUY,
-            type=binance.client.Client.ORDER_TYPE_MARKET)
+        handle.create_order.assert_called_once_with(symbol=market.key,
+                                                    quantity='5.',
+                                                    side=binance.client.Client.SIDE_BUY,
+                                                    type=binance.client.Client.ORDER_TYPE_MARKET)
 
     def test_buy_rounding(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -76,15 +74,13 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.buy(market, 1.23456789), True)
 
-        handle.create_order.assert_called_once_with(
-            symbol=market.key,
-            quantity='1.2345',
-            side=binance.client.Client.SIDE_BUY,
-            type=binance.client.Client.ORDER_TYPE_MARKET)
+        handle.create_order.assert_called_once_with(symbol=market.key,
+                                                    quantity='1.2345',
+                                                    side=binance.client.Client.SIDE_BUY,
+                                                    type=binance.client.Client.ORDER_TYPE_MARKET)
 
     def test_buy_round_to_zero(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -108,8 +104,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertFalse(controller.buy(market, 0.0000123))
 
     def test_buy_below_notional(self, mock_client):
@@ -135,8 +130,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertFalse(controller.buy(market, 0.0000123))
 
     def test_sell(self, mock_client):
@@ -161,8 +155,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.sell(market, 5), True)
 
         handle.create_order.assert_called_once_with(
@@ -193,8 +186,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertFalse(controller.sell(market, 0.0000123))
 
     def test_buy_negative(self, mock_client):
@@ -219,8 +211,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertFalse(controller.buy(market, -5))
 
     def test_sell_negative(self, mock_client):
@@ -245,8 +236,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertFalse(controller.sell(market, -5))
 
     def test_buy_not_enough_quantity(self, mock_client):
@@ -271,8 +261,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertFalse(controller.buy(market, 5))
 
     def test_get_balances(self, mock_client):
@@ -284,8 +273,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertEqual(controller.get_balances(), {"ETH": 20.0, "BTC": 10.0})
 
         handle.get_account.assert_called_once()
@@ -294,8 +282,7 @@ class BinanceTest(unittest.TestCase):
         handle = mock_client()
         handle.get_asset_balance.return_value = {"free": 20.0}
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.get_balance("ETH"), 20.0)
 
         handle.get_asset_balance.assert_called_once_with(asset="ETH")
@@ -305,8 +292,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_ticker.return_value = {"lastPrice": 20.0}
         market = exchange.interface.Market("ETH", "BTC")
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.get_price(market), 20.0)
 
         handle.get_ticker.assert_called_once_with(symbol=market.key)
@@ -320,8 +306,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertEqual(controller.get_money("BTC"), 30.0)
 
         handle.get_account.assert_called_once()
@@ -346,8 +331,7 @@ class BinanceTest(unittest.TestCase):
             ]
         ]
 
-        controller = exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
 
         market = exchange.interface.Market("USD", "BTC")
 

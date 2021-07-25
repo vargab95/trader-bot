@@ -4,7 +4,7 @@ import datetime
 import unittest
 import unittest.mock
 
-import config.application
+from config.exchange import ExchangeConfig
 import exchange.factory
 import exchange.interface
 import signals.trading_signal
@@ -12,16 +12,15 @@ import signals.trading_signal
 
 @unittest.mock.patch("requests.get")
 @unittest.mock.patch("requests.Session.send")
-class BinanceTest(unittest.TestCase):
+class FtxTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({
-        })
-        cls.config.testing.enabled = False
-        cls.config.exchange.name = "ftx"
-        cls.config.exchange.market_name_format = "{target}/{base}"
-        exchange.interface.Market.name_format = \
-            cls.config.exchange.market_name_format
+        cls.config: ExchangeConfig = ExchangeConfig({})
+        cls.config.name = "ftx"
+        cls.config.market_name_format = "{target}/{base}"
+        cls.config.private_key = "test_prv_key"
+        cls.config.public_key = "test_pub_key"
+        exchange.interface.Market.name_format = cls.config.market_name_format
 
     def init_controller(self, _, get_mock, min_size, min_notional):
         get_mock.return_value = unittest.mock.Mock()
@@ -36,8 +35,7 @@ class BinanceTest(unittest.TestCase):
             ]
         }
 
-        return exchange.factory.ExchangeControllerFactory.create(
-            self.config)
+        return exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
 
     def test_init_failure(self, _, get_mock):
         get_mock.return_value = unittest.mock.Mock()
@@ -47,8 +45,7 @@ class BinanceTest(unittest.TestCase):
         }
 
         try:
-            exchange.factory.ExchangeControllerFactory.create(
-                self.config)
+            exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
             self.fail()
         except exchange.interface.ExchangeError:
             pass

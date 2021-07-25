@@ -40,9 +40,7 @@ class CommonMockTest(unittest.TestCase):
 
     def test_buy_bear_and_bull_and_sell_on_same_price(self):
         self.assertTrue(
-            self.controller.buy(
-                exchange.interface.Market.create_from_string("BEAR-USDT"),
-                5.0))
+            self.controller.buy(exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0))
         balance = self.controller.get_balances()
         self.assertEqual(balance["USDT"], 50.0)
         self.assertEqual(balance["BEAR"], 5.0)
@@ -169,10 +167,8 @@ class CommonMockTest(unittest.TestCase):
         self.assertEqual(self.controller.get_money("USDT"), 110.0)
 
     def test_get_money_with_lower_price(self):
-        self.controller.buy(
-            exchange.interface.Market.create_from_string("BULL-USDT"), 2.0)
-        self.controller.buy(
-            exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0)
+        self.controller.buy(exchange.interface.Market.create_from_string("BULL-USDT"), 2.0)
+        self.controller.buy(exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0)
 
         self.controller.price_mock["BEAR-USDT"] = 1.0
 

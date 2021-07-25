@@ -12,11 +12,13 @@ from detector.stateless_reverse_rising_edge import StatelessReverseRisingEdgeDet
 from config.detector import DetectorConfig
 
 
-class FilterFactoryTest(unittest.TestCase):
+class DetectorFactoryTest(unittest.TestCase):
     def test_create_falling_edge(self):
         config = DetectorConfig({})
 
         config.falling_edge = True
+        config.bullish_threshold = 0.2
+        config.bearish_threshold = 0.1
 
         instance = DetectorFactory.create(config)
         self.assertTrue(isinstance(instance, FallingEdgeDetector))

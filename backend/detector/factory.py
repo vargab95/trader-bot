@@ -20,15 +20,14 @@ class InvalidDetectorConfiguration(Exception):
 
 class DetectorFactory:
     @staticmethod
-    def create(configuration: DetectorConfig,
-               gatherer: fetcher.single.TradingViewFetcherSingle = None):
+    def create(configuration: DetectorConfig, gatherer: fetcher.single.TradingViewFetcherSingle = None):
         if configuration.falling_edge:
             if configuration.stateless:
                 raise InvalidDetectorConfiguration
 
             logging.info("Falling edge detector has been created.")
-            return detector.falling_edge.FallingEdgeDetector(
-                configuration.bearish_threshold, configuration.bullish_threshold)
+            return detector.falling_edge.FallingEdgeDetector(configuration.bearish_threshold,
+                                                             configuration.bullish_threshold)
 
         if configuration.follower:
             if configuration.stateless:
