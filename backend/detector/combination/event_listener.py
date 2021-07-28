@@ -16,7 +16,8 @@ class DetectorCombinationEventListener(Subscriber):
         self.__output_signal_id = output_signal_id
 
     def update(self, event: SignalUpdatedEvent):
-        self.__value = self.__logic.update(event.signal_name, event.value)
+        self.__logic.update(event.signal_name, event.value)
+        self.__value = self.__logic.read()
 
         update_signal = SignalUpdatedEvent(self.__output_signal_id, self.__value)
         self.__publisher.notify_all_subscribers(update_signal)

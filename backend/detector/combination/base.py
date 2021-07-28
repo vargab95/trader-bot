@@ -23,7 +23,7 @@ class DetectorCombinationLogic:
         self.__result = self._calculate(self.__last_signals)
 
     @abc.abstractmethod
-    def _calculate(self, signals: typing.Dict[str, TradingAction]) -> TradingAction:
+    def _calculate(self, signals: typing.Dict[str, TradingAction]) -> TradingAction:  # pragma: no cover
         pass
 
     def read(self) -> TradingAction:
