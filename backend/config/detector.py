@@ -14,6 +14,7 @@ class DetectorConfig(ConfigComponentBase):
         self.follower_candle_size = config.get("follower_candle_size", None)
         self.falling_edge = config.get("falling_edge", False)
         self.stateless = config.get("stateless", False)
+        self.latched = config.get("latched", False)
         self.bullish_threshold = config.get("bullish_threshold", None)
         self.bearish_threshold = config.get("bearish_threshold", None)
 

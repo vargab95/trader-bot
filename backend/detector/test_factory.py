@@ -9,6 +9,8 @@ from detector.rising_edge import RisingEdgeDetector
 from detector.reverse_rising_edge import ReverseRisingEdgeDetector
 from detector.stateless_rising_edge import StatelessRisingEdgeDetector
 from detector.stateless_reverse_rising_edge import StatelessReverseRisingEdgeDetector
+from detector.latched_reverse_rising_edge import LatchedReverseRisingEdgeDetector
+from detector.latched_rising_edge import LatchedRisingEdgeDetector
 from config.detector import DetectorConfig
 
 
@@ -51,6 +53,26 @@ class DetectorFactoryTest(unittest.TestCase):
         instance = DetectorFactory.create(config)
         self.assertTrue(isinstance(
             instance, RisingEdgeDetector))
+
+    def test_create_latched_reverse_rising_edge(self):
+        config = DetectorConfig({})
+
+        config.latched = True
+        config.bearish_threshold = 0.4
+        config.bullish_threshold = -0.4
+
+        instance = DetectorFactory.create(config)
+        self.assertIsInstance(instance, LatchedReverseRisingEdgeDetector)
+
+    def test_create_latched_rising_edge(self):
+        config = DetectorConfig({})
+
+        config.latched = True
+        config.bearish_threshold = -0.4
+        config.bullish_threshold = 0.4
+
+        instance = DetectorFactory.create(config)
+        self.assertIsInstance(instance, LatchedRisingEdgeDetector)
 
     def test_create_stateless_reverse_rising_edge(self):
         config = DetectorConfig({})
