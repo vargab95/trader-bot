@@ -7,7 +7,7 @@ from config.common import InvalidConfigurationException
 
 
 class FilterConfig(ConfigComponentBase):
-    available_types = ["sma", "hma", "wma", "nth", "derivative", "derivative_ratio"]
+    available_types = ["sma", "hma", "wma", "nth", "derivative", "derivative_ratio", "rsi"]
 
     def __init__(self, config: typing.Dict):
         self.input_signal_id: str = config.get("input_signal_id", None)

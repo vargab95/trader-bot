@@ -9,6 +9,7 @@ import filters.nth
 import filters.derivative
 import filters.derivative_ratio
 import filters.complex
+import filters.rsi
 import config.filter
 
 
@@ -23,25 +24,20 @@ class FilterFactory:
         if configuration.length < 2:
             raise InvalidFilterFactoryParameter()
 
-        if configuration.type == "sma":
-            return filters.sma.SMA(configuration.length)
+        constructor_map = {
+            "sma": filters.sma.SMA,
+            "wma": filters.wma.WMA,
+            "hma": filters.hma.HMA,
+            "nth": filters.nth.NthFilter,
+            "derivative": filters.derivative.Derivative,
+            "derivative_ratio": filters.derivative_ratio.DerivativeRatio,
+            "rsi": filters.rsi.RSI
+        }
 
-        if configuration.type == "wma":
-            return filters.wma.WMA(configuration.length)
-
-        if configuration.type == "hma":
-            return filters.hma.HMA(configuration.length)
-
-        if configuration.type == "nth":
-            return filters.nth.NthFilter(configuration.length)
-
-        if configuration.type == "derivative":
-            return filters.derivative.Derivative(configuration.length)
-
-        if configuration.type == "derivative_ratio":
-            return filters.derivative_ratio.DerivativeRatio(configuration.length)
-
-        raise InvalidFilterFactoryParameter(f"{configuration.type} is not a valid filter type")
+        try:
+            return constructor_map[configuration.type](configuration.length)
+        except KeyError as exc:
+            raise InvalidFilterFactoryParameter(f"{configuration.type} is not a valid filter type") from exc
 
     @staticmethod
     def create_complex(filter_specs: typing.List[config.filter.FilterConfig]):

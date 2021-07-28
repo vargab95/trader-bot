@@ -7,6 +7,7 @@ import filters.sma
 import filters.wma
 import filters.hma
 import filters.nth
+import filters.rsi
 import filters.derivative
 import filters.derivative_ratio
 import filters.complex
@@ -37,6 +38,10 @@ class FilterFactoryTest(unittest.TestCase):
     def test_create_nth(self):
         instance = FilterFactory.create(config.filter.FilterConfig({"type": "nth", "length": 4}))
         self.assertIsInstance(instance, filters.nth.NthFilter)
+
+    def test_create_rsi(self):
+        instance = FilterFactory.create(config.filter.FilterConfig({"type": "rsi", "length": 4}))
+        self.assertIsInstance(instance, filters.rsi.RSI)
 
     def test_create_complex(self):
         instance = FilterFactory.create_complex([
