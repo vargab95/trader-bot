@@ -17,17 +17,6 @@ class DetectorConfig(ConfigComponentBase):
         self.bullish_threshold = config.get("bullish_threshold", None)
         self.bearish_threshold = config.get("bearish_threshold", None)
 
-    def __str__(self):
-        return "\n        Detector:" + \
-               "\n            Input signal id:        " + str(self.input_signal_id) + \
-               "\n            Output signal id:       " + str(self.output_signal_id) + \
-               "\n            Follower enabled:       " + str(self.follower) + \
-               "\n            Follower candle size:   " + str(self.follower_candle_size) + \
-               "\n            Falling edge detection: " + str(self.falling_edge) + \
-               "\n            Stateless:              " + str(self.stateless) + \
-               "\n            Bullish threshold:      " + str(self.bullish_threshold) + \
-               "\n            Bearish threshold:      " + str(self.bearish_threshold)
-
     def validate(self):
         if self.input_signal_id is None:
             raise InvalidConfigurationException("Input signal id is mandatory in detector config")

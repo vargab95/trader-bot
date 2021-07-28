@@ -8,6 +8,7 @@ import trader.factory
 import trader.leverage.simple
 import trader.leverage.stepped
 import trader.single.simple
+import trader.future.simple
 
 
 class TraderFactoryTest(unittest.TestCase):
@@ -31,6 +32,14 @@ class TraderFactoryTest(unittest.TestCase):
         configuration.leverage = False
         trader_ins = trader.factory.TraderFactory.create(configuration, None)
         self.assertTrue(isinstance(trader_ins, trader.single.simple.SimpleSingleMarketTrader))
+
+    def test_create_future_simple(self):
+        configuration = config.trader.TraderConfig({})
+        configuration.method = "simple"
+        configuration.leverage = False
+        configuration.future = True
+        trader_ins = trader.factory.TraderFactory.create(configuration, None)
+        self.assertTrue(isinstance(trader_ins, trader.future.simple.SimpleFutureTrader))
 
     def test_create_invalid(self):
         configuration = config.trader.TraderConfig({})

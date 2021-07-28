@@ -7,5 +7,5 @@ from observer.event import SignalUpdatedEvent
 
 class Subscriber(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def update(self, event: SignalUpdatedEvent):
+    def update(self, event: SignalUpdatedEvent):  # pragma: no cover
         pass

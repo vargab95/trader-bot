@@ -10,10 +10,5 @@ class LoggingConfig(ConfigComponentBase):
         self.level: int = config.get("level", 31)
         self.path: str = config.get("path", "")
 
-    def __str__(self):
-        return "\nLogging:" + \
-               "\n    Level: " + str(self.level) + \
-               "\n    Path:  " + str(self.path)
-
     def validate(self):
         pass

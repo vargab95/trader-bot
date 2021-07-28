@@ -22,7 +22,7 @@ class TraderBase:
         self._use_stateless_detector = False
 
     @property
-    def state(self):
+    def state(self):  # pragma: no cover
         return self._state
 
     def perform(self, action: TradingAction):

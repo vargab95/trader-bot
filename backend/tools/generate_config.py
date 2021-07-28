@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
-import sys
+import sys  # pragma: no cover
 
-import yaml
+import yaml  # pragma: no cover
 
-import config.application
+import config.application  # pragma: no cover
 
 
-def main():
+def main():  # pragma: no cover
     if len(sys.argv) != 2:
         print("Usage:", sys.argv[0], " [config file path]")
         sys.exit(1)
@@ -16,5 +16,5 @@ def main():
         yaml.dump(configuration, generated)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

@@ -43,21 +43,6 @@ class TraderConfig(ConfigComponentBase):
         self.bearish_price_keyword = config.get("bearish_price_keyword", "price")
         self.exchange = config.get("exchange", "ftx")
 
-    def __str__(self):
-        return "\nTrader:" + \
-               "\n    Input signal id:             " + str(self.input_signal_id) + \
-               "\n    Market:                      " + str(self.market) + \
-               "\n    Indicator:                   " + str(self.indicator) + \
-               "\n    Candle size:                 " + str(self.candle_size) + \
-               "\n    Method:                      " + str(self.method) + \
-               "\n    Leverage:                    " + str(self.leverage) + \
-               "\n    Start state:                 " + str(self.start_state) + \
-               "\n    Step count:                  " + str(self.max_steps) + \
-               "\n    Check interval:              " + str(self.check_interval) + \
-               "\n    Future:                      " + str(self.future) + \
-               "\n    Initialization list length:  " + str(self.initial_length) + \
-               "\n    Initialization list keyword: " + str(self.initial_keyword)
-
     def validate(self):
         if self.input_signal_id is None:
             raise InvalidConfigurationException("Input signal id is a mandatory parameter for traders")

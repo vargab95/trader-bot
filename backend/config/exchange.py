@@ -24,13 +24,6 @@ class ExchangeConfig(ConfigComponentBase):
         self.fee = config.get("fee", 0.0)
         self.balance_precision = config.get("balance_precision", 0.00000001)
 
-    def __str__(self):
-        return "\nExchange:" + \
-               "\n    Name:                  " + self.name + \
-               "\n    Public key:            " + self.public_key + \
-               "\n    Private key:           " + "*" * len(self.private_key) + \
-               "\n    Market name format:    " + str(self.market_name_format)
-
     def validate(self):
         if self.id is None:
             raise InvalidConfigurationException("Id is a mandatory parameter for exchange config")

@@ -63,3 +63,7 @@ class TestTradingActionListener(unittest.TestCase):
         self.listener.update(SignalUpdatedEvent("TestSignal", TradingAction.BEARISH_SIGNAL))
         self.assertEqual(self.listener.read_and_clear(), TradingAction.BEARISH_SIGNAL)
         self.assertEqual(self.listener.read_and_clear(), TradingAction.HOLD_SIGNAL)
+
+    def test_invalid_signal(self):
+        with self.assertRaises(ValueError):
+            self.listener.update(SignalUpdatedEvent("TestSignal", 999))

@@ -16,16 +16,6 @@ class MailConfig(ConfigComponentBase):
         self.receiver = config.get("receiver", None)
         self.password = config.get("password", None)
 
-    def __str__(self):
-        return "\nMail:" + \
-               "\n    Enabled:  " + str(self.enabled) + \
-               "\n    Name:     " + self.name + \
-               "\n    Port:     " + str(self.port) + \
-               "\n    Server:   " + self.smtp_server + \
-               "\n    Sender:   " + self.sender + \
-               "\n    Receiver: " + str(self.receiver) + \
-               "\n    Password: " + str("*" * len(self.password))
-
     def validate(self):
         if self.enabled:
             if self.smtp_server is None:

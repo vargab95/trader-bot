@@ -13,13 +13,5 @@ class SimulatorConfig(ConfigComponentBase):
         self.log_output_path: str = config.get("log_output_path", "simulator_log.csv")
         self.actions_output_path: str = config.get("actions_output_path", "simulator_actions.csv")
 
-    def __str__(self):
-        return "\nSimulator:" + \
-               "\n    Bullish data file:   " + str(self.bullish_file_path) + \
-               "\n    Bearish data file:   " + str(self.bearish_file_path) + \
-               "\n    Watched data file:   " + str(self.watched_file_path) + \
-               "\n    Log output path:     " + str(self.log_output_path) + \
-               "\n    Actions output path: " + str(self.actions_output_path)
-
     def validate(self):
         pass

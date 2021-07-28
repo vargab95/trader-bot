@@ -5,6 +5,7 @@ import typing
 import filters.sma
 import filters.wma
 import filters.hma
+import filters.nth
 import filters.derivative
 import filters.derivative_ratio
 import filters.complex
@@ -16,8 +17,6 @@ class InvalidFilterFactoryParameter(Exception):
 
 
 class FilterFactory:
-    available_types = ["sma", "wma", "hma", "derivative", "derivative_ratio"]
-
     @staticmethod
     def create(configuration: config.filter.FilterConfig):
         # for Coefficient filter which can be used with WMA and EMA
@@ -32,6 +31,9 @@ class FilterFactory:
 
         if configuration.type == "hma":
             return filters.hma.HMA(configuration.length)
+
+        if configuration.type == "nth":
+            return filters.nth.NthFilter(configuration.length)
 
         if configuration.type == "derivative":
             return filters.derivative.Derivative(configuration.length)

@@ -23,7 +23,3 @@ class ApplicationConfig(ConfigComponentBase):
         self.gatherer = GathererConfig(config.get("gatherer", {}))
         self.simulator = SimulatorConfig(config.get("simulator", {}))
         self.components = ComponentsConfig(config.get("components", {}))
-
-    def __str__(self):
-        return ''.join(
-            [str(attribute) for attribute in self.__dict__.values()])

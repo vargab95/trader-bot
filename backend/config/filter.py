@@ -15,11 +15,6 @@ class FilterConfig(ConfigComponentBase):
         self.type: str = config.get("type", "sma")
         self.length: int = config.get("length", 2)
 
-    def __str__(self):
-        return "\n        Filter:" + \
-               "\n            Type:   " + str(self.type) + \
-               "\n            Length: " + str(self.length)
-
     def validate(self):
         if self.input_signal_id is None:
             raise InvalidConfigurationException("Input signal id is a mandatory parameter for filters")

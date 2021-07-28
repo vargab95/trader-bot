@@ -10,7 +10,7 @@ import config.parser
 import config.common
 
 
-class ConfigTest(unittest.TestCase):
+class TestConfigParser(unittest.TestCase):
     def test_parse_fail(self):
         parser = config.parser.ConfigurationParser()
         try:

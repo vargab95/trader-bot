@@ -13,13 +13,6 @@ class DatabaseConfig(ConfigComponentBase):
         self.password = config.get("password", None)
         self.limit = config.get("limit", -1)
 
-    def __str__(self):
-        return "\nDatabase:" + \
-               "\n    URL:         " + self.url + \
-               "\n    Username:    " + self.user + \
-               "\n    Password:    " + "*" * len(self.password) + \
-               "\n    Query limit: " + str(self.limit)
-
     def validate(self):
         if self.url is None:
             return
