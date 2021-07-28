@@ -7,6 +7,7 @@ import enum
 import config.exchange
 import config.testing
 import exchange.interface
+from exchange.interface import Market
 import exchange.guard
 
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor
@@ -49,20 +50,24 @@ class Trade:
 class MockBase(exchange.interface.ExchangeInterface):
     base_coin: str = None
 
-    def __init__(self, testing_config: config.testing.TestingConfig):
-        self.__start_money = testing_config.start_money
+    def __init__(self, exchange_config: config.exchange.ExchangeConfig):
+        self.__start_money = exchange_config.start_money
+        self._configuration = exchange_config
         self._balances: exchange.interface.Balances = exchange.interface.Balances()
-        self._balances[testing_config.base_asset] = self.__start_money
-        MockBase.base_coin = testing_config.base_asset
+        self._balances[exchange_config.base_asset] = self.__start_money
+        MockBase.base_coin = exchange_config.base_asset
 
         self._trade: Trade = None
-        self._is_real_time: bool = testing_config.real_time
-        self._fee: float = testing_config.fee
+        self._is_real_time: bool = exchange_config.real_time
+        self._fee: float = exchange_config.fee
         self._client = None
-        self._precision = testing_config.balance_precision
+        self._precision = exchange_config.balance_precision
 
         if not self._is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
+
+    def get_market_key(self, market: Market) -> str:
+        return market.key(name_format=self._configuration.market_name_format)
 
     def set_real_time(self, real_time: bool) -> None:
         self._is_real_time = real_time

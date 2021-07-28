@@ -32,12 +32,10 @@ class FutureTraderBase(trader.base.TraderBase):
         position = self._exchange.get_position(market)
         logging.info("[Future-Sell] Position: %f", position)
         if position > 0.0:
-            logging.info("%s was on position %f so bullish position was sold",
-                         market.key, position)
+            logging.info("%s was on position %f so bullish position was sold", str(market), position)
             return self._exchange.sell(market, position)
         if position < 0.0:
-            logging.info("%s was on position %f so bearish position was sold",
-                         market.key, position)
+            logging.info("%s was on position %f so bearish position was sold", str(market), position)
             return self._exchange.buy(market, -position)
         return False
 
@@ -54,12 +52,10 @@ class FutureTraderBase(trader.base.TraderBase):
 
         for _ in range(10):
             if self._state == TraderState.BUYING_BEARISH:
-                logging.info("%f of %s was sold to go to bearish position",
-                             amount, market.key)
+                logging.info("%f of %s was sold to go to bearish position", amount, str(market))
                 result = self._exchange.sell(market, amount)
             elif self._state == TraderState.BUYING_BULLISH:
-                logging.info("%f of %s was bought to go to bullish position",
-                             amount, market.key)
+                logging.info("%f of %s was bought to go to bullish position", amount, str(market))
                 result = self._exchange.buy(market, amount)
             if result:
                 return True

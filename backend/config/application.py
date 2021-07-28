@@ -5,7 +5,6 @@ import typing
 from config.base import ConfigComponentBase
 from config.logging import LoggingConfig
 from config.testing import TestingConfig
-from config.exchange import ExchangeConfig
 from config.mail import MailConfig
 from config.database import DatabaseConfig
 from config.server import ServerConfig
@@ -18,7 +17,6 @@ class ApplicationConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict = None):
         self.logging = LoggingConfig(config.get("logging", {}))
         self.testing = TestingConfig(config.get("testing", {}))
-        self.exchange = ExchangeConfig(config.get("exchange", {}))
         self.mail = MailConfig(config.get("mail", {}))
         self.database = DatabaseConfig(config.get("database", {}))
         self.server = ServerConfig(config.get("server", {}))

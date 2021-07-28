@@ -53,3 +53,11 @@ class ComponentsConfig(ConfigComponentBase):
                     trader_config.input_signal_id not in detector_combination_signals:
                 raise InvalidConfigurationException("No provided signal for trader input"
                                                     f"{trader_config.input_signal_id}")
+
+    def dict(self):
+        result = dict()
+        for key, value in self.__dict__.items():
+            result[key] = list()
+            for i in value:
+                result[key].append(i.dict())
+        return result

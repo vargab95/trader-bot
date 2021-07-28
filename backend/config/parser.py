@@ -15,9 +15,11 @@ class ConfigurationParser:
         try:
             with open(path, "r") as config_file:
                 configuration = yaml.safe_load(config_file)
+                print(configuration)
         except (FileNotFoundError, yaml.constructor.ConstructorError) as exception:
             logging.error(
                 "Exception occured during parsing configuration: %s",
                 str(exception))
             raise InvalidConfigurationException from exception
         self.configuration = ApplicationConfig(configuration)
+        print(self.configuration.dict())

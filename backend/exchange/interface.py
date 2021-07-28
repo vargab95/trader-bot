@@ -7,8 +7,6 @@ from signals.trading_signal import TradingSignal, TickerSignalDescriptor
 
 
 class Market:
-    name_format = ""
-
     def __init__(self, base: str, target: str):
         self.base: str = base
         self.target: str = target
@@ -20,12 +18,14 @@ class Market:
         name_elements = name.split("-")
         return cls(name_elements[1], name_elements[0])
 
-    @property
-    def key(self):
-        return self.name_format.format(base=self.base, target=self.target)
+    def key(self, name_format="{target}-{base}"):
+        return name_format.format(base=self.base, target=self.target)
 
     def __str__(self):
-        return self.name_format.format(base=self.base, target=self.target)
+        return f"{self.target}-{self.base}"
+
+    def __repr__(self):
+        return str(self)
 
 
 class Balances(dict):

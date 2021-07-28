@@ -18,7 +18,6 @@ class SimpleSingleTraderTest(unittest.TestCase):
         cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({})
         cls.config.testing.enabled = True
 
-        exchange.interface.Market.name_format = cls.config.exchange.market_name_format
         exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
         cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
         cls.exchange.price_mock["BTC-USDT"] = 100.0

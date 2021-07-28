@@ -45,7 +45,7 @@ class DetectorConfig(ConfigComponentBase):
             raise InvalidConfigurationException("Follower candle size must be specified is follower mode is enabled")
 
 
-class DetectorCombinationConfig:
+class DetectorCombinationConfig(ConfigComponentBase):
     available_combination_types = ["and", "or", "not"]
 
     def __init__(self, config: typing.Dict):

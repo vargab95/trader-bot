@@ -29,7 +29,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -47,7 +47,7 @@ class BinanceTest(unittest.TestCase):
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.buy(market, 5), True)
 
-        handle.create_order.assert_called_once_with(symbol=market.key,
+        handle.create_order.assert_called_once_with(symbol=market.key(self.config.market_name_format),
                                                     quantity='5.',
                                                     side=binance.client.Client.SIDE_BUY,
                                                     type=binance.client.Client.ORDER_TYPE_MARKET)
@@ -59,7 +59,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -77,7 +77,7 @@ class BinanceTest(unittest.TestCase):
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.buy(market, 1.23456789), True)
 
-        handle.create_order.assert_called_once_with(symbol=market.key,
+        handle.create_order.assert_called_once_with(symbol=market.key(self.config.market_name_format),
                                                     quantity='1.2345',
                                                     side=binance.client.Client.SIDE_BUY,
                                                     type=binance.client.Client.ORDER_TYPE_MARKET)
@@ -89,7 +89,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -115,7 +115,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -140,7 +140,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -159,7 +159,7 @@ class BinanceTest(unittest.TestCase):
         self.assertAlmostEqual(controller.sell(market, 5), True)
 
         handle.create_order.assert_called_once_with(
-            symbol=market.key,
+            symbol=market.key(self.config.market_name_format),
             quantity='5.',
             side=binance.client.Client.SIDE_SELL,
             type=binance.client.Client.ORDER_TYPE_MARKET)
@@ -171,7 +171,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -196,7 +196,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -221,7 +221,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -246,7 +246,7 @@ class BinanceTest(unittest.TestCase):
         handle.get_exchange_info.return_value = {
             "symbols": [
                 {
-                    "symbol": market.key,
+                    "symbol": market.key(self.config.market_name_format),
                     "filters": [
                         {
                             "filterType": "LOT_SIZE",
@@ -295,7 +295,7 @@ class BinanceTest(unittest.TestCase):
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertAlmostEqual(controller.get_price(market), 20.0)
 
-        handle.get_ticker.assert_called_once_with(symbol=market.key)
+        handle.get_ticker.assert_called_once_with(symbol=market.key(self.config.market_name_format))
 
     def test_get_money(self, mock_client):
         handle = mock_client()

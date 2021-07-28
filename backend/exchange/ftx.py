@@ -53,7 +53,7 @@ class FtxController(exchange.base.ExchangeBase):
         if not self.__send_authenticated_request('POST',
                                                  self.orders_url,
                                                  data={
-                                                     "market": market.key,
+                                                     "market": self.get_market_key(market),
                                                      "side": "buy",
                                                      "type": "market",
                                                      "size": corrected_amount,
@@ -61,7 +61,7 @@ class FtxController(exchange.base.ExchangeBase):
                                                  }):
             return False
 
-        logging.info("%.10f %s was successfully bought", corrected_amount, market.key)
+        logging.info("%.10f %s was successfully bought", corrected_amount, self.get_market_key(market))
 
         return True
 
@@ -77,7 +77,7 @@ class FtxController(exchange.base.ExchangeBase):
         if not self.__send_authenticated_request('POST',
                                                  self.orders_url,
                                                  data={
-                                                     "market": market.key,
+                                                     "market": self.get_market_key(market),
                                                      "side": "sell",
                                                      "type": "market",
                                                      "size": corrected_amount,
@@ -85,7 +85,7 @@ class FtxController(exchange.base.ExchangeBase):
                                                  }):
             return False
 
-        logging.info("%.10f %s was successfully sold", corrected_amount, market.key)
+        logging.info("%.10f %s was successfully sold", corrected_amount, self.get_market_key(market))
 
         return True
 
@@ -124,7 +124,7 @@ class FtxController(exchange.base.ExchangeBase):
         balances = self.get_positions()
 
         for key, value in balances.items():
-            if key == market.key:
+            if key == self.get_market_key(market):
                 return value
 
         return 0.0
@@ -142,13 +142,13 @@ class FtxController(exchange.base.ExchangeBase):
             keyword = "ask"
         else:
             used_url = self.markets_url
-        response = requests.get(self.api_url + used_url + market.key)
+        response = requests.get(self.api_url + used_url + self.get_market_key(market))
         data = response.json()
 
-        logging.debug("Price was requested for %s (FTX). Response is %s", market.key, str(data))
+        logging.debug("Price was requested for %s (FTX). Response is %s", self.get_market_key(market), str(data))
 
         if data["success"]:
-            logging.debug("Last FTX price for %s is %f", market.key, data["result"][keyword])
+            logging.debug("Last FTX price for %s is %f", self.get_market_key(market), data["result"][keyword])
             return data["result"][keyword]
 
         logging.error("Could not get price of %s", str(market))
@@ -163,7 +163,7 @@ class FtxController(exchange.base.ExchangeBase):
             raise ValueError(
                 "Resolution time gap should be in " + str(valid_resolutions))
 
-        request_url = self.api_url + self.markets_url + descriptor.market.key + "/candles"
+        request_url = self.api_url + self.markets_url + self.get_market_key(descriptor.market) + "/candles"
         request_url += "?resolution=" + \
             str(int(descriptor.resolution.total_seconds()))
 

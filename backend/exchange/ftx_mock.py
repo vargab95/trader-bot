@@ -25,13 +25,13 @@ class FtxMock(exchange.mock_base.MockBase):
             data = response.json()
 
             logging.debug(
-                "Price was requested for %s (FTX). Response is %s", market.key, str(data))
+                "Price was requested for %s (FTX). Response is %s", self.get_market_key(market), str(data))
 
             if data["success"]:
                 logging.debug("Last FTX price for %s is %f",
-                              market.key, data["result"][keyword])
+                              self.get_market_key(market), data["result"][keyword])
                 return data["result"][keyword]
-        return self.price_mock[market.key]
+        return self.price_mock[self.get_market_key(market)]
 
     @exchange.guard.exchange_guard()
     def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
@@ -43,7 +43,7 @@ class FtxMock(exchange.mock_base.MockBase):
                     "Resolution time gap " + str(descriptor.resolution.total_seconds()) +
                     " should be in " + str(valid_resolutions))
 
-            request_url = self.markets_url + descriptor.market.key + "/candles"
+            request_url = self.markets_url + self.get_market_key(descriptor.market) + "/candles"
             request_url += "?resolution=" + \
                 str(int(descriptor.resolution.total_seconds()))
 

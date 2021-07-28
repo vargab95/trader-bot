@@ -18,10 +18,8 @@ class SteppedLeverageTraderTest(unittest.TestCase):
     def setUpClass(cls):
         cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({})
         cls.config.testing.enabled = True
-        cls.config.exchange.name = "ftx"
         cls.trader_config = TraderConfig({"max_steps": 10})
 
-        exchange.interface.Market.name_format = cls.config.exchange.market_name_format
         exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
         cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
         cls.exchange.price_mock["BTC-USDT"] = 100.0

@@ -23,8 +23,8 @@ class BinanceMock(exchange.mock_base.MockBase):
     @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "lastPrice", future: bool = False) -> float:
         if self._is_real_time:
-            return float(self._client.get_ticker(symbol=market.key)[keyword])
-        return self.price_mock[market.key]
+            return float(self._client.get_ticker(symbol=self.get_market_key(market))[keyword])
+        return self.price_mock[self.get_market_key(market)]
 
     # FIXME DUPLICATE!!!
     __resolution_map = {
@@ -65,7 +65,7 @@ class BinanceMock(exchange.mock_base.MockBase):
                 descriptor.resolution.total_seconds()]
 
             result = self._client.get_historical_klines(
-                symbol=descriptor.market.key,
+                symbol=self.get_market_key(descriptor.market),
                 interval=str(resolution),
                 start_str=int((descriptor.start_date
                                - datetime.datetime(1970, 1, 1)).total_seconds() * 1000) if descriptor.start_date else 0,

@@ -5,23 +5,28 @@ import logging
 import config.exchange
 import exchange.interface
 import exchange.guard
+from exchange.interface import Market
 
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor
 
 
 class ExchangeBase(exchange.interface.ExchangeInterface):
     def __init__(self, configuration: config.exchange.ExchangeConfig):
+        self._configuration = configuration
         self._public_key = configuration.public_key
         self._private_key = configuration.private_key
         self._min_amount = dict()
         self._min_notional = dict()
 
+    def get_market_key(self, market: Market) -> str:
+        return market.key(name_format=self._configuration.market_name_format)
+
     def _is_enough_amount(self, market, amount: float):
-        if amount < self._min_amount[market.key]:
+        if amount < self._min_amount[self.get_market_key(market)]:
             return False
 
         price = self.get_price(market)
-        if amount < (self._min_notional[market.key] / price):
+        if amount < (self._min_notional[self.get_market_key(market)] / price):
             return False
 
         return True
@@ -39,9 +44,9 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         return balances
 
     def _check_and_log_corrected_amount(self, market, amount, operation):
-        corrected_amount = self._floor(amount, self._min_amount[market.key])
+        corrected_amount = self._floor(amount, self._min_amount[self.get_market_key(market)])
         logging.info("Trying to %s %.10f %s", operation, corrected_amount,
-                     market.key)
+                     self.get_market_key(market))
         logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
 
         if not self._is_enough_amount(market, corrected_amount):

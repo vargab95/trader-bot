@@ -7,8 +7,6 @@ import abc
 
 import config.parser
 import config.logging
-import exchange.interface
-import exchange.factory
 import mailing.postman
 import mailing.error
 import storage.client
@@ -65,9 +63,10 @@ class ApplicationBase:
         parser = config.parser.ConfigurationParser()
         parser.read(self._configuration_file_path)
         self._configuration = parser.configuration
+        # print(json.dumps(json.loads(str(self._configuration.dict()).replace("'", '"')), indent=4))
+        self._configuration.validate()
 
     def _set_class_variables(self):
-        exchange.interface.Market.name_format = self._configuration.exchange.market_name_format
         mailing.message.Message.bot_name = self._configuration.mail.name
 
     def _configure_logging(self):

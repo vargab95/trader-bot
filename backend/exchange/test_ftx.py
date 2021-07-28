@@ -20,7 +20,6 @@ class FtxTest(unittest.TestCase):
         cls.config.market_name_format = "{target}/{base}"
         cls.config.private_key = "test_prv_key"
         cls.config.public_key = "test_pub_key"
-        exchange.interface.Market.name_format = cls.config.market_name_format
 
     def init_controller(self, _, get_mock, min_size, min_notional):
         get_mock.return_value = unittest.mock.Mock()

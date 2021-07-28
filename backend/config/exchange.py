@@ -10,6 +10,7 @@ class ExchangeConfig(ConfigComponentBase):
     available_exchanges = ["ftx", "binance"]
 
     def __init__(self, config: typing.Dict):
+        print("CFG", config)
         self.id = config.get("id", None)
         self.name = config.get("name", None)
         self.public_key = config.get("public_key", None)

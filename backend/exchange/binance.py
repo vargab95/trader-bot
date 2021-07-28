@@ -44,12 +44,12 @@ class BinanceController(exchange.base.ExchangeBase):
             return False
 
         self.client.create_order(
-            symbol=market.key,
+            symbol=self.get_market_key(market),
             side=binance.client.Client.SIDE_BUY,
             type=binance.client.Client.ORDER_TYPE_MARKET,
             quantity="{:.12f}".format(corrected_amount).rstrip('0'))
         logging.info("%.10f %s was successfully bought", corrected_amount,
-                     market.key)
+                     self.get_market_key(market))
         return True
 
     @exchange.guard.exchange_guard()
@@ -64,12 +64,12 @@ class BinanceController(exchange.base.ExchangeBase):
             return False
 
         self.client.create_order(
-            symbol=market.key,
+            symbol=self.get_market_key(market),
             side=binance.client.Client.SIDE_SELL,
             type=binance.client.Client.ORDER_TYPE_MARKET,
             quantity="{:.12f}".format(corrected_amount).rstrip('0'))
         logging.info("%.10f %s was successfully sold", corrected_amount,
-                     market.key)
+                     self.get_market_key(market))
         return True
 
     @exchange.guard.exchange_guard()
@@ -91,7 +91,7 @@ class BinanceController(exchange.base.ExchangeBase):
 
     @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "lastPrice", future: bool = False) -> float:
-        response = self.client.get_ticker(symbol=market.key)
+        response = self.client.get_ticker(symbol=self.get_market_key(market))
         return float(response[keyword])
 
     __resolution_map = {
@@ -131,7 +131,7 @@ class BinanceController(exchange.base.ExchangeBase):
             descriptor.resolution.total_seconds()]
 
         result = self.client.get_historical_klines(
-            symbol=descriptor.market.key,
+            symbol=self.get_market_key(descriptor.market),
             interval=str(resolution),
             start_str=int((descriptor.start_date
                            - datetime.datetime(1970, 1, 1)).total_seconds() * 1000) if descriptor.start_date else 0,

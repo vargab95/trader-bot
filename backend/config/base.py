@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import copy
-
 
 class ConfigComponentBase:
     def validate(self):
@@ -9,4 +7,10 @@ class ConfigComponentBase:
             attribute.validate()
 
     def dict(self):
-        return copy.deepcopy(self.__dict__)
+        result = dict()
+        for key, value in self.__dict__.items():
+            if isinstance(value, ConfigComponentBase):
+                result[key] = value.dict()
+            else:
+                result[key] = value
+        return result
