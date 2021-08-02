@@ -1,4 +1,4 @@
 #!/bin/bash
 
-coverage run --source=. --omit="*test_*" -m unittest discover -p "test_*" &&
-    coverage report --fail-under=80 -m
+python3 -m coverage run --source=. --omit="*test_*" -m unittest discover -p "test_*" &&
+    python3 -m coverage report --fail-under=80 -m
