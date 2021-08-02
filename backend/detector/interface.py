@@ -14,7 +14,6 @@ class DetectorInterface(metaclass=abc.ABCMeta):
     def check(self, indicator: float) -> detector.common.TradingAction:
         pass  # pragma: no cover
 
-    def set_threshold(self, bearish_threshold: float,
-                      bullish_threshold: float):
+    def set_threshold(self, bearish_threshold: float, bullish_threshold: float):
         self._bullish_threshold = bullish_threshold
         self._bearish_threshold = bearish_threshold

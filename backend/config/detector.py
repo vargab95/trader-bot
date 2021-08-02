@@ -15,6 +15,7 @@ class DetectorConfig(ConfigComponentBase):
         self.falling_edge = config.get("falling_edge", False)
         self.stateless = config.get("stateless", False)
         self.latched = config.get("latched", False)
+        self.simple = config.get("simple", False)
         self.bullish_threshold = config.get("bullish_threshold", None)
         self.bearish_threshold = config.get("bearish_threshold", None)
 

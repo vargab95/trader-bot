@@ -11,6 +11,8 @@ from detector.stateless_rising_edge import StatelessRisingEdgeDetector
 from detector.stateless_reverse_rising_edge import StatelessReverseRisingEdgeDetector
 from detector.latched_reverse_rising_edge import LatchedReverseRisingEdgeDetector
 from detector.latched_rising_edge import LatchedRisingEdgeDetector
+from detector.simple_treshold import SimpleTresholdDetector
+from detector.reverse_simple_treshold import ReverseSimpleTresholdDetector
 from config.detector import DetectorConfig
 
 
@@ -123,3 +125,21 @@ class DetectorFactoryTest(unittest.TestCase):
             self.fail()
         except InvalidDetectorConfiguration:
             pass
+
+    def test_simple_treshold(self):
+        config = DetectorConfig({})
+
+        config.simple = True
+        config.bearish_threshold = -0.4
+        config.bullish_threshold = 0.4
+
+        self.assertIsInstance(DetectorFactory.create(config), SimpleTresholdDetector)
+
+    def test_reverse_simple_treshold(self):
+        config = DetectorConfig({})
+
+        config.simple = True
+        config.bearish_threshold = 0.4
+        config.bullish_threshold = -0.4
+
+        self.assertIsInstance(DetectorFactory.create(config), ReverseSimpleTresholdDetector)

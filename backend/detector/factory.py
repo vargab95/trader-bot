@@ -11,8 +11,9 @@ import detector.falling_edge
 from detector.latched_rising_edge import LatchedRisingEdgeDetector
 from detector.latched_reverse_rising_edge import LatchedReverseRisingEdgeDetector
 from detector.stateless_rising_edge import StatelessRisingEdgeDetector
-from detector.stateless_reverse_rising_edge \
-    import StatelessReverseRisingEdgeDetector
+from detector.stateless_reverse_rising_edge import StatelessReverseRisingEdgeDetector
+from detector.simple_treshold import SimpleTresholdDetector
+from detector.reverse_simple_treshold import ReverseSimpleTresholdDetector
 from config.detector import DetectorConfig
 
 
@@ -40,6 +41,9 @@ class DetectorFactory:
                 configuration.bearish_threshold, configuration.bullish_threshold, gatherer)
 
         if configuration.bullish_threshold >= configuration.bearish_threshold:
+            if configuration.simple:
+                return SimpleTresholdDetector(configuration.bearish_threshold, configuration.bullish_threshold)
+
             if configuration.stateless:
                 logging.info("Stateless rising edge detector has been created.")
                 return StatelessRisingEdgeDetector(configuration.bearish_threshold,
@@ -52,6 +56,9 @@ class DetectorFactory:
             logging.info("Rising edge detector has been created.")
             return detector.rising_edge.RisingEdgeDetector(configuration.bearish_threshold,
                                                            configuration.bullish_threshold)
+
+        if configuration.simple:
+            return ReverseSimpleTresholdDetector(configuration.bearish_threshold, configuration.bullish_threshold)
 
         if configuration.stateless:
             logging.info("Stateless reverse rising edge detector has been created.")
