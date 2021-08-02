@@ -14,8 +14,7 @@ class InvalidApplicationException(Exception):
 
 
 class ApplicationFactory:
-    __available_applications = [
-        "trader", "exporter", "gatherer", "server", "simulator"]
+    __available_applications = ["trader", "exporter", "gatherer", "server", "simulator"]
 
     @classmethod
     def create(cls, application_name):

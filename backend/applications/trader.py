@@ -1,7 +1,5 @@
 #!/usr/bin/python
 
-import logging
-
 from datetime import datetime
 
 from apscheduler.schedulers.blocking import BlockingScheduler
