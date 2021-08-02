@@ -42,7 +42,7 @@ class FutureTraderBase(trader.base.TraderBase):
     def _buy(self,
              market: exchange.interface.Market,
              ratio: float = 1.0) -> bool:
-        base_asset = self._configuration.exchange.future_base_asset
+        base_asset = self._configuration.future_base_asset
         balance = self._exchange.get_leverage_balance()
         price = self._exchange.get_price(market,
                                          self._configuration.bullish_price_keyword,
