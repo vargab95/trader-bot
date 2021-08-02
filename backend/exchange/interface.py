@@ -61,6 +61,10 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass  # pragma: no cover
 
     @abc.abstractmethod
+    def get_leverage_balance(self) -> float:
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
     def get_price(self, market: Market, keyword: str = "") -> float:
         pass  # pragma: no cover
 

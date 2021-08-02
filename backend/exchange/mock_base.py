@@ -131,6 +131,9 @@ class MockBase(exchange.interface.ExchangeInterface):
             self._balances[market] = 0.0
         return self._balances[market]
 
+    def get_leverage_balance(self) -> float:
+        raise NotImplementedError  # pragma: no cover
+
     def get_balances(self) -> exchange.interface.Balances:
         return self._balances.copy()
 
