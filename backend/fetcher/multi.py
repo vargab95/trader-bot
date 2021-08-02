@@ -22,9 +22,9 @@ class TradingViewFetcherMulti(fetcher.trading_view_base.TradingViewFetcherBase):
         }
 
         if isinstance(trader_config.market, list):
-            self.request["symbols"]["tickers"] = self.market_name
+            self.request["symbols"]["tickers"] = [name.key() for name in self.market_name]
         else:
-            self.request["symbols"]["tickers"] = [self.market_name]
+            self.request["symbols"]["tickers"] = [self.market_name.key()]
 
         try:
             if isinstance(self.candle_size, list) and \

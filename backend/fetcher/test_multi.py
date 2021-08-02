@@ -3,7 +3,7 @@
 import unittest
 import unittest.mock
 
-from config.trader import TraderConfig
+from config.fetcher import FetcherConfig
 from fetcher.multi import TradingViewFetcherMulti
 from fetcher.common import InvalidConfigurationException
 
@@ -15,10 +15,12 @@ class MultiFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherMulti(configuration)
 
@@ -37,10 +39,12 @@ class MultiFetcherTest(unittest.TestCase):
             "columns": ["all|1m"]
         }
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherMulti(configuration)
 
@@ -60,10 +64,12 @@ class MultiFetcherTest(unittest.TestCase):
             "columns": ["all"]
         }
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1D"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1D",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherMulti(configuration)
 
@@ -75,10 +81,12 @@ class MultiFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = ["market"]
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": ["BTC-USD"],
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         TradingViewFetcherMulti(configuration)
 
@@ -86,10 +94,12 @@ class MultiFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = ["1m"]
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": ["1m"],
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         TradingViewFetcherMulti(configuration)
 
@@ -97,10 +107,12 @@ class MultiFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = ["all"]
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": ["all"],
+            "check_interval": 60
+        })
 
         TradingViewFetcherMulti(configuration)
 
@@ -116,10 +128,12 @@ class MultiFetcherTest(unittest.TestCase):
             "columns": ["all|1m", "all|1h"]
         }
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = ["1m", "1h"]
-        configuration.indicator = ["all"]
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": ["1m", "1h"],
+            "indicator": ["all"],
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherMulti(configuration)
         fetcher.safe_fetch()
@@ -139,10 +153,12 @@ class MultiFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "invalid"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "invalid",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         try:
             TradingViewFetcherMulti(configuration)
@@ -154,10 +170,12 @@ class MultiFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "invalid"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1h",
+            "indicator": "invalid",
+            "check_interval": 60
+        })
 
         try:
             TradingViewFetcherMulti(configuration)
@@ -177,10 +195,12 @@ class MultiFetcherTest(unittest.TestCase):
             "columns": ["all|1m"]
         }
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherMulti(configuration)
         fetcher.safe_fetch()
@@ -200,10 +220,12 @@ class MultiFetcherTest(unittest.TestCase):
         post_mock.side_effect = Exception()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherMulti(configuration)
         fetcher.safe_fetch()

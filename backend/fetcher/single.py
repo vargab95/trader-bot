@@ -2,6 +2,7 @@
 
 import logging
 
+from exchange.interface import Market
 import config.trader
 import fetcher.common
 import fetcher.trading_view_base
@@ -11,7 +12,7 @@ class TradingViewFetcherSingle(fetcher.trading_view_base.TradingViewFetcherBase)
     def __init__(self, trader_config: config.trader.TraderConfig):
         super().__init__(trader_config)
 
-        if not isinstance(trader_config.market, str) or \
+        if not isinstance(trader_config.market, Market) or \
                 not isinstance(trader_config.indicator, str) or \
                 not isinstance(self.candle_size, str):
             logging.critical("If one of the configurations is list, then "
@@ -26,7 +27,7 @@ class TradingViewFetcherSingle(fetcher.trading_view_base.TradingViewFetcherBase)
 
         self.request = {
             "symbols": {
-                "tickers": [trader_config.market],
+                "tickers": [trader_config.market.key()],
                 "query": {
                     "types": []
                 }

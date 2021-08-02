@@ -3,7 +3,7 @@
 import unittest
 import unittest.mock
 
-from config.trader import TraderConfig
+from config.fetcher import FetcherConfig
 from fetcher.single import TradingViewFetcherSingle
 from fetcher.common import InvalidConfigurationException
 
@@ -14,10 +14,12 @@ class SingleFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherSingle(configuration)
 
@@ -32,10 +34,12 @@ class SingleFetcherTest(unittest.TestCase):
             ]
         }
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         fetcher = TradingViewFetcherSingle(configuration)
 
@@ -46,10 +50,12 @@ class SingleFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = ["market"]
-        configuration.candle_size = "1m"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": ["BTC-USD"],
+            "candle_size": "1m",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         try:
             TradingViewFetcherSingle(configuration)
@@ -61,10 +67,12 @@ class SingleFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = ["1m"]
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": ["1m"],
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         try:
             TradingViewFetcherSingle(configuration)
@@ -76,10 +84,12 @@ class SingleFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = ["all"]
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": ["all"],
+            "check_interval": 60
+        })
 
         try:
             TradingViewFetcherSingle(configuration)
@@ -91,10 +101,12 @@ class SingleFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "invalid"
-        configuration.indicator = "all"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "invalid",
+            "indicator": "all",
+            "check_interval": 60
+        })
 
         try:
             TradingViewFetcherSingle(configuration)
@@ -106,10 +118,12 @@ class SingleFetcherTest(unittest.TestCase):
         post_mock.return_value = unittest.mock.Mock()
         post_mock.return_value.json.return_value = {}
 
-        configuration = TraderConfig({})
-        configuration.market = "market"
-        configuration.candle_size = "1m"
-        configuration.indicator = "invalid"
+        configuration = FetcherConfig({
+            "market": "BTC-USD",
+            "candle_size": "1m",
+            "indicator": "invalid",
+            "check_interval": 60
+        })
 
         try:
             TradingViewFetcherSingle(configuration)
