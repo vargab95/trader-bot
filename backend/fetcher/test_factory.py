@@ -3,7 +3,7 @@
 import unittest
 
 from config.fetcher import FetcherConfig
-from fetcher.factory import FetcherFactory
+from fetcher.factory import FetcherFactory, InvalidFetcherFactoryParameter
 from fetcher.single import TradingViewFetcherSingle
 from fetcher.multi import TradingViewFetcherMulti
 from fetcher.exchange import ExchangeFetcher
@@ -39,6 +39,17 @@ class TestFetcherFactory(unittest.TestCase):
         })
 
         self.assertIsInstance(FetcherFactory.create(config), ExchangeFetcher)
+
+    def test_create_invalid(self):
+        config = FetcherConfig({
+            "type": "invalid",
+            "candle_size": "1m",
+            "market": "BTC-USD",
+            "check_interval": 60
+        })
+
+        with self.assertRaises(InvalidFetcherFactoryParameter):
+            FetcherFactory.create(config)
 
 
 if __name__ == "__main__":
