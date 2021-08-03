@@ -62,7 +62,7 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass  # pragma: no cover
 
     @abc.abstractmethod
-    def get_price(self, market: Market, keyword: str = "") -> float:
+    def get_price(self, market: Market, keyword: str = "", future: bool = False) -> float:
         pass  # pragma: no cover
 
     @abc.abstractmethod
@@ -71,6 +71,14 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def get_money(self, base: str) -> float:
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    def get_positions(self) -> Balances:
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    def get_position(self, market: Market) -> float:
         pass  # pragma: no cover
 
     @staticmethod

@@ -18,7 +18,6 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
         cls.config.start_money = 100.0
         cls.config.fee = 0.0
         cls.config.name = "ftx"
-        exchange.interface.Market.name_format = cls.config.market_name_format
         cls.controller = exchange.factory.ExchangeControllerFactory.create(cls.config, testing=True)
 
     @unittest.mock.patch("requests.get")
@@ -36,13 +35,28 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
         get_mock.return_value = unittest.mock.Mock()
         get_mock.return_value.json.return_value = {
             "success": True,
+            "result": [
+                {
+                    "name": "BEAR/USDT",
+                    "minProvideSize": 0.0,
+                    "priceIncrement": 0.0,
+                }
+            ]
+        }
+
+        self.controller.set_real_time(True)
+
+        get_mock.return_value.json.return_value = {
+            "success": True,
             "result": {
                 "last": 1.3,
                 "price": 1.2
             }
         }
-
-        self.controller.set_real_time(True)
         with unittest.mock.patch("time.sleep"):
             self.assertAlmostEqual(self.controller.get_price(Market.create_from_string("BEAR-USDT")), 1.2)
         self.controller.set_real_time(False)
+
+
+if __name__ == "__main__":
+    unittest.main()
