@@ -24,9 +24,6 @@ class Market:
     def __str__(self):
         return f"{self.target}-{self.base}"
 
-    def __repr__(self):
-        return str(self)
-
 
 class Balances(dict):
     def __str__(self):
@@ -70,7 +67,7 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
-        pass
+        pass  # pragma: no cover
 
     @abc.abstractmethod
     def get_money(self, base: str) -> float:
