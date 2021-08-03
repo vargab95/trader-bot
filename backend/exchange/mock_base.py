@@ -58,10 +58,14 @@ class MockBase(exchange.interface.ExchangeInterface):
         MockBase.base_coin = exchange_config.base_asset
 
         self._trade: Trade = None
-        self._is_real_time: bool = exchange_config.real_time
+
+        self._is_real_time: bool = False
+        self.set_real_time(self._configuration.real_time)
+
         self._fee: float = exchange_config.fee
         self._client = None
         self._precision = exchange_config.balance_precision
+        self._real_exchange: exchange.interface.ExchangeInterface = None
 
         if not self._is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
@@ -132,16 +136,32 @@ class MockBase(exchange.interface.ExchangeInterface):
         return self._balances[market]
 
     def get_leverage_balance(self) -> float:
-        raise NotImplementedError  # pragma: no cover
+        raise NotImplementedError
 
     def get_balances(self) -> exchange.interface.Balances:
         return self._balances.copy()
 
-    def get_price(self, market: exchange.interface.Market, keyword: str = "", future: bool = False) -> float:
-        return 0.0  # pragma: no cover
+    @exchange.guard.exchange_guard()
+    def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
+        if self._is_real_time:
+            return self._real_exchange.get_price(market, keyword, future)
+        return self.price_mock[self.get_market_key(market)]
 
+    @exchange.guard.exchange_guard()
     def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
-        pass  # pragma: no cover
+        if self._is_real_time:
+            return self._real_exchange.get_price_history(descriptor, keyword)
+        raise NotImplementedError("Mocked price history has not been implemented yet")
+
+    def get_positions(self) -> exchange.interface.Balances:
+        if self._is_real_time:
+            return self._real_exchange.get_positions()
+        return self.price_mock
+
+    def get_position(self, market: exchange.interface.Market) -> float:
+        if self._is_real_time:
+            return self._real_exchange.get_position(market)
+        return self.price_mock[self.get_market_key(market)]
 
     def get_money(self, base: str) -> float:
         all_money: float = 0.0
