@@ -29,4 +29,3 @@ class TestExchangeFetcher(unittest.TestCase):
 
         fetcher.fetch_technical_indicator()
         self.assertAlmostEqual(fetcher.get_technical_indicator(), 10.0)
-

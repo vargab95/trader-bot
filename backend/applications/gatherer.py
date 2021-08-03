@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
-import time
+# import time
 
-import fetcher.single
-import fetcher.multi
+# import fetcher.single
+# import fetcher.multi
 
 import applications.base
 
-from signals.trading_signal import IndicatorSignalDescriptor, TickerSignalDescriptor, TradingSignalPoint
+from signals.trading_signal import IndicatorSignalDescriptor, TradingSignalPoint
 
 
 class GathererApplication(applications.base.ApplicationBase):
