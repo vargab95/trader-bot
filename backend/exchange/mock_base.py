@@ -101,7 +101,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         return False
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        if amount <= 0:  # TODO write unit tests for this scenario
+        if amount <= 0:
             logging.error("Trying to sell 0 or less amount")
             return False
 
@@ -141,7 +141,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         return 0.0  # pragma: no cover
 
     def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
-        pass
+        pass  # pragma: no cover
 
     def get_money(self, base: str) -> float:
         all_money: float = 0.0

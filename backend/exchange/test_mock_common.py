@@ -182,6 +182,10 @@ class CommonMockTest(unittest.TestCase):
         self.assertFalse(self.controller.sell(
             exchange.interface.Market.create_from_string("BULL-USDT"), 2000.0))
 
+    def test_sell_negative(self):
+        self.assertFalse(self.controller.sell(
+            exchange.interface.Market.create_from_string("BULL-USDT"), -1.0))
+
     @unittest.skipIf(TESTS_USING_NETWORK, "FALSE")
     def test_get_price_real_time(self):
         self.controller.set_real_time(True)
