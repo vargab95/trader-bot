@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import abc
 import logging
 import typing
 import enum
@@ -69,12 +70,14 @@ class MockBase(exchange.interface.ExchangeInterface):
 
         if not self._is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
+            self.leverage: float = 1.0
 
     def get_market_key(self, market: Market) -> str:
         return market.key(name_format=self._configuration.market_name_format)
 
+    @abc.abstractmethod
     def set_real_time(self, real_time: bool) -> None:
-        self._is_real_time = real_time
+        pass  # pragma: no cover
 
     def reset(self):
         self._balances = {}
@@ -136,7 +139,10 @@ class MockBase(exchange.interface.ExchangeInterface):
         return self._balances[market]
 
     def get_leverage_balance(self) -> float:
-        raise NotImplementedError
+        balances: exchange.interface.Balances = self.get_balances()
+        total_balance = sum(balances.values())
+
+        return total_balance * self.leverage - total_balance
 
     def get_balances(self) -> exchange.interface.Balances:
         return self._balances.copy()
@@ -154,14 +160,12 @@ class MockBase(exchange.interface.ExchangeInterface):
         raise NotImplementedError("Mocked price history has not been implemented yet")
 
     def get_positions(self) -> exchange.interface.Balances:
-        if self._is_real_time:
-            return self._real_exchange.get_positions()
-        return self.price_mock
+        return self._balances.copy()
 
     def get_position(self, market: exchange.interface.Market) -> float:
-        if self._is_real_time:
-            return self._real_exchange.get_position(market)
-        return self.price_mock[self.get_market_key(market)]
+        if market not in self._balances.keys():
+            self._balances[self.get_market_key(market)] = 0.0
+        return self._balances[self.get_market_key(market)]
 
     def get_money(self, base: str) -> float:
         all_money: float = 0.0
