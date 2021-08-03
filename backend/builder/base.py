@@ -6,6 +6,7 @@ from config.components import ComponentsConfig
 from config.exchange import ExchangeConfig
 from config.fetcher import FetcherConfig
 from config.detector import DetectorConfig, DetectorCombinationConfig
+from config.trader import TraderConfig
 from observer.publisher import Publisher
 from exchange.interface import ExchangeInterface
 from exchange.factory import ExchangeControllerFactory
@@ -109,7 +110,7 @@ class TradingComponentsBuilderBase:
 
             self.detector_signal_publisher.register_signal(detector_combination_config.output_signal_id)
 
-    def create_traders(self, trader_configs: typing.List[DetectorCombinationConfig]):
+    def create_traders(self, trader_configs: typing.List[TraderConfig]):
         for trader_config in trader_configs:
             trader = TraderFactory.create(trader_config, self.exchanges[trader_config.exchange])
             listener = TradingActionListener()
