@@ -124,11 +124,9 @@ class BinanceController(exchange.base.ExchangeBase):
     @exchange.guard.exchange_guard()
     def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
         if descriptor.resolution.total_seconds() not in list(self.__resolution_map.keys()):
-            raise ValueError(
-                "Resolution time gap should be in " + str(list(self.__resolution_map.keys())))
+            raise ValueError("Resolution time gap should be in " + str(list(self.__resolution_map.keys())))
 
-        resolution = self.__resolution_map[
-            descriptor.resolution.total_seconds()]
+        resolution = self.__resolution_map[descriptor.resolution.total_seconds()]
 
         result = self.client.get_historical_klines(
             symbol=self.get_market_key(descriptor.market),
@@ -151,9 +149,3 @@ class BinanceController(exchange.base.ExchangeBase):
             history.append(point)
 
         return TradingSignal(history, descriptor)
-
-    def get_positions(self) -> exchange.interface.Balances:
-        raise NotImplementedError
-
-    def get_position(self, market: str) -> float:
-        raise NotImplementedError

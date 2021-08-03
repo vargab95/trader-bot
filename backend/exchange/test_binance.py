@@ -345,3 +345,13 @@ class BinanceTest(unittest.TestCase):
         )
 
         handle.get_historical_klines.assert_called_once()
+
+    def test_historical_price_invalid_resolution(self, _):
+        controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
+        market = exchange.interface.Market("USD", "BTC")
+
+        descriptor = signals.trading_signal.TickerSignalDescriptor(
+            market, None, None, 50, 1, datetime.timedelta(seconds=65))
+
+        with unittest.mock.patch("time.sleep"):
+            self.assertFalse(controller.get_price_history(descriptor, keyword="close"))
