@@ -64,6 +64,36 @@ class FtxTest(unittest.TestCase):
         market = exchange.interface.Market("ETH", "BTC")
         self.assertAlmostEqual(controller.get_price(market), 1.2)
 
+    def test_get_price_with_future(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+
+        get_mock.return_value = unittest.mock.Mock()
+        get_mock.return_value.json.return_value = {
+            "success": True,
+            "result": {
+                "ask": 1.3,
+                "bid": 1.4
+            }
+        }
+
+        market = exchange.interface.Market("BSV", "PERP")
+        self.assertAlmostEqual(controller.get_price(market, future=True), 1.3)
+
+    def test_get_price_with_future_and_keyword(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+
+        get_mock.return_value = unittest.mock.Mock()
+        get_mock.return_value.json.return_value = {
+            "success": True,
+            "result": {
+                "ask": 1.3,
+                "bid": 1.4
+            }
+        }
+
+        market = exchange.interface.Market("BSV", "PERP")
+        self.assertAlmostEqual(controller.get_price(market, keyword="bid", future=True), 1.4)
+
     def test_get_price_failure(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
 
@@ -76,7 +106,7 @@ class FtxTest(unittest.TestCase):
         market = exchange.interface.Market("ETH", "BTC")
 
         with unittest.mock.patch("time.sleep"):
-            controller.get_price(market)
+            self.assertFalse(controller.get_price(market))
 
     def test_get_balance(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -111,6 +141,55 @@ class FtxTest(unittest.TestCase):
         }
 
         self.assertAlmostEqual(controller.get_balance(market), 0.0)
+
+    def test_get_position(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+
+        market = exchange.interface.Market("PERP", "BSV")
+        session_mock.return_value = unittest.mock.Mock()
+        session_mock.return_value.json.return_value = {
+            "success": True,
+            "result": [
+                {
+                    "netSize": 1.2,
+                    "future": "BSV/PERP"
+                }
+            ]
+        }
+
+        self.assertAlmostEqual(controller.get_position(market), 1.2)
+
+    def test_get_non_existing_position(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+
+        market = exchange.interface.Market("BSV", "PERP")
+        session_mock.return_value = unittest.mock.Mock()
+        session_mock.return_value.json.return_value = {
+            "success": True,
+            "result": [
+                {
+                    "netSize": 1.2,
+                    "future": "BTC-PERP"
+                }
+            ]
+        }
+
+        self.assertAlmostEqual(controller.get_position(market), 0.0)
+
+    def test_get_leverage_balance(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+
+        session_mock.return_value = unittest.mock.Mock()
+        session_mock.return_value.json.return_value = {
+            "success": True,
+            "result": {
+                "totalAccountValue": 2.0,
+                "leverage": 3.0,
+                "totalPositionSize": 1.5
+            }
+        }
+
+        self.assertAlmostEqual(controller.get_leverage_balance(), 4.5)
 
     def test_buy(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -233,10 +312,31 @@ class FtxTest(unittest.TestCase):
         }
 
         descriptor = signals.trading_signal.TickerSignalDescriptor(
-            market, None, None, 50, 1, datetime.timedelta(seconds=15))
+            market, datetime.datetime.now(), datetime.datetime.now(), 50, 1, datetime.timedelta(seconds=15))
         self.assertListEqual(
             [signals.trading_signal.TradingSignalPoint(
                 value=11055.25, date=datetime.datetime(2019, 6, 24, 17, 15))],
-            controller.get_price_history(
-                descriptor, keyword="close").data
-        )
+            controller.get_price_history(descriptor, keyword="close").data)
+
+    def test_historical_price_invalid_resolution(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+        market = exchange.interface.Market("USD", "BTC")
+        descriptor = signals.trading_signal.TickerSignalDescriptor(
+            market, None, None, 50, 1, datetime.timedelta(seconds=25))
+
+        with unittest.mock.patch("time.sleep"):
+            self.assertFalse(controller.get_price_history(descriptor, keyword="close"))
+
+    def test_historical_price_failure(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+        market = exchange.interface.Market("USD", "BTC")
+
+        get_mock.return_value.json.return_value = {
+            "success": False,
+            "error": ""
+        }
+
+        descriptor = signals.trading_signal.TickerSignalDescriptor(
+            market, datetime.datetime.now(), datetime.datetime.now(), 50, 1, datetime.timedelta(seconds=15))
+        with unittest.mock.patch("time.sleep"):
+            self.assertFalse(controller.get_price_history(descriptor, keyword="close"))

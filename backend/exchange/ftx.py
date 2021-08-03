@@ -139,7 +139,8 @@ class FtxController(exchange.base.ExchangeBase):
         if future:
             used_url = self.futures_url
             # There is no price key on futures...
-            keyword = "ask"
+            if keyword == "price":
+                keyword = "ask"
         else:
             used_url = self.markets_url
         response = requests.get(self.api_url + used_url + self.get_market_key(market))
@@ -160,12 +161,10 @@ class FtxController(exchange.base.ExchangeBase):
         valid_resolutions = [15, 60, 300, 900, 3600, 14400, 86400]
 
         if descriptor.resolution.total_seconds() not in valid_resolutions:
-            raise ValueError(
-                "Resolution time gap should be in " + str(valid_resolutions))
+            raise ValueError("Resolution time gap should be in " + str(valid_resolutions))
 
         request_url = self.api_url + self.markets_url + self.get_market_key(descriptor.market) + "/candles"
-        request_url += "?resolution=" + \
-            str(int(descriptor.resolution.total_seconds()))
+        request_url += "?resolution=" + str(int(descriptor.resolution.total_seconds()))
 
         if descriptor.limit > 0:
             request_url += "&limit=" + str(descriptor.limit)
@@ -176,7 +175,7 @@ class FtxController(exchange.base.ExchangeBase):
 
             if descriptor.end_date is not None:
                 request_url += "&end_time=" + \
-                    str(int((descriptor.end - datetime.datetime(1970, 1, 1)).total_seconds()))
+                    str(int((descriptor.end_date - datetime.datetime(1970, 1, 1)).total_seconds()))
 
         logging.debug("FTX price history request: %s", request_url)
         response = requests.get(request_url)
