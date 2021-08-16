@@ -84,18 +84,15 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._balances[self.base_coin] = self.__start_money
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
-        if market.base == "PERP":
-            market.base = self.base_coin
-
         logging.debug("Amount to buy: %f", amount)
         amount = self._floor(amount, self._precision)
         logging.debug("Amount was rounded to %f", amount)
         logging.info("Trying to buy %f of %s", amount, str(market))
         self._trade = Trade(market)
         price = self.get_price(market)
-        if self.get_balance(market.base) >= amount * price:
+        if self.get_balance(self.base_coin if market.base == "PERP" else market.base) >= amount * price:
             self._trade.enter(price, amount)
-            self._balances[market.base] -= amount * price
+            self._balances[self.base_coin if market.base == "PERP" else market.base] -= amount * price
             if market.target not in self._balances.keys():
                 self._balances[market.target] = 0.0
             self._balances[market.target] += amount * (1 - self._fee)
@@ -111,9 +108,6 @@ class MockBase(exchange.interface.ExchangeInterface):
         return False
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
-        if market.base == "PERP":
-            market.base = self.base_coin
-
         if amount <= 0:
             logging.error("Trying to sell 0 or less amount")
             return False
@@ -126,7 +120,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         if self.get_balance(market.target) >= amount:
             self._trade.finish(price)
             self._balances[market.target] -= amount
-            self._balances[market.base] += amount * price * (1 - self._fee)
+            self._balances[self.base_coin if market.base == "PERP" else market.base] += amount * price * (1 - self._fee)
             logging.info("%f %s was sold for %f %s", amount, market.target,
                          price, market.base)
             logging.info("Trade was finished profit: %f", self._trade.profit)
