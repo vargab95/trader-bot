@@ -113,6 +113,36 @@ class SteppedLeverageTraderTest(unittest.TestCase):
 
         self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 1.0)
 
+    def test_returns_to_base_from_bullish(self):
+        detector_signals = [
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.BEARISH_SIGNAL,
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.RETURN_TO_BASE_SIGNAL,
+            TradingAction.HOLD_SIGNAL
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal in detector_signals:
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+    def test_return_to_base_from_bearish(self):
+        detector_signals = [
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.BULLISH_SIGNAL,
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.RETURN_TO_BASE_SIGNAL,
+            TradingAction.HOLD_SIGNAL
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal in detector_signals:
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
     def test_exceeds_bullish(self):
         detector_signals = [TradingAction.BULLISH_SIGNAL for i in range(self.trader_config.max_steps + 1)]
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
