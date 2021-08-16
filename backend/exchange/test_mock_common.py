@@ -208,10 +208,10 @@ class CommonMockTest(unittest.TestCase):
         with unittest.mock.patch("time.sleep"):
             market = Market("USD", "BTC")
             descriptor = TickerSignalDescriptor(market,
-                    datetime.now(),
-                    datetime.now(),
-                    50, 1,
-                    timedelta(seconds=15))
+                                                datetime.now(),
+                                                datetime.now(),
+                                                50, 1,
+                                                timedelta(seconds=15))
             self.assertFalse(self.controller.get_price_history(descriptor))
 
     def test_get_positions(self):
