@@ -37,9 +37,6 @@ class TraderBase:
         elif self._return_to_base_condition(action):
             self._return_to_base_logic()
 
-        if self._is_there_any_pending_transaction():
-            self._do_pending_transaction()
-
         logging.debug("New state is %s", str(self._state))
 
     def _sell(self,
@@ -59,28 +56,6 @@ class TraderBase:
                 return True
             ratio *= 0.99
         return False
-
-    def _is_there_any_pending_transaction(self):
-        return self._state in [
-            TraderState.BUYING_BULLISH,
-            TraderState.BUYING_BEARISH,
-            TraderState.SELLING_BULLISH,
-            TraderState.SELLING_BEARISH,
-        ]
-
-    def _do_pending_transaction(self):
-        if TraderState.SELLING_BULLISH == self._state:
-            if self._sell(self._configuration.bullish_market):
-                self._state = TraderState.BUYING_BEARISH
-        if TraderState.SELLING_BEARISH == self._state:
-            if self._sell(self._configuration.bearish_market):
-                self._state = TraderState.BUYING_BULLISH
-        if TraderState.BUYING_BEARISH == self._state:
-            if self._buy(self._configuration.bearish_market):
-                self._state = TraderState.BEARISH
-        if TraderState.BUYING_BULLISH == self._state:
-            if self._buy(self._configuration.bullish_market):
-                self._state = TraderState.BULLISH
 
     @abc.abstractmethod
     def _bullish_logic(self):  # pragma: no cover
