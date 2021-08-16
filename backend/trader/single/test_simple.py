@@ -150,7 +150,3 @@ class SimpleSingleTraderTest(unittest.TestCase):
         self.trader.perform(TradingAction.BEARISH_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BTC"), 0.0)
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-
-if __name__ == "__main__":
-    unittest.main()
