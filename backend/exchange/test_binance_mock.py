@@ -20,8 +20,8 @@ class BinanceMockTest(exchange.test_mock_common.CommonMockTest):
         cls.config.fee = 0.0
         cls.config.name = "binance"
         exchange.interface.Market.name_format = cls.config.market_name_format
-        # TODO with unittest.mock.patch("exchange.binance.binance.client.Client"):
-        cls.controller = exchange.factory.ExchangeControllerFactory.create(cls.config, testing=True)
+        with unittest.mock.patch("exchange.binance.binance.client.Client.__init__"):
+            cls.controller = exchange.factory.ExchangeControllerFactory.create(cls.config, testing=True)
 
     @unittest.mock.patch("binance.client.Client.ping")
     @unittest.mock.patch("binance.client.Client.get_ticker")

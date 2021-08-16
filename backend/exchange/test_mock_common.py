@@ -2,11 +2,15 @@
 
 import os
 import unittest
+from datetime import datetime, timedelta
 
 import abc
 
+from signals.trading_signal import TickerSignalDescriptor
+
 import exchange.factory
 import exchange.interface
+from exchange.interface import Market
 
 TESTS_USING_NETWORK = os.getenv('TESTS_USING_NETWORK', 'FALSE')
 
@@ -21,6 +25,7 @@ class CommonMockTest(unittest.TestCase):
         self.controller.reset()
         self.controller.price_mock["BTC-USDT"] = 100.0
         self.controller.price_mock["BEAR-USDT"] = 10.0
+        self.controller.price_mock["BEAR-PERP"] = 10.0
         self.controller.price_mock["BULL-USDT"] = 5.0
 
     def test_buy_bear_and_sell_on_same_price(self):
@@ -185,6 +190,48 @@ class CommonMockTest(unittest.TestCase):
     def test_sell_negative(self):
         self.assertFalse(self.controller.sell(
             exchange.interface.Market.create_from_string("BULL-USDT"), -1.0))
+
+    def test_get_leverage_balance(self):
+        self.controller.buy(exchange.interface.Market.create_from_string("BULL-USDT"), 2.0)
+        self.controller.buy(exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0)
+
+        self.assertAlmostEqual(self.controller.get_leverage_balance(), 40.0)
+
+    def test_get_leverage_balance_3x_leverage(self):
+        self.controller.leverage = 3.0
+        self.controller.buy(exchange.interface.Market.create_from_string("BULL-USDT"), 2.0)
+        self.controller.buy(exchange.interface.Market.create_from_string("BEAR-USDT"), 5.0)
+
+        self.assertAlmostEqual(self.controller.get_leverage_balance(), 120.0)
+
+    def test_price_history_in_non_real_time(self):
+        with unittest.mock.patch("time.sleep"):
+            market = Market("USD", "BTC")
+            descriptor = TickerSignalDescriptor(market,
+                    datetime.now(),
+                    datetime.now(),
+                    50, 1,
+                    timedelta(seconds=15))
+            self.assertFalse(self.controller.get_price_history(descriptor))
+
+    def test_get_positions(self):
+        with unittest.mock.patch("time.sleep"):
+            self.controller.buy(exchange.interface.Market.create_from_string("BEAR-PERP"), 5.0)
+            self.assertAlmostEqual(self.controller.get_positions()["BEAR-PERP"], 5.0)
+
+    def test_get_position(self):
+        with unittest.mock.patch("time.sleep"):
+            market = exchange.interface.Market.create_from_string("BEAR-PERP")
+            self.controller.buy(market, 5.0)
+            self.assertAlmostEqual(self.controller.get_position(market), 5.0)
+
+    def test_get_position_after_sell(self):
+        with unittest.mock.patch("time.sleep"):
+            market = exchange.interface.Market.create_from_string("BEAR-PERP")
+            self.controller.buy(market, 5.0)
+            market = exchange.interface.Market.create_from_string("BEAR-PERP")
+            self.controller.sell(market, 5.0)
+            self.assertAlmostEqual(self.controller.get_position(market), 0.0)
 
     @unittest.skipIf(TESTS_USING_NETWORK, "FALSE")
     def test_get_price_real_time(self):

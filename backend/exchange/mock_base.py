@@ -84,6 +84,9 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._balances[self.base_coin] = self.__start_money
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
+        if market.base == "PERP":
+            market.base = self.base_coin
+
         logging.debug("Amount to buy: %f", amount)
         amount = self._floor(amount, self._precision)
         logging.debug("Amount was rounded to %f", amount)
@@ -108,6 +111,9 @@ class MockBase(exchange.interface.ExchangeInterface):
         return False
 
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
+        if market.base == "PERP":
+            market.base = self.base_coin
+
         if amount <= 0:
             logging.error("Trying to sell 0 or less amount")
             return False
@@ -140,9 +146,7 @@ class MockBase(exchange.interface.ExchangeInterface):
 
     def get_leverage_balance(self) -> float:
         balances: exchange.interface.Balances = self.get_balances()
-        total_balance = sum(balances.values())
-
-        return total_balance * self.leverage - total_balance
+        return balances[self.base_coin] * self.leverage
 
     def get_balances(self) -> exchange.interface.Balances:
         return self._balances.copy()
@@ -160,12 +164,18 @@ class MockBase(exchange.interface.ExchangeInterface):
         raise NotImplementedError("Mocked price history has not been implemented yet")
 
     def get_positions(self) -> exchange.interface.Balances:
-        return self._balances.copy()
+        balances = self._balances.copy()
+        positions = dict()
+
+        for key, value in balances.items():
+            positions[f"{key}-PERP"] = value
+
+        return positions
 
     def get_position(self, market: exchange.interface.Market) -> float:
         if market not in self._balances.keys():
             self._balances[self.get_market_key(market)] = 0.0
-        return self._balances[self.get_market_key(market)]
+        return self._balances[market.target]
 
     def get_money(self, base: str) -> float:
         all_money: float = 0.0
