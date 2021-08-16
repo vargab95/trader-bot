@@ -64,9 +64,16 @@ class TraderBase:
         pass
 
     @abc.abstractmethod
+    def _return_to_base_logic(self):  # pragma: no cover
+        pass
+
+    @abc.abstractmethod
     def _bullish_condition(self, action: detector.common.TradingAction):  # pragma: no cover
         pass
 
     @abc.abstractmethod
     def _bearish_condition(self, action: detector.common.TradingAction):  # pragma: no cover
         pass
+
+    def _return_to_base_condition(self, action: detector.common.TradingAction):
+        return action == TradingAction.RETURN_TO_BASE_SIGNAL and self.state != TraderState.BASE

@@ -32,3 +32,15 @@ class SimpleLeverageTrader(trader.leverage.base.LeverageTraderBase):
             if self._state == TraderState.BUYING_BEARISH and \
                self._buy(self._configuration.bearish_market):
                 self._state = TraderState.BEARISH
+
+    def _return_to_base_logic(self):
+        if self._state == TraderState.BEARISH:
+            if self._sell(self._configuration.bearish_market):
+                self._state = TraderState.BASE
+            else:
+                self._state = TraderState.SELLING_BEARISH
+        elif self._state == TraderState.BULLISH:
+            if self._sell(self._configuration.bullish_market):
+                self._state = TraderState.BASE
+            else:
+                self._state = TraderState.SELLING_BULLISH

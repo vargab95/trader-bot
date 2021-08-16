@@ -58,3 +58,12 @@ class SteppedLeverageTrader(trader.leverage.base.LeverageTraderBase):
                         self._configuration.max_steps + self._state)
         else:
             logging.warning("Step limit reached %d", self._state)
+
+    def _return_to_base_logic(self):
+        if self._state != 0:
+            if self._state < 0:
+                self._sell(self._configuration.bearish_market)
+            elif self._state > 0:
+                self._sell(self._configuration.bullish_market)
+            self._state = 0
+            self._pack_ratio = 1.0 / self._configuration.max_steps
