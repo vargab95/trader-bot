@@ -7,8 +7,7 @@ import detector.common
 import detector.rising_edge
 
 
-class MovingThresholdRisingEdgeDetector(detector.rising_edge.RisingEdgeDetector
-                                        ):
+class MovingThresholdRisingEdgeDetector(detector.rising_edge.RisingEdgeDetector):
     def __init__(self, bearish_threshold: float, bullish_threshold: float,
                  gatherer: fetcher.single.TradingViewFetcherSingle):
         super().__init__(bearish_threshold, bullish_threshold)
