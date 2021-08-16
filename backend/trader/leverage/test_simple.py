@@ -116,6 +116,36 @@ class SimpleLeverageTraderTest(unittest.TestCase):
 
         self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
 
+    def test_return_to_base_from_bullish(self):
+        detector_signals = [
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.BULLISH_SIGNAL,
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.RETURN_TO_BASE_SIGNAL,
+            TradingAction.HOLD_SIGNAL
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal in detector_signals:
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+    def test_return_to_base_from_bearish(self):
+        detector_signals = [
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.BEARISH_SIGNAL,
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.RETURN_TO_BASE_SIGNAL,
+            TradingAction.HOLD_SIGNAL
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal in detector_signals:
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
     def test_buy_failure_when_switching_to_bearish(self):
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
@@ -161,3 +191,35 @@ class SimpleLeverageTraderTest(unittest.TestCase):
         self.trader.perform(TradingAction.BULLISH_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
         self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 0.0)
+
+    def test_sell_failure_when_returning_to_base_from_bearish(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.BULLISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.sell", return_value=False):
+            self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 20.0)
+        self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+    def test_sell_failure_when_returning_to_base_from_bullish(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.BEARISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.sell", return_value=False):
+            self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
+        self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("BULL"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -113,6 +113,21 @@ class SimpleSingleTraderTest(unittest.TestCase):
 
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
+    def test_return_to_base(self):
+        detector_signals = [0.26, 0.35, 0.47, 0.03, -0.55, -0.63]
+        detector_signals = [
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.BULLISH_SIGNAL,
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.RETURN_TO_BASE_SIGNAL
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal in detector_signals:
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
     def test_buy_failure_when_switching_to_bullish(self):
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
