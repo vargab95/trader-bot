@@ -34,6 +34,8 @@ class TraderBase:
             self._bullish_logic()
         elif self._bearish_condition(action):
             self._bearish_logic()
+        elif self._return_to_base_condition(action):
+            self._return_to_base_logic()
 
         logging.debug("New state is %s", str(self._state))
 
