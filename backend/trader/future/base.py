@@ -26,9 +26,7 @@ class FutureTraderBase(trader.base.TraderBase):
     def _bearish_condition(self, action: detector.common.TradingAction):
         return detector.common.TradingAction.BEARISH_SIGNAL == action
 
-    def _sell(self,
-              market: exchange.interface.Market,
-              ratio: float = 1.0) -> bool:
+    def _sell(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
         position = self._exchange.get_position(market)
         logging.info("[Future-Sell] Position: %f", position)
         if position > 0.0:
@@ -39,9 +37,7 @@ class FutureTraderBase(trader.base.TraderBase):
             return self._exchange.buy(market, -position)
         return False
 
-    def _buy(self,
-             market: exchange.interface.Market,
-             ratio: float = 1.0) -> bool:
+    def _buy(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
         base_asset = self._configuration.future_base_asset
         balance = self._exchange.get_leverage_balance()
         price = self._exchange.get_price(market,
