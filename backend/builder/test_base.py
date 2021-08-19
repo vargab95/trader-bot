@@ -15,7 +15,8 @@ class TestBuilderBase(unittest.TestCase):
                 "name": "ftx",
                 "private_key": "Test",
                 "public_key": "Test",
-                "market_name_format": "{target}-{base}"
+                "market_name_format": "{target}-{base}",
+                "real_time": False
             }],
             "fetchers": [{
                 "output_signal_id": "BSV-PERP",
@@ -59,7 +60,7 @@ class TestBuilderBase(unittest.TestCase):
 
         builder = TradingComponentsBuilderBase()
 
-        builder.build(config)
+        builder.build(config, testing=True)
 
         self.assertEqual(len(builder.exchanges), 1)
         self.assertEqual(len(builder.fetchers), 1)

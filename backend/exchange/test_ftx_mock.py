@@ -69,6 +69,20 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
     def test_historical_price(self, _, get_mock):
         market = exchange.interface.Market("USD", "BTC")
 
+        get_mock.return_value = unittest.mock.Mock()
+        get_mock.return_value.json.return_value = {
+            "success": True,
+            "result": [
+                {
+                    "name": "BEAR/USDT",
+                    "minProvideSize": 0.0,
+                    "priceIncrement": 0.0,
+                }
+            ]
+        }
+
+        self.controller.set_real_time(True)
+
         get_mock.return_value.json.return_value = {
             "success": True,
             "result": [
@@ -83,13 +97,13 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
             ]
         }
 
-        self.controller.set_real_time(True)
-
         descriptor = TickerSignalDescriptor(market, datetime.now(), datetime.now(), 50, 1, timedelta(seconds=15))
         with unittest.mock.patch("time.sleep"):
             self.assertListEqual(
                 [TradingSignalPoint(value=11055.25, date=datetime(2019, 6, 24, 17, 15))],
                 self.controller.get_price_history(descriptor, keyword="close").data)
+
+        self.controller.set_real_time(False)
 
 
 if __name__ == "__main__":
