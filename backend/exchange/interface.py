@@ -42,6 +42,22 @@ class ExchangeError(Exception):
 
 class ExchangeInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
+    def bet_on_bearish(self, market: Market, amount: float) -> bool:
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    def bet_on_bullish(self, market: Market, amount: float) -> bool:
+        pass  # pragma: no cover
+
+    def close_position(self, market: Market) -> bool:
+        position = self.get_position(market)
+        if position < 0:
+            return self.bet_on_bullish(market, -position)
+        if position > 0:
+            return self.bet_on_bearish(market, position)
+        return True
+
+    @abc.abstractmethod
     def buy(self, market: Market, amount: float) -> bool:
         pass  # pragma: no cover
 

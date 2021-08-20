@@ -11,6 +11,7 @@ import requests
 import config.exchange
 import exchange.base
 import exchange.interface
+from exchange.interface import Market
 import exchange.guard
 
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor, TradingSignalPoint
@@ -39,6 +40,12 @@ class FtxController(exchange.base.ExchangeBase):
             self._min_notional[market["name"]] = market["priceIncrement"]
             logging.debug("\t%s amount: %.12f price: %.12f", market["name"],
                           market["minProvideSize"], market["priceIncrement"])
+
+    def bet_on_bearish(self, market: Market, amount: float) -> bool:
+        return self.sell(market, amount)
+
+    def bet_on_bullish(self, market: Market, amount: float) -> bool:
+        return self.buy(market, amount)
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         if amount <= 0.0:

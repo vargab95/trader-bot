@@ -29,13 +29,7 @@ class FutureTraderBase(trader.base.TraderBase):
     def _sell(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
         position = self._exchange.get_position(market)
         logging.info("[Future-Sell] Position: %f", position)
-        if position > 0.0:
-            logging.info("%s was on position %f so bullish position was sold", str(market), position)
-            return self._exchange.sell(market, position)
-        if position < 0.0:
-            logging.info("%s was on position %f so bearish position was sold", str(market), position)
-            return self._exchange.buy(market, -position)
-        return False
+        return self._exchange.close_position(market)
 
     def _buy(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
         base_asset = self._configuration.future_base_asset
@@ -49,10 +43,10 @@ class FutureTraderBase(trader.base.TraderBase):
         for _ in range(10):
             if self._state == TraderState.BUYING_BEARISH:
                 logging.info("%f of %s was sold to go to bearish position", amount, str(market))
-                result = self._exchange.sell(market, amount)
+                result = self._exchange.bet_on_bearish(market, amount)
             elif self._state == TraderState.BUYING_BULLISH:
                 logging.info("%f of %s was bought to go to bullish position", amount, str(market))
-                result = self._exchange.buy(market, amount)
+                result = self._exchange.bet_on_bullish(market, amount)
             if result:
                 return True
             amount *= 0.99

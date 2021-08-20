@@ -216,21 +216,21 @@ class CommonMockTest(unittest.TestCase):
 
     def test_get_positions(self):
         with unittest.mock.patch("time.sleep"):
-            self.controller.buy(exchange.interface.Market.create_from_string("BEAR-PERP"), 5.0)
-            self.assertAlmostEqual(self.controller.get_positions()["BEAR-PERP"], 5.0)
+            self.controller.bet_on_bearish(exchange.interface.Market.create_from_string("BEAR-PERP"), 5.0)
+            self.assertAlmostEqual(self.controller.get_positions()["BEAR-PERP"], -5.0)
 
     def test_get_position(self):
         with unittest.mock.patch("time.sleep"):
             market = exchange.interface.Market.create_from_string("BEAR-PERP")
-            self.controller.buy(market, 5.0)
-            self.assertAlmostEqual(self.controller.get_position(market), 5.0)
+            self.controller.bet_on_bearish(market, 5.0)
+            self.assertAlmostEqual(self.controller.get_position(market), -5.0)
 
-    def test_get_position_after_sell(self):
+    def test_get_position_after_close(self):
         with unittest.mock.patch("time.sleep"):
             market = exchange.interface.Market.create_from_string("BEAR-PERP")
-            self.controller.buy(market, 5.0)
+            self.controller.bet_on_bearish(market, 5.0)
             market = exchange.interface.Market.create_from_string("BEAR-PERP")
-            self.controller.sell(market, 5.0)
+            self.controller.close_position(market)
             self.assertAlmostEqual(self.controller.get_position(market), 0.0)
 
     @unittest.skipIf(TESTS_USING_NETWORK, "FALSE")
