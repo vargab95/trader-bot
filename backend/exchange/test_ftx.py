@@ -176,6 +176,46 @@ class FtxTest(unittest.TestCase):
 
         self.assertAlmostEqual(controller.get_position(market), 0.0)
 
+    def test_bet_on_bearish(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+        market = exchange.interface.Market("ETH", "BTC")
+
+        session_mock.return_value = unittest.mock.Mock()
+        session_mock.return_value.json.return_value = {
+            "success": True,
+            "result": "Success"
+        }
+        get_mock.return_value = unittest.mock.Mock()
+        get_mock.return_value.json.return_value = {
+            "success": True,
+            "result": {
+                "last": 1.3,
+                "price": 1.2
+            }
+        }
+
+        self.assertTrue(controller.bet_on_bearish(market, 2.0))
+
+    def test_bet_on_bullish(self, session_mock, get_mock):
+        controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
+        market = exchange.interface.Market("ETH", "BTC")
+
+        session_mock.return_value = unittest.mock.Mock()
+        session_mock.return_value.json.return_value = {
+            "success": True,
+            "result": "Success"
+        }
+        get_mock.return_value = unittest.mock.Mock()
+        get_mock.return_value.json.return_value = {
+            "success": True,
+            "result": {
+                "last": 1.3,
+                "price": 1.2
+            }
+        }
+
+        self.assertTrue(controller.bet_on_bullish(market, 2.0))
+
     def test_get_leverage_balance(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
 
