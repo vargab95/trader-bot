@@ -57,6 +57,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._balances: exchange.interface.Balances = exchange.interface.Balances()
         self._balances[exchange_config.base_asset] = self.__start_money
         self._positions: exchange.interface.Balances = exchange.interface.Balances()
+        self._future_loans: exchange.interface.Balances = exchange.interface.Balances()
         MockBase.base_coin = exchange_config.base_asset
 
         self._is_real_time: bool = False
@@ -79,9 +80,10 @@ class MockBase(exchange.interface.ExchangeInterface):
         pass  # pragma: no cover
 
     def reset(self):
-        self._balances = {}
+        self._balances = exchange.interface.Balances()
         self._balances[self.base_coin] = self.__start_money
-        self._positions = {}
+        self._positions = exchange.interface.Balances()
+        self._future_loans = exchange.interface.Balances()
 
     def bet_on_bearish(self, market: Market, amount: float) -> bool:
         return self.__handle_future_bet(market, amount, False)
@@ -100,6 +102,9 @@ class MockBase(exchange.interface.ExchangeInterface):
             if not result:
                 return False
             amount -= to_sell
+
+            if amount <= 0:
+                return True
         return self.__handle_future_purchase(market, amount, is_bullish)
 
     def __handle_future_purchase(self, market: Market, amount: float, is_bullish: bool) -> bool:
@@ -115,6 +120,11 @@ class MockBase(exchange.interface.ExchangeInterface):
             if market_key not in self._positions.keys():
                 self._positions[market_key] = 0.0
             self._positions[market_key] += ((amount * (1 - self._fee)) * (1 if is_bullish else -1))
+
+            if market_key not in self._future_loans.keys():
+                self._future_loans[market_key] = 0.0
+            self._future_loans[market_key] += (amount * price) - leveraged_amount
+
             return True
         return False
 
@@ -129,7 +139,20 @@ class MockBase(exchange.interface.ExchangeInterface):
 
         if abs(position) >= amount:
             self._positions[market_key] += -amount if is_bullish else amount
-            self._balances[self.base_coin] += amount * price
+            self._balances[self.base_coin] += amount * price * (1 - self._fee)
+            return True
+        return False
+
+    def close_position(self, market: Market) -> bool:
+        if super().close_position(market):
+            market_key = self.get_market_key(market)
+
+            if market_key not in self._future_loans.keys():
+                return True
+
+            self._balances[self.base_coin] -= self._future_loans[market_key]
+            if self._balances[self.base_coin] < 0:
+                raise exchange.interface.ExchangeError("Future position has liquidated!!!")
             return True
         return False
 
