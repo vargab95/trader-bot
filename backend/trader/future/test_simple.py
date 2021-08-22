@@ -231,6 +231,58 @@ class SimpleFutureTraderTest(unittest.TestCase):
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
         self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
 
+    def test_buy_failure_when_switching_to_bearish_without_resignal(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.bet_on_bearish", return_value=False):
+            self.trader.perform(TradingAction.BEARISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), -3.0)
+
+    def test_buy_failure_when_switching_to_bullish_without_resignal(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.bet_on_bullish", return_value=False):
+            self.trader.perform(TradingAction.BULLISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
+
+    def test_sell_failure_when_switching_to_bearish_without_resignal(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.BULLISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.close_position", return_value=False):
+            self.trader.perform(TradingAction.BEARISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), -3.0)
+
+    def test_sell_failure_when_switching_to_bullish_without_resignal(self):
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.BEARISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), -3.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.close_position", return_value=False):
+            self.trader.perform(TradingAction.BULLISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), -3.0)
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
+
 
 if __name__ == "__main__":
     unittest.main()
