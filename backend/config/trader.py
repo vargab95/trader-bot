@@ -35,9 +35,15 @@ class TraderConfig(ConfigComponentBase):
         self.initial_step = config.get("initial_step", 1)
         self.future = bool(config.get("future", False))
         self.future_base_asset = config.get("future_base_asset", "USD")
-        self.market: Market = Market.create_from_string(config.get("market", "BTC-USDT"))
-        self.bearish_market: Market = Market.create_from_string(config.get("bearish_market", "BEAR-USDT"))
-        self.bullish_market: Market = Market.create_from_string(config.get("bullish_market", "BULL-USDT"))
+
+        if config.get("market", False):
+            self.market: Market = Market.create_from_string(config.get("market", "BTC-USDT"))
+            self.bearish_market: Market = self.market
+            self.bullish_market: Market = self.market
+        else:
+            self.bearish_market: Market = Market.create_from_string(config.get("bearish_market", "BEAR-USDT"))
+            self.bullish_market: Market = Market.create_from_string(config.get("bullish_market", "BULL-USDT"))
+
         self.default_price_keyword = config.get("default_price_keyword", "price")
         self.bullish_price_keyword = config.get("bullish_price_keyword", "price")
         self.bearish_price_keyword = config.get("bearish_price_keyword", "price")

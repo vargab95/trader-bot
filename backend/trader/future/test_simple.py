@@ -107,6 +107,62 @@ class SimpleFutureTraderTest(unittest.TestCase):
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
         self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
 
+    def test_return_to_base_from_bullish(self):
+        detector_signals = [
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.BULLISH_SIGNAL,
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.RETURN_TO_BASE_SIGNAL,
+            TradingAction.HOLD_SIGNAL
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal in detector_signals:
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_return_to_base_from_bearish(self):
+        detector_signals = [
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.BEARISH_SIGNAL,
+            TradingAction.HOLD_SIGNAL,
+            TradingAction.RETURN_TO_BASE_SIGNAL,
+            TradingAction.HOLD_SIGNAL
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal in detector_signals:
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_return_to_base_from_bullish_error(self):
+        self.trader.perform(TradingAction.BULLISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.close_position", return_value=False):
+            self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
+        self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_return_to_base_from_bearish_error(self):
+        self.trader.perform(TradingAction.BEARISH_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), -3.0)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.close_position", return_value=False):
+            self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), -3.0)
+        self.trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
     def test_switch_to_bearish(self):
         detector_signals = [
             TradingAction.HOLD_SIGNAL,

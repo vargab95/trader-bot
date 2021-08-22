@@ -34,12 +34,12 @@ class SimpleFutureTrader(trader.future.base.FutureTraderBase):
                 self._state = TraderState.BEARISH
 
     def _return_to_base_logic(self):
-        if self._state == TraderState.BULLISH:
+        if self._state in [TraderState.BULLISH, TraderState.SELLING_BULLISH, TraderState.BUYING_BULLISH]:
             if self._sell(self._configuration.market):
                 self._state = TraderState.BASE
             else:
                 self._state = TraderState.SELLING_BULLISH
-        elif self._state == TraderState.BEARISH:
+        elif self._state in [TraderState.BEARISH, TraderState.SELLING_BEARISH, TraderState.BUYING_BEARISH]:
             if self._sell(self._configuration.market):
                 self._state = TraderState.BASE
             else:

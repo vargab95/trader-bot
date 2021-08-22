@@ -21,11 +21,10 @@ class SimpleSingleTraderTest(unittest.TestCase):
         exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
         cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
         cls.exchange.price_mock["BTC-USDT"] = 100.0
-        cls.exchange.price_mock["BEAR-USDT"] = 10.0
-        cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
-        self.trader = trader.single.simple.SimpleSingleMarketTrader(TraderConfig({}), self.exchange)
+        configuration = TraderConfig({"market": "BTC-USDT"})
+        self.trader = trader.single.simple.SimpleSingleMarketTrader(configuration, self.exchange)
 
     def tearDown(self):
         self.exchange.reset()
@@ -150,3 +149,7 @@ class SimpleSingleTraderTest(unittest.TestCase):
         self.trader.perform(TradingAction.BEARISH_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BTC"), 0.0)
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+
+if __name__ == "__main__":
+    unittest.main()

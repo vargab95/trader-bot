@@ -36,8 +36,7 @@ class TraderBase:
             self._bearish_logic()
         elif self._return_to_base_condition(action):
             self._return_to_base_logic()
-
-        if self._is_there_any_pending_transaction():
+        elif self._is_there_any_pending_transaction():
             self._do_pending_transaction()
 
         logging.debug("New state is %s", str(self._state))
