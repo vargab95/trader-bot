@@ -14,7 +14,6 @@ class TraderConfig(ConfigComponentBase):
         self.input_signal_id = config.get("input_signal_id", None)
         self.indicator = config.get("indicator", "all")
         self.check_interval = config.get("check_interval", 60)
-        self.candle_size = config.get("candle_size", "1h")
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
 
