@@ -34,17 +34,18 @@ class TestFilterEventListener(unittest.TestCase):
 
         subscriber = TestSubscriber()
         publisher = Publisher()
-        instance = TradingViewFetcherSingle(FetcherConfig({
+        config = FetcherConfig({
             "market": "BTC-USD",
             "candle_size": "1m",
             "indicator": "all",
-            "check_interval": 60
-        }))
-        output_signal_id = "TestSignal"
-        listener = FetcherSignalPublisher(output_signal_id, instance, publisher)
+            "check_interval": 60,
+            "output_signal_id": "TestSignal"
+        })
+        instance = TradingViewFetcherSingle(config)
+        listener = FetcherSignalPublisher(config, instance, publisher)
 
-        publisher.register_signal(output_signal_id)
-        publisher.subscribe(output_signal_id, subscriber)
+        publisher.register_signal(config.output_signal_id)
+        publisher.subscribe(config.output_signal_id, subscriber)
 
         self.assertEqual(listener.read(), None)
         self.assertEqual(subscriber.get(), None)

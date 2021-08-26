@@ -2,6 +2,7 @@
 
 import logging
 
+from signals.trading_signal import TradingSignalDescriptor, TradingSignal
 from exchange.interface import Market
 import config.trader
 import fetcher.common
@@ -45,3 +46,6 @@ class TradingViewFetcherSingle(fetcher.trading_view_base.TradingViewFetcherBase)
             logging.warning(
                 "Key error occured while processing trading view response %s", str(self.response))
             return None
+
+    def get_indicator_history(self, descriptor: TradingSignalDescriptor) -> TradingSignal:
+        raise NotImplementedError

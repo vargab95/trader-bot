@@ -82,7 +82,7 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass  # pragma: no cover
 
     @abc.abstractmethod
-    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+    def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         pass  # pragma: no cover
 
     @abc.abstractmethod

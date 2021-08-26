@@ -63,26 +63,29 @@ class ApplicationBase:
         parser = config.parser.ConfigurationParser()
         parser.read(self._configuration_file_path)
         self._configuration = parser.configuration
-        # print(json.dumps(json.loads(str(self._configuration.dict()).replace("'", '"')), indent=4))
         self._configuration.validate()
 
     def _set_class_variables(self):
         mailing.message.Message.bot_name = self._configuration.mail.name
 
     def _configure_logging(self):
-        logging.basicConfig(level=self._configuration.logging.level,
-                            filename=self._configuration.logging.path,
-                            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        if self._configuration.logging.path:
+            logging.basicConfig(level=self._configuration.logging.level,
+                                filename=self._configuration.logging.path,
+                                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        else:
+            logging.basicConfig(level=self._configuration.logging.level,
+                                format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 
     def _initialize_mailing(self):
         self._postman = mailing.postman.Postman(self._configuration.mail)
 
     @abc.abstractmethod
-    def _initialize_application_logic(self):
+    def _initialize_application_logic(self):  # pragma: no cover
         pass
 
     @abc.abstractmethod
-    def _run_application_logic(self):
+    def _run_application_logic(self):  # pragma: no cover
         pass
 
     def run(self):

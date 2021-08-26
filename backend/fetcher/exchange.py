@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+from signals.trading_signal import TradingSignal, TradingSignalDescriptor
 from config.fetcher import FetcherConfig
 from exchange.interface import ExchangeInterface
 
@@ -17,3 +18,6 @@ class ExchangeFetcher(Fetcher):
 
     def get_technical_indicator(self) -> float:
         return self.__indicator
+
+    def get_indicator_history(self, descriptor: TradingSignalDescriptor) -> TradingSignal:
+        return self.__exchange.get_price_history(descriptor)

@@ -8,7 +8,7 @@ from config.base import ConfigComponentBase
 class LoggingConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.level: int = config.get("level", 31)
-        self.path: str = config.get("path", "")
+        self.path: str = config.get("path", None)
 
     def validate(self):
         pass

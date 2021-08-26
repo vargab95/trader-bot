@@ -63,7 +63,7 @@ class TradingComponentsBuilderBase:
             if fetcher_config.type == "exchange":
                 exchange = self.exchanges[fetcher_config.exchange_id]
             fetcher = FetcherFactory.create(fetcher_config, exchange)
-            publisher = FetcherSignalPublisher(fetcher_config.output_signal_id,
+            publisher = FetcherSignalPublisher(fetcher_config,
                                                fetcher,
                                                self.fetched_signal_publisher)
 

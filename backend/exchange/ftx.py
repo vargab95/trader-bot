@@ -164,7 +164,7 @@ class FtxController(exchange.base.ExchangeBase):
         raise exchange.interface.ExchangeError(data["error"])
 
     @exchange.guard.exchange_guard()
-    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+    def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         valid_resolutions = [15, 60, 300, 900, 3600, 14400, 86400]
 
         if descriptor.resolution.total_seconds() not in valid_resolutions:
@@ -198,7 +198,7 @@ class FtxController(exchange.base.ExchangeBase):
         history = []
         for item in data["result"]:
             point = TradingSignalPoint()
-            point.value = float(item[keyword])
+            point.value = float(item[descriptor.keyword])
             point.date = datetime.datetime.strptime(item["startTime"], self.datetime_format)
             history.append(point)
 

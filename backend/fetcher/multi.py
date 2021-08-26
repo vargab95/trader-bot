@@ -2,6 +2,7 @@
 
 import logging
 
+from signals.trading_signal import TradingSignalDescriptor, TradingSignal
 import config.trader
 import fetcher.common
 import fetcher.trading_view_base
@@ -52,8 +53,8 @@ class TradingViewFetcherMulti(fetcher.trading_view_base.TradingViewFetcherBase):
                     self.indicator_name_map[self.indicator_name] +
                     self.candle_size_map[self.candle_size]
                 ]
-        except KeyError:
-            raise fetcher.common.InvalidConfigurationException()
+        except KeyError as exc:
+            raise fetcher.common.InvalidConfigurationException() from exc
 
     def get_technical_indicator(self) -> float:
         try:
@@ -88,3 +89,6 @@ class TradingViewFetcherMulti(fetcher.trading_view_base.TradingViewFetcherBase):
                 data[market_data["s"]][indicator][candle_size] = value
                 i += 1
         return data
+
+    def get_indicator_history(self, descriptor: TradingSignalDescriptor) -> TradingSignal:
+        raise NotImplementedError

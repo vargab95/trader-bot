@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import typing
+from datetime import timedelta
 
 from exchange.interface import Market
 from config.base import ConfigComponentBase
@@ -23,6 +24,12 @@ class FetcherConfig(ConfigComponentBase):
         self.exchange_id: str = config.get("exchange_id", None)
         self.type: str = config.get("type", "exchange")
         self.indicator: str = config.get("indicator", "all")
+
+        self.initial_values = config.get("initial_values", [])
+        self.initial_length = config.get("initial_length", 0)
+        self.initial_keyword = config.get("initial_keyword", "close")
+        self.initial_step = config.get("initial_step", 1)
+        self.initial_resolution = timedelta(seconds=config.get("initial_resolution", 3600))
 
     def validate(self):
         if self.output_signal_id is None:

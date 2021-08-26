@@ -338,11 +338,9 @@ class BinanceTest(unittest.TestCase):
         descriptor = signals.trading_signal.TickerSignalDescriptor(
             market, None, None, 50, 1, datetime.timedelta(seconds=60))
 
-        self.assertListEqual(controller.get_price_history(
-            descriptor, keyword="close").data,
-            [signals.trading_signal.TradingSignalPoint(
-                value=0.015771, date=datetime.datetime(2017, 7, 3, 2, 0))]
-        )
+        self.assertListEqual(controller.get_price_history(descriptor).data,
+                             [signals.trading_signal.TradingSignalPoint(
+                              value=0.015771, date=datetime.datetime(2017, 7, 3, 2, 0))])
 
         handle.get_historical_klines.assert_called_once()
 
@@ -354,4 +352,4 @@ class BinanceTest(unittest.TestCase):
             market, None, None, 50, 1, datetime.timedelta(seconds=65))
 
         with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.get_price_history(descriptor, keyword="close"))
+            self.assertFalse(controller.get_price_history(descriptor))

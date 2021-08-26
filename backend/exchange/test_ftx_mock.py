@@ -101,7 +101,7 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
         with unittest.mock.patch("time.sleep"):
             self.assertListEqual(
                 [TradingSignalPoint(value=11055.25, date=datetime(2019, 6, 24, 17, 15))],
-                self.controller.get_price_history(descriptor, keyword="close").data)
+                self.controller.get_price_history(descriptor).data)
 
         self.controller.set_real_time(False)
 

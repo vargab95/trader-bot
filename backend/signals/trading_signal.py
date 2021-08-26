@@ -19,6 +19,7 @@ class TradingSignalDescriptor:
     limit: int = -1
     step: int = 1
     resolution: datetime.timedelta = None
+    keyword: str = "close"
 
 
 @dataclass

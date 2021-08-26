@@ -204,9 +204,9 @@ class MockBase(exchange.interface.ExchangeInterface):
         return self.price_mock[self.get_market_key(market)]
 
     @exchange.guard.exchange_guard()
-    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+    def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         if self._is_real_time:
-            return self._real_exchange.get_price_history(descriptor, keyword)
+            return self._real_exchange.get_price_history(descriptor)
         raise NotImplementedError("Mocked price history has not been implemented yet")
 
     def get_positions(self) -> exchange.interface.Balances:

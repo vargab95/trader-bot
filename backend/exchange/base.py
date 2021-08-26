@@ -95,5 +95,5 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
     def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
         return -1.0  # pragma: no cover
 
-    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+    def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         pass  # pragma: no cover

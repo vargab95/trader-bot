@@ -125,7 +125,7 @@ class BinanceController(exchange.base.ExchangeBase):
     }
 
     @exchange.guard.exchange_guard()
-    def get_price_history(self, descriptor: TickerSignalDescriptor, keyword: str = "") -> TradingSignal:
+    def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         if descriptor.resolution.total_seconds() not in list(self.__resolution_map.keys()):
             raise ValueError("Resolution time gap should be in " + str(list(self.__resolution_map.keys())))
 
@@ -147,7 +147,7 @@ class BinanceController(exchange.base.ExchangeBase):
         history = []
         for item in result:
             point = TradingSignalPoint()
-            point.value = float(item[self.__result_map[keyword]])
+            point.value = float(item[self.__result_map[descriptor.keyword]])
             point.date = datetime.datetime.fromtimestamp(item[0] / 1000)
             history.append(point)
 

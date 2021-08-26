@@ -356,7 +356,7 @@ class FtxTest(unittest.TestCase):
         self.assertListEqual(
             [signals.trading_signal.TradingSignalPoint(
                 value=11055.25, date=datetime.datetime(2019, 6, 24, 17, 15))],
-            controller.get_price_history(descriptor, keyword="close").data)
+            controller.get_price_history(descriptor).data)
 
     def test_historical_price_invalid_resolution(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -365,7 +365,7 @@ class FtxTest(unittest.TestCase):
             market, None, None, 50, 1, datetime.timedelta(seconds=25))
 
         with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.get_price_history(descriptor, keyword="close"))
+            self.assertFalse(controller.get_price_history(descriptor))
 
     def test_historical_price_failure(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -379,4 +379,4 @@ class FtxTest(unittest.TestCase):
         descriptor = signals.trading_signal.TickerSignalDescriptor(
             market, datetime.datetime.now(), datetime.datetime.now(), 50, 1, datetime.timedelta(seconds=15))
         with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.get_price_history(descriptor, keyword="close"))
+            self.assertFalse(controller.get_price_history(descriptor))

@@ -29,10 +29,6 @@ class TraderConfig(ConfigComponentBase):
             self.start_state = None
 
         self.max_steps = config.get("max_steps", 5)
-        self.initial_values = config.get("initial_values", [])
-        self.initial_length = config.get("initial_length", 1)
-        self.initial_keyword = config.get("initial_keyword", "close")
-        self.initial_step = config.get("initial_step", 1)
         self.future = bool(config.get("future", False))
         self.future_base_asset = config.get("future_base_asset", "USD")
 
