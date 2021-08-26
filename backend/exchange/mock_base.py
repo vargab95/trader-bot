@@ -60,17 +60,17 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._future_loans: exchange.interface.Balances = exchange.interface.Balances()
         MockBase.base_coin = exchange_config.base_asset
 
-        self._is_real_time: bool = False
-        self.set_real_time(self._configuration.real_time)
-
+        self.leverage: float = 1.0
         self._fee: float = exchange_config.fee
         self._client = None
         self._precision = exchange_config.balance_precision
         self._real_exchange: exchange.interface.ExchangeInterface = None
 
+        self._is_real_time: bool = False
+        self.set_real_time(self._configuration.real_time)
+
         if not self._is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
-            self.leverage: float = 1.0
 
     def get_market_key(self, market: Market) -> str:
         return market.key(name_format=self._configuration.market_name_format)

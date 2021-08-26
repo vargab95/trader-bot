@@ -33,25 +33,25 @@ class ComponentsConfig(ConfigComponentBase):
         detector_combination_signals = [dc.output_signal_id for dc in self.detector_combinations]
 
         for filter_config in self.filters:
-            if filter_config.input_signal_id not in fetcher_signals:
-                raise InvalidConfigurationException("No provided signal for filter input"
+            if filter_config.input_signal_id not in fetcher_signals + filter_signals:
+                raise InvalidConfigurationException("No provided signal for filter input "
                                                     f"{filter_config.input_signal_id}")
 
         for detector_config in self.detectors:
             if detector_config.input_signal_id not in filter_signals:
-                raise InvalidConfigurationException("No provided signal for detector input"
+                raise InvalidConfigurationException("No provided signal for detector input "
                                                     f"{detector_config.input_signal_id}")
 
         for detector_combination_config in self.detector_combinations:
             for input_signal_id in detector_combination_config.input_signal_ids:
                 if input_signal_id not in detector_signals:
-                    raise InvalidConfigurationException("No provided signal for detector combination input"
+                    raise InvalidConfigurationException("No provided signal for detector combination input "
                                                         f"{input_signal_id}")
 
         for trader_config in self.traders:
             if trader_config.input_signal_id not in detector_signals and \
                     trader_config.input_signal_id not in detector_combination_signals:
-                raise InvalidConfigurationException("No provided signal for trader input"
+                raise InvalidConfigurationException("No provided signal for trader input "
                                                     f"{trader_config.input_signal_id}")
 
     def dict(self):

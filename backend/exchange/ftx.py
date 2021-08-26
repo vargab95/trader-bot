@@ -195,6 +195,7 @@ class FtxController(exchange.base.ExchangeBase):
 
         logging.debug("FTX price history request result: %s", str(data))
 
+        print(request_url, data)
         history = []
         for item in data["result"]:
             point = TradingSignalPoint()

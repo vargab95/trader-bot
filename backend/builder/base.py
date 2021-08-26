@@ -29,8 +29,7 @@ from trader.event_listener import TradingActionListener
 
 class TradingComponentsBuilderBase:
     def __init__(self):
-        self.fetched_signal_publisher: Publisher = Publisher(name="Fetched signal")
-        self.filter_signal_publisher: Publisher = Publisher(name="Filtered signal")
+        self.analogue_signal_publisher: Publisher = Publisher(name="Filtered signal")
         self.detector_signal_publisher: Publisher = Publisher(name="Detector signal")
 
         self.exchanges: typing.Dict[str, ExchangeInterface] = dict()
@@ -65,25 +64,25 @@ class TradingComponentsBuilderBase:
             fetcher = FetcherFactory.create(fetcher_config, exchange)
             publisher = FetcherSignalPublisher(fetcher_config,
                                                fetcher,
-                                               self.fetched_signal_publisher)
+                                               self.analogue_signal_publisher)
 
             self.fetchers[fetcher_config.output_signal_id] = fetcher
             self.fetcher_publishers[fetcher_config.output_signal_id] = publisher
 
-            self.fetched_signal_publisher.register_signal(fetcher_config.output_signal_id)
+            self.analogue_signal_publisher.register_signal(fetcher_config.output_signal_id)
 
     def create_filters(self, filter_configs: typing.List[FetcherConfig]):
         for filter_config in filter_configs:
             filter_instance = FilterFactory.create(filter_config)
             filter_listener = FilterEventListener(filter_config.output_signal_id,
                                                   filter_instance,
-                                                  self.filter_signal_publisher)
+                                                  self.analogue_signal_publisher)
 
-            self.fetched_signal_publisher.subscribe(filter_config.input_signal_id, filter_listener)
+            self.analogue_signal_publisher.subscribe(filter_config.input_signal_id, filter_listener)
             self.filters[filter_config.output_signal_id] = filter_instance
             self.filter_listeners[filter_config.output_signal_id] = filter_listener
 
-            self.filter_signal_publisher.register_signal(filter_config.output_signal_id)
+            self.analogue_signal_publisher.register_signal(filter_config.output_signal_id)
 
     def create_detectors(self, detector_configs: typing.List[DetectorConfig]):
         for detector_config in detector_configs:
@@ -91,7 +90,7 @@ class TradingComponentsBuilderBase:
             detector_listener = DetectorEventListener(detector_config.output_signal_id,
                                                       detector,
                                                       self.detector_signal_publisher)
-            self.filter_signal_publisher.subscribe(detector_config.input_signal_id, detector_listener)
+            self.analogue_signal_publisher.subscribe(detector_config.input_signal_id, detector_listener)
             self.detectors[detector_config.output_signal_id] = detector
             self.detector_listeners[detector_config.output_signal_id] = detector_listener
 

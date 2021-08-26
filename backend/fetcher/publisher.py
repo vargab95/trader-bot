@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
-from datetime import datetime, timedelta
+import logging
+from datetime import datetime
 
 from observer.publisher import Publisher
 from observer.event import SignalUpdatedEvent
@@ -25,7 +26,7 @@ class FetcherSignalPublisher:
                 history = self.__config.initial_values
             elif self.__config.initial_length > 0:
                 limit = self.__config.initial_length * self.__config.initial_step
-                start_date = datetime.now() - self.__config.initial_resolution * limit
+                start_date = datetime.utcnow() - self.__config.initial_resolution * limit
                 descriptor = TickerSignalDescriptor(market=self.__config.market,
                                                     limit=limit,
                                                     resolution=self.__config.initial_resolution,
@@ -33,7 +34,9 @@ class FetcherSignalPublisher:
                                                     keyword=self.__config.initial_keyword)
                 history = self.__fetcher.get_indicator_history(descriptor)
                 history = history.data[::self.__config.initial_step]
+                print(descriptor, history)
 
+            logging.info("Publishing the following list as initial value list: %s", str(history))
             if history:
                 for signal_point in history:
                     self.__value = signal_point.value

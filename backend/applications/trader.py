@@ -17,7 +17,7 @@ class TraderApplication(applications.base.ApplicationBase):
         self.__scheduler = BlockingScheduler()
 
     def _initialize_application_logic(self):
-        self._builder.build(self._configuration.components)
+        self._builder.build(self._configuration.components, self._configuration.testing.enabled)
 
     @staticmethod
     def __add_trader_schedule(scheduler, config, trader, listener):
