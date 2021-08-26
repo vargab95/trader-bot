@@ -55,7 +55,7 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
             return self.bet_on_bullish(market, -position)
         if position > 0:
             return self.bet_on_bearish(market, position)
-        return True
+        raise ExchangeError("Cannot close position with 0 value")
 
     @abc.abstractmethod
     def buy(self, market: Market, amount: float) -> bool:

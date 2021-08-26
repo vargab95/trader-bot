@@ -98,9 +98,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         if position < 0 if is_bullish else position > 0:
             diff = abs(position) - amount
             to_sell = diff if diff > 0 else amount
-            result = self.__handle_future_sell(market, to_sell, not is_bullish)
-            if not result:
-                return False
+            self.__handle_future_sell(market, to_sell, not is_bullish)
             amount -= to_sell
 
             if amount <= 0:
@@ -117,8 +115,6 @@ class MockBase(exchange.interface.ExchangeInterface):
         market_key = self.get_market_key(market)
         if self.get_leverage_balance() >= leveraged_amount:
             self._balances[self.base_coin] -= leveraged_amount
-            if market_key not in self._positions.keys():
-                self._positions[market_key] = 0.0
             self._positions[market_key] += ((amount * (1 - self._fee)) * (1 if is_bullish else -1))
 
             if market_key not in self._future_loans.keys():
@@ -128,33 +124,20 @@ class MockBase(exchange.interface.ExchangeInterface):
             return True
         return False
 
-    def __handle_future_sell(self, market: Market, amount: float, is_bullish: bool) -> bool:
-        if amount <= 0.0:
-            return False
-
+    def __handle_future_sell(self, market: Market, amount: float, is_bullish: bool) -> None:
         amount = self._floor(amount, self._precision)
-        position = self.get_position(market)
         price = self.get_price(market)
         market_key = self.get_market_key(market)
-
-        if abs(position) >= amount:
-            self._positions[market_key] += -amount if is_bullish else amount
-            self._balances[self.base_coin] += amount * price * (1 - self._fee)
-            return True
-        return False
+        self._positions[market_key] += -amount if is_bullish else amount
+        self._balances[self.base_coin] += abs(amount) * price * (1 - self._fee)
 
     def close_position(self, market: Market) -> bool:
-        if super().close_position(market):
-            market_key = self.get_market_key(market)
-
-            if market_key not in self._future_loans.keys():
-                return True
-
-            self._balances[self.base_coin] -= self._future_loans[market_key]
-            if self._balances[self.base_coin] < 0:
-                raise exchange.interface.ExchangeError("Future position has liquidated!!!")
-            return True
-        return False
+        super().close_position(market)
+        market_key = self.get_market_key(market)
+        self._balances[self.base_coin] -= self._future_loans[market_key]
+        if self._balances[self.base_coin] < 0:
+            raise exchange.interface.ExchangeError("Future position has liquidated!!!")
+        return True
 
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         logging.debug("Amount to buy: %f", amount)

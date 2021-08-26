@@ -10,7 +10,7 @@ from signals.trading_signal import TickerSignalDescriptor
 
 import exchange.factory
 import exchange.interface
-from exchange.interface import Market
+from exchange.interface import Market, ExchangeError
 
 TESTS_USING_NETWORK = os.getenv('TESTS_USING_NETWORK', 'FALSE')
 
@@ -26,7 +26,9 @@ class CommonMockTest(unittest.TestCase):
         self.controller.price_mock["BTC-USDT"] = 100.0
         self.controller.price_mock["BEAR-USDT"] = 10.0
         self.controller.price_mock["BEAR-PERP"] = 10.0
+        self.controller.price_mock["BULL-PERP"] = 4.0
         self.controller.price_mock["BULL-USDT"] = 5.0
+        self.controller.leverage = 1.0
 
     def test_buy_bear_and_sell_on_same_price(self):
         self.assertTrue(
@@ -229,9 +231,65 @@ class CommonMockTest(unittest.TestCase):
         with unittest.mock.patch("time.sleep"):
             market = exchange.interface.Market.create_from_string("BEAR-PERP")
             self.controller.bet_on_bearish(market, 5.0)
-            market = exchange.interface.Market.create_from_string("BEAR-PERP")
             self.controller.close_position(market)
             self.assertAlmostEqual(self.controller.get_position(market), 0.0)
+
+    def test_close_empty_position(self):
+        market = exchange.interface.Market.create_from_string("BEAR-PERP")
+        with self.assertRaises(exchange.interface.ExchangeError):
+            self.controller.close_position(market)
+
+    def test_bet_on_bullish_too_much(self):
+        market = exchange.interface.Market.create_from_string("BULL-PERP")
+        self.assertFalse(self.controller.bet_on_bullish(market, 2000.0))
+
+    def test_bet_on_bearish_too_much(self):
+        market = exchange.interface.Market.create_from_string("BEAR-PERP")
+        self.assertFalse(self.controller.bet_on_bearish(market, 2000.0))
+
+    def test_bet_on_bullish_negative(self):
+        market = exchange.interface.Market.create_from_string("BULL-PERP")
+        self.assertFalse(self.controller.bet_on_bullish(market, -1.0))
+
+    def test_bet_on_bearish_negative(self):
+        market = exchange.interface.Market.create_from_string("BEAR-PERP")
+        self.assertFalse(self.controller.bet_on_bearish(market, -1.0))
+
+    def test_bet_on_bullish_with_bear_position(self):
+        market = exchange.interface.Market.create_from_string("BULL-PERP")
+        self.controller.bet_on_bullish(market, 1.0)
+        self.assertAlmostEqual(self.controller.get_position(market), 1.0)
+        self.controller.bet_on_bearish(market, 2.0)
+        self.assertAlmostEqual(self.controller.get_position(market), -1.0)
+
+    def test_bet_on_bearish_with_bull_position(self):
+        market = exchange.interface.Market.create_from_string("BEAR-PERP")
+        self.controller.bet_on_bearish(market, 1.0)
+        self.assertAlmostEqual(self.controller.get_position(market), -1.0)
+        self.controller.bet_on_bullish(market, 2.0)
+        self.assertAlmostEqual(self.controller.get_position(market), 1.0)
+
+    def test_close_position_with_bear_position(self):
+        market = exchange.interface.Market.create_from_string("BULL-PERP")
+        self.controller.bet_on_bullish(market, 1.0)
+        self.assertAlmostEqual(self.controller.get_position(market), 1.0)
+        self.controller.close_position(market)
+        self.assertAlmostEqual(self.controller.get_position(market), 0.0)
+
+    def test_close_position_with_bull_position(self):
+        market = exchange.interface.Market.create_from_string("BEAR-PERP")
+        self.controller.bet_on_bearish(market, 1.0)
+        self.assertAlmostEqual(self.controller.get_position(market), -1.0)
+        self.controller.close_position(market)
+        self.assertAlmostEqual(self.controller.get_position(market), 0.0)
+
+    def test_close_position_below_liquidation_price(self):
+        self.controller.leverage = 3.0
+        market = exchange.interface.Market.create_from_string("BEAR-PERP")
+        self.controller.bet_on_bullish(market, 30.0)
+        self.controller.price_mock["BEAR-PERP"] = 6
+        with self.assertRaises(ExchangeError):
+            self.controller.close_position(market)
 
     @unittest.skipIf(TESTS_USING_NETWORK, "FALSE")
     def test_get_price_real_time(self):

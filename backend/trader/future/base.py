@@ -27,9 +27,10 @@ class FutureTraderBase(trader.base.TraderBase):
         return detector.common.TradingAction.BEARISH_SIGNAL == action
 
     def _sell(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
-        position = self._exchange.get_position(market)
-        logging.info("[Future-Sell] Position: %f", position)
-        return self._exchange.close_position(market)
+        try:
+            return self._exchange.close_position(market)
+        except exchange.interface.ExchangeError:
+            return False if self._exchange.get_position(market) != 0 else True
 
     def _buy(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
         base_asset = self._configuration.future_base_asset
