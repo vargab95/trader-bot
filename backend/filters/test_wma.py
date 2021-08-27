@@ -4,10 +4,12 @@ import unittest
 
 import filters.wma
 
+from config.filter import FilterConfig
+
 
 class WMATest(unittest.TestCase):
     def test_fill_up(self):
-        wma = filters.wma.WMA(10)
+        wma = filters.wma.WMA(FilterConfig({"length": 10}))
 
         for _ in range(0, 9):
             wma.put(1.0)
@@ -17,7 +19,7 @@ class WMATest(unittest.TestCase):
         self.assertEqual(wma.get(), 1.0)
 
     def test_calculation(self):
-        wma = filters.wma.WMA(5)
+        wma = filters.wma.WMA(FilterConfig({"length": 5}))
 
         wma.put(16.0)
         wma.put(17.0)

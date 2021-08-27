@@ -35,7 +35,7 @@ class FilterFactory:
         }
 
         try:
-            return constructor_map[configuration.type](configuration.length)
+            return constructor_map[configuration.type](configuration)
         except KeyError as exc:
             raise InvalidFilterFactoryParameter(f"{configuration.type} is not a valid filter type") from exc
 

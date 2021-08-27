@@ -8,6 +8,8 @@ from observer.publisher import Publisher
 from observer.subscriber import Subscriber
 from observer.event import SignalUpdatedEvent
 
+from config.filter import FilterConfig
+
 
 class TestSubscriber(Subscriber):
     def __init__(self):
@@ -24,7 +26,7 @@ class TestFilterEventListener(unittest.TestCase):
     def test_event_listener_update(self):
         subscriber = TestSubscriber()
         publisher = Publisher()
-        filter_instance = SMA(2)
+        filter_instance = SMA(FilterConfig({"length": 2}))
         output_signal_id = "TestSignal"
         listener = FilterEventListener(output_signal_id, filter_instance, publisher)
 

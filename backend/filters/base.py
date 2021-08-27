@@ -2,10 +2,12 @@
 
 import abc
 
+from config.filter import FilterConfig
+
 
 class Filter:
-    def __init__(self, length):
-        self._length = length
+    def __init__(self, config: FilterConfig):
+        self._config = config
         self._data = []
         self._value = None
 
@@ -18,4 +20,4 @@ class Filter:
 
     @property
     def length(self):
-        return self._length
+        return self._config.length

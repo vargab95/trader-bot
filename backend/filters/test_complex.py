@@ -8,13 +8,15 @@ import filters.wma
 import filters.hma
 import filters.derivative
 
+from config.filter import FilterConfig
+
 
 class ComplexTest(unittest.TestCase):
     def test_fill_up(self):
         complex_filter = filters.complex.Complex()
 
-        complex_filter.add_filter(filters.sma.SMA(10))
-        complex_filter.add_filter(filters.sma.SMA(10))
+        complex_filter.add_filter(filters.sma.SMA(FilterConfig({"length": 10})))
+        complex_filter.add_filter(filters.sma.SMA(FilterConfig({"length": 10})))
 
         for _ in range(0, 18):
             complex_filter.put(1.0)
@@ -26,8 +28,8 @@ class ComplexTest(unittest.TestCase):
     def test_length_property(self):
         complex_filter = filters.complex.Complex()
 
-        complex_filter.add_filter(filters.sma.SMA(10))
-        complex_filter.add_filter(filters.wma.WMA(10))
+        complex_filter.add_filter(filters.sma.SMA(FilterConfig({"length": 10})))
+        complex_filter.add_filter(filters.wma.WMA(FilterConfig({"length": 10})))
 
         for _ in range(0, 20):
             complex_filter.put(1.0)
@@ -37,8 +39,8 @@ class ComplexTest(unittest.TestCase):
     def test_all_property(self):
         complex_filter = filters.complex.Complex()
 
-        complex_filter.add_filter(filters.wma.WMA(10))
-        complex_filter.add_filter(filters.wma.WMA(10))
+        complex_filter.add_filter(filters.wma.WMA(FilterConfig({"length": 10})))
+        complex_filter.add_filter(filters.wma.WMA(FilterConfig({"length": 10})))
 
         self.assertEqual(complex_filter.all, None)
 
@@ -59,8 +61,8 @@ class ComplexTest(unittest.TestCase):
 
         complex_filter = filters.complex.Complex()
 
-        complex_filter.add_filter(filters.sma.SMA(5))
-        sma = filters.sma.SMA(5)
+        complex_filter.add_filter(filters.sma.SMA(FilterConfig({"length": 5})))
+        sma = filters.sma.SMA(FilterConfig({"length": 5}))
 
         for data in test_data:
             sma.put(data)
@@ -75,10 +77,10 @@ class ComplexTest(unittest.TestCase):
 
         complex_filter = filters.complex.Complex()
 
-        complex_filter.add_filter(filters.sma.SMA(5))
-        complex_filter.add_filter(filters.derivative.Derivative(2))
-        sma = filters.sma.SMA(5)
-        deriv = filters.derivative.Derivative(2)
+        complex_filter.add_filter(filters.sma.SMA(FilterConfig({"length": 5})))
+        complex_filter.add_filter(filters.derivative.Derivative(FilterConfig({"length": 2})))
+        sma = filters.sma.SMA(FilterConfig({"length": 5}))
+        deriv = filters.derivative.Derivative(FilterConfig({"length": 2}))
 
         for data in test_data:
             sma.put(data)
@@ -99,9 +101,9 @@ class ComplexTest(unittest.TestCase):
 
         complex_filter = filters.complex.Complex()
 
-        complex_filter.add_filter(filters.hma.HMA(42))
-        complex_filter.add_filter(filters.derivative.Derivative(2))
-        complex_filter.add_filter(filters.wma.WMA(4))
+        complex_filter.add_filter(filters.hma.HMA(FilterConfig({"length": 42})))
+        complex_filter.add_filter(filters.derivative.Derivative(FilterConfig({"length": 2})))
+        complex_filter.add_filter(filters.wma.WMA(FilterConfig({"length": 4})))
 
         for data in test_data:
             complex_filter.put(data)

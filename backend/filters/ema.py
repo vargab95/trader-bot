@@ -6,13 +6,13 @@ import filters.wma
 from config.filter import FilterConfig
 
 
-class HMA(filters.base.Filter):
+class EMA(filters.base.Filter):
     def __init__(self, config: FilterConfig):
         super().__init__(config)
 
         self.__n_wma = filters.wma.WMA(config)
         self.__np2_wma = filters.wma.WMA(FilterConfig({"length": int(config.length / 2)}))
-        self.__sqrt_wma = filters.wma.WMA(FilterConfig({"length": int(config.length**0.5)}))
+        self.__sqrt_wma = filters.wma.WMA(FilterConfig({"length": int(config.length ** 0.5)}))
         self._value = None
 
     def put(self, value: float):
