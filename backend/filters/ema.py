@@ -19,6 +19,7 @@ class EMA(filters.base.Filter):
             current_ema = self.__sma.get()
             for i in self._data:
                 current_ema = (alfa * i) + ((1 - alfa) * current_ema)
+            self._value = current_ema
             return current_ema
         return None
 
