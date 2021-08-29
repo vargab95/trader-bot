@@ -1,12 +1,21 @@
 #!/bin/bash
 
-MODE=$1
-CONFIG_FILE=$2
-
-if [[ -z $MODE || -z $CONFIG_FILE ]]
+APPLICATION_TYPE=$1
+if [[ -z $APPLICATION_TYPE ]]
 then
-    echo "Usage is <mode> <config_file_path>"
+    APPLICATION_TYPE=$TRADER_APPLICATION_TYPE
+fi
+
+CONFIG_FILE=$2
+if [[ -z $CONFIG_FILE ]]
+then
+    CONFIG_FILE=$TRADER_CONFIG_FILE
+fi
+
+if [[ -z $APPLICATION_TYPE || -z $CONFIG_FILE ]]
+then
+    echo "Usage is <mode> <config_file_path> or set via TRADER_APPLICATION_TYPE and TRADER_CONFIG_FILE environment variables"
     exit 1
 fi
 
-exec python3 ./main.py $MODE $CONFIG_FILE
+exec python3 ./main.py $APPLICATION_TYPE $CONFIG_FILE
