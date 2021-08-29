@@ -8,4 +8,3 @@ python-binance==1.0.12
 PyYAML==5.4.1
 requests==2.26.0
 apscheduler==3.7.0
-TA-Lib==0.4.21

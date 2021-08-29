@@ -4,7 +4,7 @@ import unittest
 
 from config.filter import FilterConfig
 
-from .rsi import RSI
+from filters.rsi import RSI
 
 
 class TestRSIFilter(unittest.TestCase):
@@ -15,3 +15,15 @@ class TestRSIFilter(unittest.TestCase):
             filt.put(i)
 
         self.assertAlmostEqual(filt.get(), 55.23, 2)
+
+    def test_rsi_on_constant(self):
+        filt = RSI(FilterConfig({"length": 7}))
+
+        for i in [12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12]:
+            filt.put(i)
+
+        self.assertEqual(filt.get(), None)
+
+
+if __name__ == "__main__":
+    unittest.main()
