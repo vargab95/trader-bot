@@ -55,6 +55,3 @@ class TradingViewFetcherBase(Fetcher):
 
     def get_technical_indicator(self) -> float:
         pass  # pragma: no cover
-
-    def sleep_until_next_data(self):
-        time.sleep(self.check_interval)  # pragma: no cover

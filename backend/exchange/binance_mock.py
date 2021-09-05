@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import exchange.interface
-import exchange.guard
 import exchange.mock_base
 from exchange.binance import BinanceController
 

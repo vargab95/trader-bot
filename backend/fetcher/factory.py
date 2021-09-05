@@ -4,6 +4,7 @@ from config.fetcher import FetcherConfig
 from fetcher.single import TradingViewFetcherSingle
 from fetcher.multi import TradingViewFetcherMulti
 from fetcher.exchange import ExchangeFetcher
+from fetcher.csv import CSVFetcher
 from exchange.interface import ExchangeInterface
 
 
@@ -23,5 +24,8 @@ class FetcherFactory:
 
         if config.type == "exchange":
             return ExchangeFetcher(config, exchange)
+
+        if config.type == "csv_file":
+            return CSVFetcher(config)
 
         raise InvalidFetcherFactoryParameter()

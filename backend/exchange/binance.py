@@ -7,7 +7,6 @@ import binance.client
 
 import exchange.base
 import exchange.interface
-import exchange.guard
 import config.exchange
 
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor, TradingSignalPoint
@@ -32,7 +31,6 @@ class BinanceController(exchange.base.ExchangeBase):
             logging.debug("    %s: LOT_SIZE: %f MIN_NOTIONAL: %f", symbol,
                           min_quantity, min_notional)
 
-    @exchange.guard.exchange_guard()
     def buy(self, market: exchange.interface.Market, amount: float) -> bool:
         if amount <= 0.0:
             return False
@@ -52,7 +50,6 @@ class BinanceController(exchange.base.ExchangeBase):
                      self.get_market_key(market))
         return True
 
-    @exchange.guard.exchange_guard()
     def sell(self, market: exchange.interface.Market, amount: float) -> bool:
         if amount <= 0.0:
             return False
@@ -72,7 +69,6 @@ class BinanceController(exchange.base.ExchangeBase):
                      self.get_market_key(market))
         return True
 
-    @exchange.guard.exchange_guard()
     def get_balances(self) -> exchange.interface.Balances:
         account_information = self.client.get_account()
         binance_balances = account_information["balances"]
@@ -85,11 +81,9 @@ class BinanceController(exchange.base.ExchangeBase):
 
         return balances
 
-    @exchange.guard.exchange_guard()
     def get_balance(self, market: str) -> float:
         return float(self.client.get_asset_balance(asset=market)["free"])
 
-    @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "lastPrice", future: bool = False) -> float:
         if keyword == "price":
             keyword = "lastPrice"
@@ -124,7 +118,6 @@ class BinanceController(exchange.base.ExchangeBase):
         "volume": 5
     }
 
-    @exchange.guard.exchange_guard()
     def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         if descriptor.resolution.total_seconds() not in list(self.__resolution_map.keys()):
             raise ValueError("Resolution time gap should be in " + str(list(self.__resolution_map.keys())))

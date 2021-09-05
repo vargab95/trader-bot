@@ -12,7 +12,6 @@ import config.exchange
 import exchange.base
 import exchange.interface
 from exchange.interface import Market
-import exchange.guard
 
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor, TradingSignalPoint
 
@@ -141,7 +140,6 @@ class FtxController(exchange.base.ExchangeBase):
 
         return account_info["totalAccountValue"] * account_info["leverage"] - account_info["totalPositionSize"]
 
-    @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
         if future:
             used_url = self.futures_url
@@ -163,7 +161,6 @@ class FtxController(exchange.base.ExchangeBase):
         logging.error("%s\n\n%s", str(data["error"]), ''.join(traceback.format_stack()))
         raise exchange.interface.ExchangeError(data["error"])
 
-    @exchange.guard.exchange_guard()
     def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         valid_resolutions = [15, 60, 300, 900, 3600, 14400, 86400]
 
@@ -204,7 +201,6 @@ class FtxController(exchange.base.ExchangeBase):
 
         return TradingSignal(history, descriptor)
 
-    @exchange.guard.exchange_guard()
     def __send_authenticated_request(self, method, endpoint, data=None):
         timestamp = int(time.time() * 1000)
 

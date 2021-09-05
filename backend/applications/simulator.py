@@ -1,101 +1,39 @@
 #!/usr/bin/python3
 
-import sys
-import csv
-import datetime
-import logging
+from builder.simulator import SimulatorComponentsBuilder
+from exchange.interface import ExchangeInterface
+from observer.subscriber import Subscriber
+from observer.event import SignalUpdatedEvent
+from fetcher.common import CannotFetchDataException
 
-import applications.base
-import trader.base
-import trader.factory
-import filters.base
-import filters.factory
-
-from signals.trading_signal import TradingSignalPoint
+from applications.base import ApplicationBase
 
 
-class SimulatorApplication(applications.base.ApplicationBase):
+class PriceMockUpdater(Subscriber):
+    def __init__(self, market_key: str, exchange: ExchangeInterface):
+        self.__exchange: ExchangeInterface = exchange
+        self.__market_key: str = market_key
+
+    def update(self, event: SignalUpdatedEvent):
+        self.__exchange.price_mock[self.__market_key] = event.value
+
+
+class SimulatorApplication(ApplicationBase):
     def __init__(self):
         super().__init__()
-        self.__trader: trader.base.TraderBase
-        self.__filter: filters.base.Filter
-        self.__last_money = 0.0
-        self.__input = {}
+        self._builder: SimulatorComponentsBuilder = SimulatorComponentsBuilder()
 
     def _initialize_application_logic(self):
-        raise NotImplementedError()
-        # self._initialize_client()
-        # self._initialize_storages()
-        # self._builder.create_exchanges(self._configuration.components.exchanges)
-        # self.__trader = trader.factory.TraderFactory.create(self._configuration, self._exchange)
-        # self.__trader.initialize()
-        # self.__filter = filters.factory.FilterFactory.create_complex(self._configuration.trader.filters)
-        # self.__read_input_file(self._configuration.simulator.watched_file_path,
-        #                        self._configuration.exchange.watched_market.key)
-        # self.__read_input_file(self._configuration.simulator.bullish_file_path,
-        #                        self._configuration.exchange.bullish_market.key)
-        # self.__read_input_file(self._configuration.simulator.bearish_file_path,
-        #                        self._configuration.exchange.bearish_market.key)
-        # self.__validate_input()
+        self._builder.build(self._configuration.components, self._configuration.testing.enabled)
+        for signal_id in self._builder.fetcher_publishers:
+            for exchange in self._builder.exchanges.values():
+                updater = PriceMockUpdater(signal_id, exchange)
+                self._builder.analogue_signal_publisher.subscribe(signal_id, updater)
 
     def _run_application_logic(self):
-        raise NotImplementedError()
-        # simulator_input = self.__input[self._configuration.exchange.watched_market.key]
-
-        # with open(self._configuration.simulator.log_output_path, 'w') as log_output_file, \
-        #      open(self._configuration.simulator.actions_output_path, 'w') as actions_output_file:
-        #     log_output = csv.writer(log_output_file)
-        #     actions_output = csv.writer(actions_output_file)
-        #     last_state = trader.common.TraderState.BASE
-
-        #     for i, signal_point in enumerate(simulator_input):
-        #         logging.debug("Simulating date %s",
-        #                       signal_point.date.strftime("%Y.%m.%d %H:%M:%S"))
-        #         self.__fill_price_mocks(i)
-        #         self.__filter.put(signal_point.value)
-        #         if self.__filter.get() is not None:
-        #             self.__trader.perform(self.__filter.get())
-        #             if last_state != self.__trader.state:
-        #                 actions_output.writerow([
-        #                     signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
-        #                     last_state,
-        #                     self.__trader.state
-        #                 ])
-        #                 last_state = self.__trader.state
-
-        #         log_output.writerow([
-        #             signal_point.date.strftime("%Y.%m.%d %H:%M:%S"),
-        #             signal_point.value,
-        #             self.__filter.get(),
-        #             self.__trader.state,
-        #             self._exchange.get_money(
-        #                 self._configuration.exchange.watched_market.base)
-        #         ])
-
-    def __validate_input(self):
-        input_lengths = [len(input) for input in self.__input.values()]
-        if not all(x == input_lengths[0] for x in input_lengths):
-            logging.critical("Inputs have different lengths")
-            sys.exit(1)
-
-        for i in range(len(list(self.__input.values())[0])):
-            all_dates_in_line = [
-                input[i].date for input in self.__input.values()]
-            if not all(x == all_dates_in_line[0] for x in all_dates_in_line):
-                logging.critical("Inputs have different dates")
-                sys.exit(1)
-
-    def __read_input_file(self, path, key):
-        self.__input[key] = []
-        with open(path, "r") as csvfile:
-            logging.debug("Loading %s", path)
-            data = csv.reader(csvfile, delimiter=";")
-            for line in data:
-                self.__input[key].append(TradingSignalPoint(
-                    value=float(line[1]), date=datetime.datetime.strptime(line[0], '%Y-%m-%dT%H:%M:%S+00:00')))
-            logging.debug("%s was loaded successfully", path)
-
-    def __fill_price_mocks(self, i):
-        pass
-        # for key, signal_points in self.__input.items():
-        #     self._exchange.price_mock[key] = signal_points[i].value
+        try:
+            while True:
+                for fetcher_publisher in self._builder.fetcher_publishers.values():
+                    fetcher_publisher.publish()
+        except CannotFetchDataException:
+            pass

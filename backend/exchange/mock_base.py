@@ -9,7 +9,6 @@ import config.exchange
 import config.testing
 import exchange.interface
 from exchange.interface import Market
-import exchange.guard
 
 from signals.trading_signal import TradingSignal, TickerSignalDescriptor
 
@@ -197,13 +196,11 @@ class MockBase(exchange.interface.ExchangeInterface):
     def get_balances(self) -> exchange.interface.Balances:
         return self._balances.copy()
 
-    @exchange.guard.exchange_guard()
     def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
         if self._is_real_time:
             return self._real_exchange.get_price(market, keyword, future)
         return self.price_mock[self.get_market_key(market)]
 
-    @exchange.guard.exchange_guard()
     def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         if self._is_real_time:
             return self._real_exchange.get_price_history(descriptor)
