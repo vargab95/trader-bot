@@ -91,4 +91,4 @@ class TradingViewFetcherMulti(fetcher.trading_view_base.TradingViewFetcherBase):
         return data
 
     def get_indicator_history(self, descriptor: TradingSignalDescriptor) -> TradingSignal:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover

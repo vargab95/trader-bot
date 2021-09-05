@@ -61,11 +61,6 @@ class ServerApplication(applications.base.ApplicationBase):
         self.__api.add_resource(api.auth.signup.SignupApi, '/auth/signup')
 
     def _run_application_logic(self):
-        if self._configuration.testing.enabled:
-            self.__app.run(debug=True,
-                           host='127.0.0.1',
-                           port=self._configuration.server.port)
-        else:
-            self.__app.run(debug=False,
-                           host='0.0.0.0',
-                           port=self._configuration.server.port)
+        self.__app.run(debug=self._configuration.testing.enabled,
+                       host='0.0.0.0' if self._configuration.testing.enabled else '127.0.0.1',
+                       port=self._configuration.server.port)
