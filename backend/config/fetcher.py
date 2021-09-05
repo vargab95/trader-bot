@@ -9,7 +9,7 @@ from config.common import InvalidConfigurationException
 
 
 class FetcherConfig(ConfigComponentBase):
-    available_types = ["exchange", "trading_view"]
+    available_types = ["exchange", "trading_view", "csv_file"]
 
     def __init__(self, config: typing.Dict):
         self.output_signal_id: str = config.get("output_signal_id", None)
@@ -24,6 +24,7 @@ class FetcherConfig(ConfigComponentBase):
         self.exchange_id: str = config.get("exchange_id", None)
         self.type: str = config.get("type", "exchange")
         self.indicator: str = config.get("indicator", "all")
+        self.path: str = config.get("path", None)
 
         self.initial_values = config.get("initial_values", [])
         self.initial_length = config.get("initial_length", 0)
@@ -49,3 +50,6 @@ class FetcherConfig(ConfigComponentBase):
 
         if self.type not in self.available_types:
             raise InvalidConfigurationException(f"{self.type} is not a valid fetcher type")
+
+        if self.type == "csv_file" and self.path is None:
+            raise InvalidConfigurationException("path is mandatory for csv_file typed fetcher")
