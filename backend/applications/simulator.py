@@ -7,6 +7,7 @@ from exchange.interface import ExchangeInterface
 from observer.subscriber import Subscriber
 from observer.event import SignalUpdatedEvent
 from fetcher.common import CannotFetchDataException
+from detector.common import TradingAction
 
 from applications.base import ApplicationBase
 
@@ -62,6 +63,9 @@ class SimulatorApplication(ApplicationBase):
                         execution_log.append(signals_to_write)
         except CannotFetchDataException:
             pass
+
+        for name, trader in self._builder.traders.items():
+            trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
 
         if self._configuration.simulator.log_output_path:
             with open(self._configuration.simulator.log_output_path, "w") as log_file:
