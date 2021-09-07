@@ -30,7 +30,7 @@ class Publisher:
             raise SubscriberCannotBeFound(f"Subscriber {subscriber} is not registered for signal {signal_id}") from exc
 
     def notify_all_subscribers(self, event: ObserverEvent) -> None:
-        logging.info("%s was published", event.signal_name)
+        logging.info("%s was published", str(event))
         try:
             for subscriber in self.__subscribers[event.signal_name]:
                 subscriber.update(event)

@@ -15,6 +15,7 @@ from config.gatherer import GathererConfig
 
 class ApplicationConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict = None):
+        self.configuration_version = "1.0.0"
         self.logging = LoggingConfig(config.get("logging", {}))
         self.testing = TestingConfig(config.get("testing", {}))
         self.mail = MailConfig(config.get("mail", {}))
@@ -23,3 +24,8 @@ class ApplicationConfig(ConfigComponentBase):
         self.gatherer = GathererConfig(config.get("gatherer", {}))
         self.simulator = SimulatorConfig(config.get("simulator", {}))
         self.components = ComponentsConfig(config.get("components", {}))
+
+    def validate(self):
+        for attribute in self.__dict__.values():
+            if not isinstance(attribute, str):
+                attribute.validate()

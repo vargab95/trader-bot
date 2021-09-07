@@ -36,7 +36,7 @@ class FetcherConfig(ConfigComponentBase):
         if self.output_signal_id is None:
             raise InvalidConfigurationException("Output signal id is a mandatory fetcher configuration option")
 
-        if self.indicator_name is None:
+        if self.type == "trading_view" and self.indicator_name is None:
             raise InvalidConfigurationException("Indicator name is a mandatory fetcher configuration option")
 
         if self.market is None:

@@ -35,3 +35,8 @@ class ExchangeConfig(ConfigComponentBase):
 
         if self.private_key is None:
             raise InvalidConfigurationException("Private key is a mandatory parameter for exchange config")
+
+    def dict(self):
+        result = super().dict()
+        result["private_key"] = "*" * 10
+        return result

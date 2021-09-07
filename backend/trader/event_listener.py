@@ -17,6 +17,8 @@ class TradingActionListener(Subscriber):
             self._value = TradingAction.BEARISH_SIGNAL
         elif event.value == TradingAction.BULLISH_SIGNAL:
             self._value = TradingAction.BULLISH_SIGNAL
+        elif event.value == TradingAction.RETURN_TO_BASE_SIGNAL:
+            self._value = TradingAction.RETURN_TO_BASE_SIGNAL
         elif event.value == TradingAction.HOLD_SIGNAL:
             pass
         else:

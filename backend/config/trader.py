@@ -12,6 +12,7 @@ from trader.common import TraderState
 class TraderConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
         self.input_signal_id = config.get("input_signal_id", None)
+        self.output_signal_id = config.get("output_signal_id", None)
         self.indicator = config.get("indicator", "all")
         self.check_interval = config.get("check_interval", 60)
         self.method = config.get("method", "simple")
@@ -47,6 +48,9 @@ class TraderConfig(ConfigComponentBase):
     def validate(self):
         if self.input_signal_id is None:
             raise InvalidConfigurationException("Input signal id is a mandatory parameter for traders")
+
+        if self.output_signal_id is None:
+            raise InvalidConfigurationException("Output signal id is a mandatory parameter for traders")
 
         if self.start_state is None:
             raise InvalidConfigurationException("Invalid start state in trader config")

@@ -18,6 +18,7 @@ class DetectorConfig(ConfigComponentBase):
         self.simple = config.get("simple", False)
         self.bullish_threshold = config.get("bullish_threshold", None)
         self.bearish_threshold = config.get("bearish_threshold", None)
+        self.reset_on_falling_edge = config.get("reset_on_falling_edge", False)
 
     def validate(self):
         if self.input_signal_id is None:
@@ -37,7 +38,7 @@ class DetectorConfig(ConfigComponentBase):
 
 
 class DetectorCombinationConfig(ConfigComponentBase):
-    available_combination_types = ["and", "or", "not"]
+    available_combination_types = ["and", "or", "not", "switch_return"]
 
     def __init__(self, config: typing.Dict):
         self.input_signal_ids = config.get("input_signal_ids", None)

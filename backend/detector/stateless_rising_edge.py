@@ -27,5 +27,6 @@ class StatelessRisingEdgeDetector(detector.interface.DetectorInterface):
             result = detector.common.TradingAction.BEARISH_SIGNAL
 
         self._last_value = indicator
+        self._last_result = result
 
         return result

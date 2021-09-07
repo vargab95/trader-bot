@@ -29,3 +29,8 @@ class MailConfig(ConfigComponentBase):
 
             if self.password is None:
                 raise InvalidConfigurationException("Password is a mandatory parameter for mailing")
+
+    def dict(self):
+        result = super().dict()
+        result["password"] = "*" * 10
+        return result

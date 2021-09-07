@@ -15,5 +15,5 @@ class SimulatorComponentsBuilder(TradingComponentsBuilderBase):
             trader = TraderFactory.create(trader_config, self.exchanges[trader_config.exchange])
             listener = SynchronousTradingActionListener(trader)
             self.detector_signal_publisher.subscribe(trader_config.input_signal_id, listener)
-            self.traders[trader_config.input_signal_id] = trader
-            self.trader_listeners[trader_config.input_signal_id] = listener
+            self.traders[trader_config.output_signal_id] = trader
+            self.trader_listeners[trader_config.output_signal_id] = listener

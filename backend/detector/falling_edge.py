@@ -24,4 +24,5 @@ class FallingEdgeDetector(detector.interface.DetectorInterface):
             self.current_state = detector.common.CurrentState.BEAR
 
         self.previous_indicator = indicator
+        self._last_result = result
         return result

@@ -14,6 +14,7 @@ from detector.stateless_rising_edge import StatelessRisingEdgeDetector
 from detector.stateless_reverse_rising_edge import StatelessReverseRisingEdgeDetector
 from detector.simple_treshold import SimpleTresholdDetector
 from detector.reverse_simple_treshold import ReverseSimpleTresholdDetector
+from detector.reset_on_falling_edge import ResetOnFallingEdgeDetector
 from config.detector import DetectorConfig
 
 
@@ -24,6 +25,11 @@ class InvalidDetectorConfiguration(Exception):
 class DetectorFactory:
     @staticmethod
     def create(configuration: DetectorConfig, gatherer: fetcher.single.TradingViewFetcherSingle = None):
+        if configuration.reset_on_falling_edge:
+            logging.info("Reset on falling edge detector created")
+            return detector.reset_on_falling_edge.ResetOnFallingEdgeDetector(configuration.bearish_threshold,
+                                                                             configuration.bullish_threshold)
+
         if configuration.falling_edge:
             if configuration.stateless:
                 raise InvalidDetectorConfiguration

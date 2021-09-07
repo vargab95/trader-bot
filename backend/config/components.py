@@ -44,7 +44,7 @@ class ComponentsConfig(ConfigComponentBase):
 
         for detector_combination_config in self.detector_combinations:
             for input_signal_id in detector_combination_config.input_signal_ids:
-                if input_signal_id not in detector_signals:
+                if input_signal_id not in detector_signals and input_signal_id not in detector_combination_signals:
                     raise InvalidConfigurationException("No provided signal for detector combination input "
                                                         f"{input_signal_id}")
 

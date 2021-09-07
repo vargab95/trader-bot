@@ -24,6 +24,9 @@ class Market:
     def __str__(self):
         return f"{self.target}-{self.base}"
 
+    def __repr__(self):
+        return str(self)
+
 
 class Balances(dict):
     def __str__(self):

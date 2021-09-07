@@ -30,4 +30,5 @@ class ResetOnFallingEdgeDetector(detector.interface.DetectorInterface):
             result = detector.common.TradingAction.BEARISH_SIGNAL
             self.current_state = detector.common.CurrentState.BEAR
 
+        self._last_result = result
         return result

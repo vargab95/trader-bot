@@ -9,6 +9,7 @@ class DetectorInterface(metaclass=abc.ABCMeta):
     def __init__(self, bearish_threshold: float, bullish_threshold: float):
         self._bullish_threshold = bullish_threshold
         self._bearish_threshold = bearish_threshold
+        self._last_result: detector.common.TradingAction = None
 
     @abc.abstractmethod
     def check(self, indicator: float) -> detector.common.TradingAction:
@@ -17,3 +18,6 @@ class DetectorInterface(metaclass=abc.ABCMeta):
     def set_threshold(self, bearish_threshold: float, bullish_threshold: float):
         self._bullish_threshold = bullish_threshold
         self._bearish_threshold = bearish_threshold
+
+    def read(self):
+        return self._last_result

@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from datetime import datetime
 import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -22,13 +23,15 @@ class TraderApplication(applications.base.ApplicationBase):
     @staticmethod
     def __add_trader_schedule(scheduler, config, trader, listener):
         scheduler.add_job(lambda: trader.perform(listener.read_and_clear()),
-                          "interval", seconds=config.check_interval)
+                          "interval", seconds=config.check_interval,
+                          next_run_time=datetime.now())
 
     def _run_application_logic(self):
         for fetcher_config in self._configuration.components.fetchers:
             self.__scheduler.add_job(self._builder.fetcher_publishers[fetcher_config.output_signal_id].publish,
                                      "interval",
-                                     seconds=fetcher_config.check_interval)
+                                     seconds=fetcher_config.check_interval,
+                                     next_run_time=datetime.now())
 
         for trader_config in self._configuration.components.traders:
             trader = self._builder.traders[trader_config.input_signal_id]

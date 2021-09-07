@@ -10,6 +10,7 @@ import filters.derivative
 import filters.derivative_ratio
 import filters.complex
 import filters.rsi
+import filters.macd
 import config.filter
 
 
@@ -31,7 +32,8 @@ class FilterFactory:
             "nth": filters.nth.NthFilter,
             "derivative": filters.derivative.Derivative,
             "derivative_ratio": filters.derivative_ratio.DerivativeRatio,
-            "rsi": filters.rsi.RSI
+            "rsi": filters.rsi.RSI,
+            "macd": filters.macd.MACD
         }
 
         try:
