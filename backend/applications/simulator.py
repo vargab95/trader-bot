@@ -44,6 +44,12 @@ class SimulatorApplication(ApplicationBase):
                     if self._configuration.simulator.log_output_path:
                         signals_to_write = dict()
 
+                        for name, exchange in self._builder.exchanges.items():
+                            signals_to_write[name + "-PRICE-MOCK"] = exchange.price_mock
+                            signals_to_write[name + "-BALANCES"] = exchange.get_balances()
+                            signals_to_write[name + "-POSITIONS"] = exchange.get_positions()
+                            signals_to_write[name + "-FUTURE-LOANS"] = exchange._future_loans
+
                         for name, fetcher in self._builder.fetchers.items():
                             signals_to_write[name + "-TIMESTAMP"] = fetcher.get_timestamp()
                             signals_to_write[name] = fetcher.get_technical_indicator()

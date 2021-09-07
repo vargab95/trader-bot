@@ -31,7 +31,7 @@ class FtxController(exchange.base.ExchangeBase):
         response = requests.get(self.api_url + "markets").json()
         if not response["success"]:
             logging.error("Could not get markets during init")
-            raise exchange.interface.ExchangeError(response["error"])
+            raise exchange.interface.UnknownProviderExchangeError(response["error"])
 
         logging.debug("Minimal values:")
         for market in response["result"]:
@@ -40,60 +40,54 @@ class FtxController(exchange.base.ExchangeBase):
             logging.debug("\t%s amount: %.12f price: %.12f", market["name"],
                           market["minProvideSize"], market["priceIncrement"])
 
-    def bet_on_bearish(self, market: Market, amount: float) -> bool:
-        return self.sell(market, amount)
+    def bet_on_bearish(self, market: Market, amount: float):
+        self.sell(market, amount)
 
-    def bet_on_bullish(self, market: Market, amount: float) -> bool:
-        return self.buy(market, amount)
+    def bet_on_bullish(self, market: Market, amount: float):
+        self.buy(market, amount)
 
-    def buy(self, market: exchange.interface.Market, amount: float) -> bool:
+    def buy(self, market: exchange.interface.Market, amount: float):
         if amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Cannot buy zero or negative amount")
 
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "buy")
 
         if corrected_amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Amount is zero or negative after correction")
 
-        if not self.__send_authenticated_request('POST',
-                                                 self.orders_url,
-                                                 data={
-                                                     "market": self.get_market_key(market),
-                                                     "side": "buy",
-                                                     "type": "market",
-                                                     "size": corrected_amount,
-                                                     "price": None
-                                                 }):
-            return False
+        self.__send_authenticated_request('POST',
+                                          self.orders_url,
+                                          data={
+                                              "market": self.get_market_key(market),
+                                              "side": "buy",
+                                              "type": "market",
+                                              "size": corrected_amount,
+                                              "price": None
+                                          })
 
         logging.info("%.10f %s was successfully bought", corrected_amount, self.get_market_key(market))
 
-        return True
-
-    def sell(self, market: exchange.interface.Market, amount: float) -> bool:
+    def sell(self, market: exchange.interface.Market, amount: float):
         if amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Cannot sell zero or negative amount")
 
         corrected_amount = self._check_and_log_corrected_amount(market, amount, "sell")
 
         if corrected_amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Amount is zero or negative after correction")
 
-        if not self.__send_authenticated_request('POST',
-                                                 self.orders_url,
-                                                 data={
-                                                     "market": self.get_market_key(market),
-                                                     "side": "sell",
-                                                     "type": "market",
-                                                     "size": corrected_amount,
-                                                     "price": None
-                                                 }):
-            return False
+        self.__send_authenticated_request('POST',
+                                          self.orders_url,
+                                          data={
+                                              "market": self.get_market_key(market),
+                                              "side": "sell",
+                                              "type": "market",
+                                              "size": corrected_amount,
+                                              "price": None
+                                          })
 
         logging.info("%.10f %s was successfully sold", corrected_amount, self.get_market_key(market))
-
-        return True
 
     def get_balances(self) -> exchange.interface.Balances:
         balances = self.__send_authenticated_request('GET', self.balances_url)
@@ -153,13 +147,13 @@ class FtxController(exchange.base.ExchangeBase):
 
         logging.debug("Price was requested for %s (FTX). Response is %s", self.get_market_key(market), str(data))
 
-        if data["success"]:
+        if "success" in data and data["success"]:
             logging.debug("Last FTX price for %s is %f", self.get_market_key(market), data["result"][keyword])
             return data["result"][keyword]
 
         logging.error("Could not get price of %s", str(market))
         logging.error("%s\n\n%s", str(data["error"]), ''.join(traceback.format_stack()))
-        raise exchange.interface.ExchangeError(data["error"])
+        raise exchange.interface.UnknownProviderExchangeError(data["error"])
 
     def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         valid_resolutions = [15, 60, 300, 900, 3600, 14400, 86400]
@@ -188,7 +182,7 @@ class FtxController(exchange.base.ExchangeBase):
         if not data["success"]:
             logging.error("Could not get historical data of %s", str(descriptor.market))
             logging.error("%s\n\n%s", str(data["error"]), ''.join(traceback.format_stack()))
-            raise exchange.interface.ExchangeError(data["error"])
+            raise exchange.interface.UnknownProviderExchangeError(data["error"])
 
         logging.debug("FTX price history request result: %s", str(data))
 
@@ -226,6 +220,6 @@ class FtxController(exchange.base.ExchangeBase):
                       response.status_code, json.dumps(response_body, indent=4))
 
         if not response_body["success"]:
-            raise exchange.interface.ExchangeError(response_body["error"])
+            raise exchange.interface.UnknownProviderExchangeError(response_body["error"])
 
         return response_body["result"]

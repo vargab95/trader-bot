@@ -43,9 +43,10 @@ class BinanceTest(unittest.TestCase):
                 }
             ]
         }
+        handle.get_ticker.return_value = {"lastPrice": 1}
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertAlmostEqual(controller.buy(market, 5), True)
+        controller.buy(market, 5)
 
         handle.create_order.assert_called_once_with(symbol=market.key(self.config.market_name_format),
                                                     quantity='5.',
@@ -73,9 +74,10 @@ class BinanceTest(unittest.TestCase):
                 }
             ]
         }
+        handle.get_ticker.return_value = {"lastPrice": 1}
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertAlmostEqual(controller.buy(market, 1.23456789), True)
+        controller.buy(market, 1.23456789)
 
         handle.create_order.assert_called_once_with(symbol=market.key(self.config.market_name_format),
                                                     quantity='1.2345',
@@ -105,7 +107,8 @@ class BinanceTest(unittest.TestCase):
         }
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertFalse(controller.buy(market, 0.0000123))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.buy(market, 0.0000123)
 
     def test_buy_below_notional(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -131,7 +134,8 @@ class BinanceTest(unittest.TestCase):
         }
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertFalse(controller.buy(market, 0.0000123))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.buy(market, 0.0000123)
 
     def test_sell(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -154,9 +158,10 @@ class BinanceTest(unittest.TestCase):
                 }
             ]
         }
+        handle.get_ticker.return_value = {"lastPrice": 1}
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertAlmostEqual(controller.sell(market, 5), True)
+        controller.sell(market, 5)
 
         handle.create_order.assert_called_once_with(
             symbol=market.key(self.config.market_name_format),
@@ -187,7 +192,8 @@ class BinanceTest(unittest.TestCase):
         }
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertFalse(controller.sell(market, 0.0000123))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.sell(market, 0.0000123)
 
     def test_buy_negative(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -212,7 +218,8 @@ class BinanceTest(unittest.TestCase):
         }
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertFalse(controller.buy(market, -5))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.buy(market, -5)
 
     def test_sell_negative(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -237,7 +244,8 @@ class BinanceTest(unittest.TestCase):
         }
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertFalse(controller.sell(market, -5))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.sell(market, -5)
 
     def test_buy_not_enough_quantity(self, mock_client):
         market = exchange.interface.Market("ETH", "BTC")
@@ -262,7 +270,8 @@ class BinanceTest(unittest.TestCase):
         }
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-        self.assertFalse(controller.buy(market, 5))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.buy(market, 5)
 
     def test_get_balances(self, mock_client):
         handle = mock_client()
@@ -305,6 +314,7 @@ class BinanceTest(unittest.TestCase):
                 {"asset": "ETH", "free": 20.0}
             ]
         }
+        handle.get_ticker.return_value = {"lastPrice": 1}
 
         controller = exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
         self.assertEqual(controller.get_money("BTC"), 30.0)
@@ -351,5 +361,5 @@ class BinanceTest(unittest.TestCase):
         descriptor = signals.trading_signal.TickerSignalDescriptor(
             market, None, None, 50, 1, datetime.timedelta(seconds=65))
 
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.get_price_history(descriptor))
+        with self.assertRaises(ValueError):
+            controller.get_price_history(descriptor)

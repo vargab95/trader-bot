@@ -31,15 +31,15 @@ class BinanceController(exchange.base.ExchangeBase):
             logging.debug("    %s: LOT_SIZE: %f MIN_NOTIONAL: %f", symbol,
                           min_quantity, min_notional)
 
-    def buy(self, market: exchange.interface.Market, amount: float) -> bool:
+    def buy(self, market: exchange.interface.Market, amount: float):
         if amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Cannot buy zero or negative amount")
 
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "buy")
 
         if corrected_amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Amount is zero or negative after correction")
 
         self.client.create_order(
             symbol=self.get_market_key(market),
@@ -48,17 +48,16 @@ class BinanceController(exchange.base.ExchangeBase):
             quantity="{:.12f}".format(corrected_amount).rstrip('0'))
         logging.info("%.10f %s was successfully bought", corrected_amount,
                      self.get_market_key(market))
-        return True
 
-    def sell(self, market: exchange.interface.Market, amount: float) -> bool:
+    def sell(self, market: exchange.interface.Market, amount: float):
         if amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Cannot sell zero or negative amount")
 
         corrected_amount = self._check_and_log_corrected_amount(
             market, amount, "sell")
 
         if corrected_amount <= 0.0:
-            return False
+            raise exchange.interface.ZeroOrNegativeAmountError("Amount is zero or negative after correction")
 
         self.client.create_order(
             symbol=self.get_market_key(market),
@@ -67,7 +66,6 @@ class BinanceController(exchange.base.ExchangeBase):
             quantity="{:.12f}".format(corrected_amount).rstrip('0'))
         logging.info("%.10f %s was successfully sold", corrected_amount,
                      self.get_market_key(market))
-        return True
 
     def get_balances(self) -> exchange.interface.Balances:
         account_information = self.client.get_account()
@@ -89,6 +87,8 @@ class BinanceController(exchange.base.ExchangeBase):
             keyword = "lastPrice"
 
         response = self.client.get_ticker(symbol=self.get_market_key(market))
+        if keyword not in response:
+            raise exchange.interface.UnknownProviderExchangeError(str(response))
         return float(response[keyword])
 
     __resolution_map = {

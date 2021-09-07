@@ -43,22 +43,39 @@ class ExchangeError(Exception):
     pass
 
 
+class ZeroOrNegativeAmountError(ExchangeError):
+    pass
+
+
+class InsufficientFundsError(ExchangeError):
+    pass
+
+
+class UnknownProviderExchangeError(ExchangeError):
+    pass
+
+
+class PositionLiquidatedError(ExchangeError):
+    pass
+
+
 class ExchangeInterface(metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def bet_on_bearish(self, market: Market, amount: float) -> bool:
+    def bet_on_bearish(self, market: Market, amount: float):
         pass  # pragma: no cover
 
     @abc.abstractmethod
-    def bet_on_bullish(self, market: Market, amount: float) -> bool:
+    def bet_on_bullish(self, market: Market, amount: float):
         pass  # pragma: no cover
 
-    def close_position(self, market: Market) -> bool:
+    def close_position(self, market: Market):
         position = self.get_position(market)
         if position < 0:
-            return self.bet_on_bullish(market, -position)
-        if position > 0:
-            return self.bet_on_bearish(market, position)
-        raise ExchangeError("Cannot close position with 0 value")
+            self.bet_on_bullish(market, -position)
+        elif position > 0:
+            self.bet_on_bearish(market, position)
+        else:
+            raise ZeroOrNegativeAmountError("Cannot close position with 0 value")
 
     @abc.abstractmethod
     def buy(self, market: Market, amount: float) -> bool:

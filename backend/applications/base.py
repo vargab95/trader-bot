@@ -98,3 +98,4 @@ class ApplicationBase:
             message.compose({"error": str(error) + "\n\n" + traceback.format_exc()})
             self._postman.send(message)
             logging.critical("Unhandled error occured %s.", str(error) + "\n\n" + traceback.format_exc())
+            raise error

@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from exchange.interface import ExchangeError
+
 import trader.future.base
 import trader.common
 
@@ -10,37 +12,46 @@ class SimpleFutureTrader(trader.future.base.FutureTraderBase):
     def _bullish_logic(self):
         if self._state != TraderState.BULLISH:
             if self._state != TraderState.BASE:
-                if self._sell(self._configuration.market):
+                try:
+                    self._sell(self._configuration.market)
                     self._state = TraderState.BUYING_BULLISH
-                else:
+                except ExchangeError:
                     self._state = TraderState.SELLING_BEARISH
+                    raise
             else:
                 self._state = TraderState.BUYING_BULLISH
-            if self._state == TraderState.BUYING_BULLISH and \
-               self._buy(self._configuration.market):
+
+            if self._state == TraderState.BUYING_BULLISH:
+                self._buy(self._configuration.market)
                 self._state = TraderState.BULLISH
 
     def _bearish_logic(self):
         if self._state != TraderState.BEARISH:
             if self._state != TraderState.BASE:
-                if self._sell(self._configuration.market):
+                try:
+                    self._sell(self._configuration.market)
                     self._state = TraderState.BUYING_BEARISH
-                else:
+                except ExchangeError:
                     self._state = TraderState.SELLING_BULLISH
+                    raise
             else:
                 self._state = TraderState.BUYING_BEARISH
-            if self._state == TraderState.BUYING_BEARISH and \
-               self._buy(self._configuration.market):
+            if self._state == TraderState.BUYING_BEARISH:
+                self._buy(self._configuration.market)
                 self._state = TraderState.BEARISH
 
     def _return_to_base_logic(self):
         if self._state in [TraderState.BULLISH, TraderState.SELLING_BULLISH, TraderState.BUYING_BULLISH]:
-            if self._sell(self._configuration.market):
+            try:
+                self._sell(self._configuration.market)
                 self._state = TraderState.BASE
-            else:
+            except ExchangeError:
                 self._state = TraderState.SELLING_BULLISH
+                raise
         elif self._state in [TraderState.BEARISH, TraderState.SELLING_BEARISH, TraderState.BUYING_BEARISH]:
-            if self._sell(self._configuration.market):
+            try:
+                self._sell(self._configuration.market)
                 self._state = TraderState.BASE
-            else:
+            except ExchangeError:
                 self._state = TraderState.SELLING_BEARISH
+                raise

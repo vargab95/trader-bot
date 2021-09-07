@@ -29,11 +29,14 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
     @unittest.mock.patch("requests.Session.send")
     def test_get_price_unsuccessful(self, _, get_mock):
         get_mock.return_value = unittest.mock.Mock()
-        get_mock.return_value.json.return_value = {}
+        get_mock.return_value.json.return_value = {
+            "success": False,
+            "error": "TEST"
+        }
 
         self.controller.set_real_time(True)
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(self.controller.get_price(exchange.interface.Market.create_from_string("BEAR-USDT")))
+        with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+            self.controller.get_price(exchange.interface.Market.create_from_string("BEAR-USDT"))
         self.controller.set_real_time(False)
 
     @unittest.mock.patch("requests.get")
@@ -60,8 +63,7 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
                 "price": 1.2
             }
         }
-        with unittest.mock.patch("time.sleep"):
-            self.assertAlmostEqual(self.controller.get_price(Market.create_from_string("BEAR-USDT")), 1.2)
+        self.assertAlmostEqual(self.controller.get_price(Market.create_from_string("BEAR-USDT")), 1.2)
         self.controller.set_real_time(False)
 
     @unittest.mock.patch("requests.get")
@@ -98,8 +100,7 @@ class FtxMockTest(exchange.test_mock_common.CommonMockTest):
         }
 
         descriptor = TickerSignalDescriptor(market, datetime.now(), datetime.now(), 50, 1, timedelta(seconds=15))
-        with unittest.mock.patch("time.sleep"):
-            self.assertListEqual(
+        self.assertListEqual(
                 [TradingSignalPoint(value=11055.25, date=datetime(2019, 6, 24, 17, 15))],
                 self.controller.get_price_history(descriptor).data)
 

@@ -30,10 +30,8 @@ class BinanceMockTest(exchange.test_mock_common.CommonMockTest):
         get_price_mock.return_value = {}
 
         self.controller.set_real_time(True)
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(self.controller.get_price(
-                exchange.interface.Market.create_from_string("BEAR-USDT")))
-        self.controller.set_real_time(False)
+        with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+            self.controller.get_price(exchange.interface.Market.create_from_string("BEAR-USDT"))
 
     @unittest.mock.patch("binance.client.Client.ping")
     @unittest.mock.patch("binance.client.Client.get_exchange_info")
@@ -42,7 +40,5 @@ class BinanceMockTest(exchange.test_mock_common.CommonMockTest):
         get_price_mock.return_value = {"lastPrice": 1.2}
 
         self.controller.set_real_time(True)
-        with unittest.mock.patch("time.sleep"):
-            self.assertAlmostEqual(self.controller.get_price(
-                exchange.interface.Market.create_from_string("BEAR-USDT")), 1.2)
-        self.controller.set_real_time(False)
+        self.assertAlmostEqual(self.controller.get_price(
+            exchange.interface.Market.create_from_string("BEAR-USDT")), 1.2)

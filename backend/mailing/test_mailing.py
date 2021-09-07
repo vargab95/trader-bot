@@ -54,8 +54,7 @@ class MailingTest(unittest.TestCase):
         except mailing.message.InvalidMessageException:
             pass
 
-    @unittest.mock.patch("time.sleep")
-    def test_connection_error(self, _, smtp_mock):
+    def test_connection_error(self, smtp_mock):
         message = mailing.error.ErrorMessage()
         message.compose({"error": "Error"})
 
@@ -67,8 +66,7 @@ class MailingTest(unittest.TestCase):
 
         self.assertFalse(self.postman.send(message))
 
-    @unittest.mock.patch("time.sleep")
-    def test_send_message_error(self, _, smtp_mock):
+    def test_send_message_error(self, smtp_mock):
         message = mailing.error.ErrorMessage()
         message.compose({"error": "Error"})
 

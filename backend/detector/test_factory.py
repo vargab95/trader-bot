@@ -25,7 +25,7 @@ class DetectorFactoryTest(unittest.TestCase):
         config.bearish_threshold = 0.1
 
         instance = DetectorFactory.create(config)
-        self.assertTrue(isinstance(instance, FallingEdgeDetector))
+        self.assertIsInstance(instance, FallingEdgeDetector)
 
     def test_create_moving_threshold(self):
         config = DetectorConfig({})
@@ -33,8 +33,7 @@ class DetectorFactoryTest(unittest.TestCase):
         config.follower = True
 
         instance = DetectorFactory.create(config)
-        self.assertTrue(isinstance(
-            instance, MovingThresholdRisingEdgeDetector))
+        self.assertIsInstance(instance, MovingThresholdRisingEdgeDetector)
 
     def test_create_reverse_rising_edge(self):
         config = DetectorConfig({})
@@ -43,8 +42,7 @@ class DetectorFactoryTest(unittest.TestCase):
         config.bullish_threshold = -0.4
 
         instance = DetectorFactory.create(config)
-        self.assertTrue(isinstance(
-            instance, ReverseRisingEdgeDetector))
+        self.assertIsInstance(instance, ReverseRisingEdgeDetector)
 
     def test_create_rising_edge(self):
         config = DetectorConfig({})
@@ -53,8 +51,7 @@ class DetectorFactoryTest(unittest.TestCase):
         config.bullish_threshold = 0.4
 
         instance = DetectorFactory.create(config)
-        self.assertTrue(isinstance(
-            instance, RisingEdgeDetector))
+        self.assertIsInstance(instance, RisingEdgeDetector)
 
     def test_create_latched_reverse_rising_edge(self):
         config = DetectorConfig({})
@@ -84,8 +81,7 @@ class DetectorFactoryTest(unittest.TestCase):
         config.bullish_threshold = -0.4
 
         instance = DetectorFactory.create(config)
-        self.assertTrue(isinstance(
-            instance, StatelessReverseRisingEdgeDetector))
+        self.assertIsInstance(instance, StatelessReverseRisingEdgeDetector)
 
     def test_create_stateless_rising_edge(self):
         config = DetectorConfig({})
@@ -95,8 +91,7 @@ class DetectorFactoryTest(unittest.TestCase):
         config.bullish_threshold = 0.4
 
         instance = DetectorFactory.create(config)
-        self.assertTrue(isinstance(
-            instance, StatelessRisingEdgeDetector))
+        self.assertIsInstance(instance, StatelessRisingEdgeDetector)
 
     def test_create_stateless_falling_edge(self):
         config = DetectorConfig({})

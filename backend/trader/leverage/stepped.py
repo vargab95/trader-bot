@@ -34,12 +34,10 @@ class SteppedLeverageTrader(trader.leverage.base.LeverageTraderBase):
             # anymore
             # TODO Unittests should be written for this behaviour here and also
             # for the bearish case
-            if self._buy(self._configuration.bullish_market,
-                         self._pack_ratio):
-                self._state += 1
-                if self._state != self._configuration.max_steps:
-                    self._pack_ratio = 1.0 / (
-                        self._configuration.max_steps - self._state)
+            self._buy(self._configuration.bullish_market, self._pack_ratio)
+            self._state += 1
+            if self._state != self._configuration.max_steps:
+                self._pack_ratio = 1.0 / (self._configuration.max_steps - self._state)
         else:
             logging.warning("Step limit reached %d", self._state)
 
@@ -49,13 +47,11 @@ class SteppedLeverageTrader(trader.leverage.base.LeverageTraderBase):
             self._state = 0
             self._pack_ratio = 1.0 / self._configuration.max_steps
         if self._state > -self._max_steps:
-            if self._buy(self._configuration.bearish_market,
-                         self._pack_ratio):
-                self._state -= 1
-                # FIXME a better solution may be found
-                if self._state * -1 != self._configuration.max_steps:
-                    self._pack_ratio = 1.0 / (
-                        self._configuration.max_steps + self._state)
+            self._buy(self._configuration.bearish_market, self._pack_ratio)
+            self._state -= 1
+            # FIXME a better solution may be found
+            if self._state * -1 != self._configuration.max_steps:
+                self._pack_ratio = 1.0 / (self._configuration.max_steps + self._state)
         else:
             logging.warning("Step limit reached %d", self._state)
 

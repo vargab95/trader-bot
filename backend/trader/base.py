@@ -26,7 +26,6 @@ class TraderBase:
         return self._state
 
     def perform(self, action: TradingAction):
-
         logging.debug("Detector(s) has returned %s", str(action))
         logging.debug("Current state is %s", str(self._state))
 
@@ -43,21 +42,25 @@ class TraderBase:
 
     def _sell(self,
               market: exchange.interface.Market,
-              ratio: float = 1.0) -> bool:
+              ratio: float = 1.0):
         amount = self._exchange.get_balance(market.target) * ratio
-        return self._exchange.sell(market, amount)
+        self._exchange.sell(market, amount)
 
     def _buy(self,
              market: exchange.interface.Market,
-             ratio: float = 1.0) -> bool:
+             ratio: float = 1.0):
+        last_exception = None
         for _ in range(5):
             balance = self._exchange.get_balance(market.base)
             price = self._exchange.get_price(market, future=self._configuration.future)
             amount = balance / price * ratio
-            if self._exchange.buy(market, amount):
-                return True
-            ratio *= 0.99
-        return False
+            try:
+                self._exchange.buy(market, amount)
+                return
+            except exchange.interface.InsufficientFundsError as exc:
+                ratio *= 0.99
+                last_exception = exc
+        raise last_exception
 
     def _is_there_any_pending_transaction(self):
         return self._state in [
@@ -69,17 +72,17 @@ class TraderBase:
 
     def _do_pending_transaction(self):
         if TraderState.SELLING_BULLISH == self._state:
-            if self._sell(self._configuration.bullish_market):
-                self._state = TraderState.BUYING_BEARISH
+            self._sell(self._configuration.bullish_market)
+            self._state = TraderState.BUYING_BEARISH
         if TraderState.SELLING_BEARISH == self._state:
-            if self._sell(self._configuration.bearish_market):
-                self._state = TraderState.BUYING_BULLISH
+            self._sell(self._configuration.bearish_market)
+            self._state = TraderState.BUYING_BULLISH
         if TraderState.BUYING_BEARISH == self._state:
-            if self._buy(self._configuration.bearish_market):
-                self._state = TraderState.BEARISH
+            self._buy(self._configuration.bearish_market)
+            self._state = TraderState.BEARISH
         if TraderState.BUYING_BULLISH == self._state:
-            if self._buy(self._configuration.bullish_market):
-                self._state = TraderState.BULLISH
+            self._buy(self._configuration.bullish_market)
+            self._state = TraderState.BULLISH
 
     @abc.abstractmethod
     def _bullish_logic(self):  # pragma: no cover

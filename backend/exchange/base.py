@@ -64,16 +64,16 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
             all_money += balance
         return all_money
 
-    def bet_on_bearish(self, market: Market, amount: float) -> bool:
+    def bet_on_bearish(self, market: Market, amount: float):
         raise NotImplementedError  # pragma: no cover
 
-    def bet_on_bullish(self, market: Market, amount: float) -> bool:
+    def bet_on_bullish(self, market: Market, amount: float):
         raise NotImplementedError  # pragma: no cover
 
-    def buy(self, market: exchange.interface.Market, amount: float) -> bool:
+    def buy(self, market: exchange.interface.Market, amount: float):
         raise NotImplementedError  # pragma: no cover
 
-    def sell(self, market: exchange.interface.Market, amount: float) -> bool:
+    def sell(self, market: exchange.interface.Market, amount: float):
         raise NotImplementedError  # pragma: no cover
 
     def get_balances(self) -> exchange.interface.Balances:

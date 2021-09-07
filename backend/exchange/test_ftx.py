@@ -46,7 +46,7 @@ class FtxTest(unittest.TestCase):
         try:
             exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
             self.fail()
-        except exchange.interface.ExchangeError:
+        except exchange.interface.UnknownProviderExchangeError:
             pass
 
     def test_get_price(self, session_mock, get_mock):
@@ -105,8 +105,8 @@ class FtxTest(unittest.TestCase):
 
         market = exchange.interface.Market("ETH", "BTC")
 
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.get_price(market))
+        with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+            controller.get_price(market)
 
     def test_get_balance(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -194,7 +194,7 @@ class FtxTest(unittest.TestCase):
             }
         }
 
-        self.assertTrue(controller.bet_on_bearish(market, 2.0))
+        controller.bet_on_bearish(market, 2.0)
 
     def test_bet_on_bullish(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -214,7 +214,7 @@ class FtxTest(unittest.TestCase):
             }
         }
 
-        self.assertTrue(controller.bet_on_bullish(market, 2.0))
+        controller.bet_on_bullish(market, 2.0)
 
     def test_get_leverage_balance(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -249,7 +249,7 @@ class FtxTest(unittest.TestCase):
             }
         }
 
-        self.assertTrue(controller.buy(market, 2.0))
+        controller.buy(market, 2.0)
 
     def test_buy_failure(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -269,18 +269,20 @@ class FtxTest(unittest.TestCase):
             }
         }
 
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.buy(market, 2.0))
+        with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+            controller.buy(market, 2.0)
 
     def test_buy_negative(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
         market = exchange.interface.Market("ETH", "BTC")
-        self.assertFalse(controller.buy(market, -2.0))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.buy(market, -2.0)
 
     def test_buy_below_notional(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
         market = exchange.interface.Market("ETH", "BTC")
-        self.assertFalse(controller.buy(market, 0.1))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.buy(market, 0.1)
 
     def test_sell(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -300,7 +302,7 @@ class FtxTest(unittest.TestCase):
             }
         }
 
-        self.assertTrue(controller.sell(market, 2.0))
+        controller.sell(market, 2.0)
 
     def test_sell_failure(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -320,18 +322,20 @@ class FtxTest(unittest.TestCase):
             }
         }
 
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.sell(market, 2.0))
+        with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+            controller.sell(market, 2.0)
 
     def test_sell_negative(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
         market = exchange.interface.Market("ETH", "BTC")
-        self.assertFalse(controller.sell(market, -2.0))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.sell(market, -2.0)
 
     def test_sell_below_notional(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
         market = exchange.interface.Market("ETH", "BTC")
-        self.assertFalse(controller.sell(market, 0.1))
+        with self.assertRaises(exchange.interface.ZeroOrNegativeAmountError):
+            controller.sell(market, 0.1)
 
     def test_historical_price(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)
@@ -364,7 +368,7 @@ class FtxTest(unittest.TestCase):
         descriptor = signals.trading_signal.TickerSignalDescriptor(
             market, None, None, 50, 1, datetime.timedelta(seconds=25))
 
-        with unittest.mock.patch("time.sleep"):
+        with self.assertRaises(ValueError):
             self.assertFalse(controller.get_price_history(descriptor))
 
     def test_historical_price_failure(self, session_mock, get_mock):
@@ -378,5 +382,5 @@ class FtxTest(unittest.TestCase):
 
         descriptor = signals.trading_signal.TickerSignalDescriptor(
             market, datetime.datetime.now(), datetime.datetime.now(), 50, 1, datetime.timedelta(seconds=15))
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(controller.get_price_history(descriptor))
+        with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+            controller.get_price_history(descriptor)

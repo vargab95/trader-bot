@@ -131,8 +131,10 @@ class SimpleSingleTraderTest(unittest.TestCase):
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
         self.trader.perform(TradingAction.HOLD_SIGNAL)
-        with unittest.mock.patch("exchange.ftx_mock.FtxMock.buy", return_value=False):
-            self.trader.perform(TradingAction.BULLISH_SIGNAL)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.buy",
+                                 side_effect=exchange.interface.UnknownProviderExchangeError):
+            with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+                self.trader.perform(TradingAction.BULLISH_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BTC"), 0.0)
         self.trader.perform(TradingAction.HOLD_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BTC"), 1.0)
@@ -142,8 +144,10 @@ class SimpleSingleTraderTest(unittest.TestCase):
 
         self.trader.perform(TradingAction.BULLISH_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BTC"), 1.0)
-        with unittest.mock.patch("exchange.ftx_mock.FtxMock.sell", return_value=False):
-            self.trader.perform(TradingAction.BEARISH_SIGNAL)
+        with unittest.mock.patch("exchange.ftx_mock.FtxMock.sell",
+                                 side_effect=exchange.interface.UnknownProviderExchangeError):
+            with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
+                self.trader.perform(TradingAction.BEARISH_SIGNAL)
         self.assertAlmostEqual(self.exchange.get_balance("BTC"), 1.0)
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
         self.trader.perform(TradingAction.BEARISH_SIGNAL)

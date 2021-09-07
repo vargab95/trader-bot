@@ -27,8 +27,8 @@ class TestExchangeFetcher(unittest.TestCase):
         descriptor = signals.trading_signal.TickerSignalDescriptor(
             market, datetime.datetime.now(), datetime.datetime.now(), 50, 1, datetime.timedelta(seconds=15))
 
-        with unittest.mock.patch("time.sleep"):
-            self.assertFalse(fetcher.get_indicator_history(descriptor))
+        with self.assertRaises(NotImplementedError):
+            fetcher.get_indicator_history(descriptor)
 
     @staticmethod
     def __generate_exchange_and_fetcher():

@@ -28,9 +28,9 @@ class FutureTraderBase(trader.base.TraderBase):
 
     def _sell(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
         try:
-            return self._exchange.close_position(market)
-        except exchange.interface.ExchangeError:
-            return False if self._exchange.get_position(market) != 0 else True
+            self._exchange.close_position(market)
+        except exchange.interface.ZeroOrNegativeAmountError:
+            pass
 
     def _buy(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
         base_asset = self._configuration.future_base_asset
@@ -41,14 +41,17 @@ class FutureTraderBase(trader.base.TraderBase):
         amount = balance / price * ratio
         logging.debug("Base asset: %s, balance: %f, price: %f, amount: %f", base_asset, balance, price, amount)
 
+        last_exception = None
         for _ in range(10):
-            if self._state == TraderState.BUYING_BEARISH:
-                logging.info("%f of %s was sold to go to bearish position", amount, str(market))
-                result = self._exchange.bet_on_bearish(market, amount)
-            elif self._state == TraderState.BUYING_BULLISH:
-                logging.info("%f of %s was bought to go to bullish position", amount, str(market))
-                result = self._exchange.bet_on_bullish(market, amount)
-            if result:
-                return True
+            try:
+                if self._state == TraderState.BUYING_BEARISH:
+                    logging.info("%f of %s was sold to go to bearish position", amount, str(market))
+                    self._exchange.bet_on_bearish(market, amount)
+                elif self._state == TraderState.BUYING_BULLISH:
+                    logging.info("%f of %s was bought to go to bullish position", amount, str(market))
+                    self._exchange.bet_on_bullish(market, amount)
+                return
+            except exchange.interface.ExchangeError as exc:
+                last_exception = exc
             amount *= 0.99
-        return False
+        raise last_exception
