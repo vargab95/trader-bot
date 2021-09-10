@@ -20,7 +20,7 @@ before_script:
 
 
 build_and_push_testing_branch_image:
-  stage: build
+  stage: testing-build
   image: docker:20.10.6
 
   services:
