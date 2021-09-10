@@ -14,4 +14,4 @@ ENV TRADER_APPLICATION_TYPE=
 ENV TRADER_CONFIG_FILE=
 
 COPY . .
-RUN chmod +x ./*.sh
+RUN chmod +x *.sh
