@@ -7,39 +7,55 @@ variables:
 
 
 stages:
+  - testing-build
   - lint
   - test
   - build
   - deploy
 
 
-source_linter:
-  stage: lint
+before_script:
+  - cd backend
+  - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
+
+
+build_and_push_testing_branch_image:
+  stage: build
+  image: docker:20.10.6
+
+  services:
+    - docker:20.10.6-dind
+
+  only:
+    refs:
+      - branches
 
   script:
-    - cd backend
-    - pip3 install -r requirements.txt
-    - pip3 install -r requirements.test.txt
+    - docker image build -t tradingviewbot --build-arg include_testing_tools=true .
+    - docker image tag tradingviewbot $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
+    - docker image push $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
+
+source_linter:
+  stage: lint
+  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
+
+  script:
     - chmod +x ./run_linter.sh
     - ./run_linter.sh
 
 run_security_checks:
   stage: lint
+  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
 
   script:
-    - cd backend
-    - pip3 install -r requirements.txt
-    - pip3 install -r requirements.test.txt
     - chmod +x ./run_security_check.sh
     - ./run_security_check.sh
 
 measure_coverage:
   stage: test
+  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
 
   script:
-    - cd backend
-    - pip3 install -r requirements.txt
-    - pip3 install -r requirements.test.txt
     - chmod +x ./measure_coverage.sh
     - ./measure_coverage.sh
 
@@ -55,11 +71,9 @@ build_and_push_branch_image:
       - branches
 
   script:
-    - cd backend
-    - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
     - docker image build -t tradingviewbot .
-    - docker image tag tradingviewbot vargab95/tradingviewbot:$CI_COMMIT_BRANCH
-    - docker image push vargab95/tradingviewbot:$CI_COMMIT_BRANCH
+    - docker image tag tradingviewbot $IMAGE_REGISTRY_CI_USER/tradingviewbot:$CI_COMMIT_BRANCH
+    - docker image push $IMAGE_REGISTRY_CI_USER/tradingviewbot:$CI_COMMIT_BRANCH
 
 build_and_push_tag_image:
   stage: build
@@ -73,8 +87,6 @@ build_and_push_tag_image:
       - tags
 
   script:
-    - cd backend
-    - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
     - docker image build -t tradingviewbot .
-    - docker image tag tradingviewbot vargab95/tradingviewbot:$CI_COMMIT_TAG
-    - docker image push vargab95/tradingviewbot:$CI_COMMIT_TAG
+    - docker image tag tradingviewbot $IMAGE_REGISTRY_CI_USER/tradingviewbot:$CI_COMMIT_TAG
+    - docker image push $IMAGE_REGISTRY_CI_USER/tradingviewbot:$CI_COMMIT_TAG
