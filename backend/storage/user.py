@@ -18,8 +18,8 @@ class UserStorage:
                 "password": password_hash,
                 "active": False
             })
-        except pymongo.errors.DuplicateKeyError:
-            raise InvalidUserRequest("User already exists")
+        except pymongo.errors.DuplicateKeyError as exc:
+            raise InvalidUserRequest("User already exists") from exc
 
     def get(self, email=None):
         return self.__collection.find_one({"email": {"$eq": email}})

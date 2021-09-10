@@ -39,3 +39,7 @@ class Publisher:
 
     def register_signal(self, signal_id: str):
         self.__subscribers[signal_id] = list()
+
+    @property
+    def signals(self):
+        return self.__subscribers.keys()

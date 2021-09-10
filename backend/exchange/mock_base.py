@@ -57,6 +57,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._balances[exchange_config.base_asset] = self.__start_money
         self._positions: exchange.interface.Balances = exchange.interface.Balances()
         self._future_loans: exchange.interface.Balances = exchange.interface.Balances()
+        self._bear_position_purchase_price = dict()
         MockBase.base_coin = exchange_config.base_asset
 
         self.leverage: float = exchange_config.leverage
@@ -70,6 +71,10 @@ class MockBase(exchange.interface.ExchangeInterface):
 
         if not self._is_real_time:
             self.price_mock: typing.Dict[str, float] = {}
+
+    @property
+    def future_loans(self):
+        return self._future_loans
 
     def get_market_key(self, market: Market) -> str:
         return market.key(name_format=self._configuration.market_name_format)
@@ -91,7 +96,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         self.__handle_future_bet(market, amount, True)
 
     def __handle_future_bet(self, market: Market, amount: float, is_bullish: bool):
-        position = self.get_position(market)
+        position = self._floor(self.get_position(market), self._precision)
         to_sell = 0
 
         if position < 0 if is_bullish else position > 0:
@@ -110,24 +115,33 @@ class MockBase(exchange.interface.ExchangeInterface):
 
         amount = self._floor(amount, self._precision)
         price = self.get_price(market)
-        leveraged_amount = amount * price / self.leverage
+        leveraged_amount = amount * price
+        amount_to_substract = leveraged_amount / self.leverage
         market_key = self.get_market_key(market)
         if self.get_leverage_balance() < leveraged_amount:
             raise exchange.interface.InsufficientFundsError("Insufficient balance")
 
-        self._balances[self.base_coin] -= leveraged_amount
+        self._balances[self.base_coin] -= amount_to_substract
         self._positions[market_key] += ((amount * (1 - self._fee)) * (1 if is_bullish else -1))
 
         if market_key not in self._future_loans.keys():
             self._future_loans[market_key] = 0.0
-        self._future_loans[market_key] += (amount * price) - leveraged_amount
+        self._future_loans[market_key] += leveraged_amount - amount_to_substract
+
+        if not is_bullish:
+            self._bear_position_purchase_price[market_key] = price
 
     def __handle_future_sell(self, market: Market, amount: float, is_bullish: bool) -> None:
         amount = self._floor(amount, self._precision)
         price = self.get_price(market)
         market_key = self.get_market_key(market)
         self._positions[market_key] += -amount if is_bullish else amount
-        self._balances[self.base_coin] += abs(amount) * price * (1 - self._fee)
+
+        if is_bullish:
+            self._balances[self.base_coin] += abs(amount) * price * (1 - self._fee)
+        else:
+            old_price = self._bear_position_purchase_price[market_key]
+            self._balances[self.base_coin] += abs(amount) * old_price * (old_price / price) * (1 - self._fee)
 
     def close_position(self, market: Market):
         super().close_position(market)

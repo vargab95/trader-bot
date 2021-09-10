@@ -57,11 +57,8 @@ class SingleFetcherTest(unittest.TestCase):
             "check_interval": 60
         })
 
-        try:
+        with self.assertRaises(InvalidConfigurationException):
             TradingViewFetcherSingle(configuration)
-            self.fail()
-        except InvalidConfigurationException:
-            pass
 
     def test_invalid_candle_size_type(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()
@@ -74,11 +71,8 @@ class SingleFetcherTest(unittest.TestCase):
             "check_interval": 60
         })
 
-        try:
+        with self.assertRaises(InvalidConfigurationException):
             TradingViewFetcherSingle(configuration)
-            self.fail()
-        except InvalidConfigurationException:
-            pass
 
     def test_invalid_indicator_type(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()
@@ -91,11 +85,8 @@ class SingleFetcherTest(unittest.TestCase):
             "check_interval": 60
         })
 
-        try:
+        with self.assertRaises(InvalidConfigurationException):
             TradingViewFetcherSingle(configuration)
-            self.fail()
-        except InvalidConfigurationException:
-            pass
 
     def test_invalid_candle_size_value(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()
@@ -108,11 +99,8 @@ class SingleFetcherTest(unittest.TestCase):
             "check_interval": 60
         })
 
-        try:
+        with self.assertRaises(InvalidConfigurationException):
             TradingViewFetcherSingle(configuration)
-            self.fail()
-        except InvalidConfigurationException:
-            pass
 
     def test_invalid_indicator_value(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()
@@ -125,8 +113,5 @@ class SingleFetcherTest(unittest.TestCase):
             "check_interval": 60
         })
 
-        try:
+        with self.assertRaises(InvalidConfigurationException):
             TradingViewFetcherSingle(configuration)
-            self.fail()
-        except InvalidConfigurationException:
-            pass

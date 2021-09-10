@@ -25,13 +25,13 @@ class SimpleFutureTraderTest(unittest.TestCase):
 
         exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
         cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
-        cls.exchange.price_mock["BTC-PERP"] = 100.0
-        cls.exchange.price_mock["BEAR-PERP"] = 10.0
-        cls.exchange.price_mock["BULL-PERP"] = 5.0
-        cls.exchange.leverage = 3.0
 
     def setUp(self):
         self.trader = trader.future.simple.SimpleFutureTrader(TraderConfig({"market": "BTC-PERP"}), self.exchange)
+        self.exchange.price_mock["BTC-PERP"] = 100.0
+        self.exchange.price_mock["BEAR-PERP"] = 10.0
+        self.exchange.price_mock["BULL-PERP"] = 5.0
+        self.exchange.leverage = 3.0
 
     def tearDown(self):
         self.exchange.reset()
@@ -162,6 +162,148 @@ class SimpleFutureTraderTest(unittest.TestCase):
             self.trader.perform(detector_signal)
 
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_bearish_with_returning(self):
+        detector_signals = [
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.BEARISH_SIGNAL, 100.0),
+            (TradingAction.BEARISH_SIGNAL, 75.0),
+            (TradingAction.BEARISH_SIGNAL, 50.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 50.0)
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal, price in detector_signals:
+            self.exchange.price_mock["BTC-PERP"] = price
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 400.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_bullish_with_returning(self):
+        detector_signals = [
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 150.0),
+            (TradingAction.BULLISH_SIGNAL, 200.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 200.0)
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal, price in detector_signals:
+            self.exchange.price_mock["BTC-PERP"] = price
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 400.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_from_bullish_to_bearish_with_changing_money_to_zero(self):
+        detector_signals = [
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 150.0),
+            (TradingAction.BULLISH_SIGNAL, 200.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 250.0),
+            (TradingAction.BEARISH_SIGNAL, 300.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 300.0)
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal, price in detector_signals:
+            self.exchange.price_mock["BTC-PERP"] = price
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_from_bullish_to_bearish_with_changing_money_to_higher_money(self):
+        detector_signals = [
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 150.0),
+            (TradingAction.BULLISH_SIGNAL, 200.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 150.0),
+            (TradingAction.BEARISH_SIGNAL, 100.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 100.0)
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal, price in detector_signals:
+            self.exchange.price_mock["BTC-PERP"] = price
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 1600.0)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_from_bearish_to_bullish_with_changing_money_to_zero(self):
+        detector_signals = [
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 150.0),
+            (TradingAction.BEARISH_SIGNAL, 100.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 75.0),
+            (TradingAction.BULLISH_SIGNAL, 66.66667),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 66.66667)
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal, price in detector_signals:
+            self.exchange.price_mock["BTC-PERP"] = price
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0, 2)
+        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
+
+    def test_from_bearish_to_bullish_with_changing_money_to_higher_money(self):
+        detector_signals = [
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.HOLD_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 200.0),
+            (TradingAction.BEARISH_SIGNAL, 150.0),
+            (TradingAction.BEARISH_SIGNAL, 100.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.HOLD_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 100.0),
+            (TradingAction.BULLISH_SIGNAL, 150.0),
+            (TradingAction.BULLISH_SIGNAL, 200.0),
+            (TradingAction.RETURN_TO_BASE_SIGNAL, 200.0)
+        ]
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        for detector_signal, price in detector_signals:
+            self.exchange.price_mock["BTC-PERP"] = price
+            self.trader.perform(detector_signal)
+
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 1600.0)
         self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 0.0)
 
     def test_multiple_bullish_with_returning_without_price_change(self):

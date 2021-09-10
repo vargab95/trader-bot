@@ -45,8 +45,5 @@ class TraderFactoryTest(unittest.TestCase):
         configuration = config.trader.TraderConfig({})
         configuration.method = "non-existing method"
         configuration.leverage = True
-        try:
+        with self.assertRaises(trader.factory.InvalidTradingMethod):
             trader.factory.TraderFactory.create(configuration, None)
-            self.fail()
-        except trader.factory.InvalidTradingMethod:
-            pass

@@ -48,11 +48,8 @@ class MailingTest(unittest.TestCase):
 
     def test_empty_message(self, _):
         message = mailing.error.ErrorMessage()
-        try:
+        with self.assertRaises(mailing.message.InvalidMessageException):
             self.postman.send(message)
-            self.fail()
-        except mailing.message.InvalidMessageException:
-            pass
 
     def test_connection_error(self, smtp_mock):
         message = mailing.error.ErrorMessage()

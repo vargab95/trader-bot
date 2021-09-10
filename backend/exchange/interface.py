@@ -89,6 +89,10 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
     def get_balances(self) -> Balances:
         pass  # pragma: no cover
 
+    @property
+    def balances(self) -> Balances:
+        return self.get_balances()
+
     @abc.abstractmethod
     def get_balance(self, market: str) -> float:
         pass  # pragma: no cover
@@ -113,16 +117,21 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
     def get_positions(self) -> Balances:
         pass  # pragma: no cover
 
+    @property
+    def positions(self) -> Balances:
+        return self.get_positions()
+
     @abc.abstractmethod
     def get_position(self, market: Market) -> float:
         pass  # pragma: no cover
 
     @staticmethod
     def _floor(value: float, precision: float) -> float:
+        sign = -1 if value < 0 else 1
         exponent = -int(math.log10(precision))
         remainder = value % precision
         result = value
         if remainder > (0.5 * precision) and round(remainder, 12) != precision:
             result -= precision
         result = round(result, exponent)
-        return abs(result)
+        return abs(result) * sign

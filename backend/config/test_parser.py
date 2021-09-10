@@ -13,8 +13,5 @@ import config.common
 class TestConfigParser(unittest.TestCase):
     def test_parse_fail(self):
         parser = config.parser.ConfigurationParser()
-        try:
+        with self.assertRaises(config.common.InvalidConfigurationException):
             parser.read("invalid")
-            self.fail()
-        except config.common.InvalidConfigurationException:
-            pass

@@ -56,7 +56,7 @@ class FilterFactoryTest(unittest.TestCase):
         self.assertIsInstance(instance, filters.complex.Complex)
 
     def test_create_complex_invalid_type(self):
-        try:
+        with self.assertRaises(InvalidFilterFactoryParameter):
             FilterFactory.create_complex([
                 config.filter.FilterConfig({
                     "type": "invalid",
@@ -66,12 +66,9 @@ class FilterFactoryTest(unittest.TestCase):
                     "length": 5
                 })
             ])
-            self.fail()
-        except InvalidFilterFactoryParameter:
-            pass
 
     def test_create_complex_invalid_length(self):
-        try:
+        with self.assertRaises(InvalidFilterFactoryParameter):
             FilterFactory.create_complex([
                 config.filter.FilterConfig({
                     "type": "sma",
@@ -81,20 +78,11 @@ class FilterFactoryTest(unittest.TestCase):
                     "length": -1
                 })
             ])
-            self.fail()
-        except InvalidFilterFactoryParameter:
-            pass
 
     def test_invalid_param_filter_type(self):
-        try:
+        with self.assertRaises(InvalidFilterFactoryParameter):
             FilterFactory.create(config.filter.FilterConfig({"type": "invalid", "length": 4}))
-            self.fail()
-        except InvalidFilterFactoryParameter:
-            pass
 
     def test_invalid_param_filter_length(self):
-        try:
+        with self.assertRaises(InvalidFilterFactoryParameter):
             FilterFactory.create(config.filter.FilterConfig({"type": "sma", "length": -1}))
-            self.fail()
-        except InvalidFilterFactoryParameter:
-            pass

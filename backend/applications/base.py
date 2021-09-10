@@ -92,6 +92,7 @@ class ApplicationBase:
         try:
             self._run_application_logic()
         except KeyboardInterrupt:
+            logging.info("Process was stopped by keyboard interrupt")
             return
         except Exception as error:  # pylint: disable=broad-except
             message = mailing.error.ErrorMessage()

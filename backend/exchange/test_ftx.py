@@ -43,11 +43,8 @@ class FtxTest(unittest.TestCase):
             "error": "Connection error"
         }
 
-        try:
+        with self.assertRaises(exchange.interface.UnknownProviderExchangeError):
             exchange.factory.ExchangeControllerFactory.create(self.config, testing=False)
-            self.fail()
-        except exchange.interface.UnknownProviderExchangeError:
-            pass
 
     def test_get_price(self, session_mock, get_mock):
         controller = self.init_controller(session_mock, get_mock, 1.0, 1.0)

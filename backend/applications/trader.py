@@ -47,7 +47,7 @@ class TraderApplication(applications.base.ApplicationBase):
         try:
             self.__scheduler.start()
         except (KeyboardInterrupt, SystemExit):
-            pass
+            logging.info("Keyboard interrup or system exit caught")
 
     def __handle_missed_job(self, event):
         job_name = str(self.__scheduler.get_job(event.job_id))

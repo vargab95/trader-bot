@@ -33,8 +33,8 @@ class Complex(filters.base.Filter):
     def get(self) -> float:
         try:
             return self.__filters[-1].get()
-        except IndexError:
-            raise NoFilterSpecified
+        except IndexError as exc:
+            raise NoFilterSpecified from exc
 
     @property
     def length(self):

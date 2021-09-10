@@ -160,11 +160,8 @@ class MultiFetcherTest(unittest.TestCase):
             "check_interval": 60
         })
 
-        try:
+        with self.assertRaises(InvalidConfigurationException):
             TradingViewFetcherMulti(configuration)
-            self.fail()
-        except InvalidConfigurationException:
-            pass
 
     def test_invalid_indicator_value(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()
@@ -177,11 +174,8 @@ class MultiFetcherTest(unittest.TestCase):
             "check_interval": 60
         })
 
-        try:
+        with self.assertRaises(InvalidConfigurationException):
             TradingViewFetcherMulti(configuration)
-            self.fail()
-        except InvalidConfigurationException:
-            pass
 
     def test_safe_fetch(self, post_mock):
         post_mock.return_value = unittest.mock.Mock()

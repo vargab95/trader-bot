@@ -101,11 +101,8 @@ class DetectorFactoryTest(unittest.TestCase):
         config.bearish_threshold = -0.4
         config.bullish_threshold = 0.4
 
-        try:
+        with self.assertRaises(InvalidDetectorConfiguration):
             DetectorFactory.create(config)
-            self.fail()
-        except InvalidDetectorConfiguration:
-            pass
 
     def test_create_stateless_follower(self):
         config = DetectorConfig({})
@@ -115,11 +112,8 @@ class DetectorFactoryTest(unittest.TestCase):
         config.bearish_threshold = -0.4
         config.bullish_threshold = 0.4
 
-        try:
+        with self.assertRaises(InvalidDetectorConfiguration):
             DetectorFactory.create(config)
-            self.fail()
-        except InvalidDetectorConfiguration:
-            pass
 
     def test_simple_treshold(self):
         config = DetectorConfig({})

@@ -47,11 +47,8 @@ class ComplexTest(unittest.TestCase):
     def test_no_filter_specified(self):
         complex_filter = filters.complex.Complex()
 
-        try:
+        with self.assertRaises(filters.complex.NoFilterSpecified):
             complex_filter.get()
-            self.fail()
-        except filters.complex.NoFilterSpecified:
-            pass
 
     def test_simple_calculation(self):
         test_data = [
