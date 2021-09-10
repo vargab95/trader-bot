@@ -55,6 +55,7 @@ build_and_push_branch_image:
       - branches
 
   script:
+    - cd backend
     - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
     - docker image build -t tradingviewbot .
     - docker image tag tradingviewbot vargab95/tradingviewbot:$CI_COMMIT_BRANCH
@@ -72,6 +73,7 @@ build_and_push_tag_image:
       - tags
 
   script:
+    - cd backend
     - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
     - docker image build -t tradingviewbot .
     - docker image tag tradingviewbot vargab95/tradingviewbot:$CI_COMMIT_TAG
