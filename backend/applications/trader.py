@@ -34,8 +34,8 @@ class TraderApplication(applications.base.ApplicationBase):
                                      next_run_time=datetime.now())
 
         for trader_config in self._configuration.components.traders:
-            trader = self._builder.traders[trader_config.input_signal_id]
-            listener = self._builder.trader_listeners[trader_config.input_signal_id]
+            trader = self._builder.traders[trader_config.output_signal_id]
+            listener = self._builder.trader_listeners[trader_config.output_signal_id]
             self.__add_trader_schedule(self.__scheduler, trader_config, trader, listener)
 
         if self._configuration.mail.enabled:
