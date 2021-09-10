@@ -17,7 +17,6 @@ stages:
 
 before_script:
   - cd backend
-  - which docker && docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
 
 
 build_and_push_testing_branch_image:
@@ -99,5 +98,4 @@ delete_testing_image:
   image: curlimages/curl
 
   script:
-    - curl -u $IMAGE_REGISTRY_CI_USER:$IMAGE_REGISTRY_CI_PASSWORD -X "DELETE" \
-      https://cloud.docker.com/v2/repositories/$IMAGE_REGISTRY_CI_USER/tradingviewbot/tags/$CI_COMMIT_SHA/
+    - curl -u "$IMAGE_REGISTRY_CI_USER:$IMAGE_REGISTRY_CI_PASSWORD" -X "DELETE" https://cloud.docker.com/v2/repositories/$IMAGE_REGISTRY_CI_USER/tradingviewbot/tags/$CI_COMMIT_SHA/
