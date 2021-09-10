@@ -348,9 +348,7 @@ class BinanceTest(unittest.TestCase):
         descriptor = signals.trading_signal.TickerSignalDescriptor(
             market, None, None, 50, 1, datetime.timedelta(seconds=60))
 
-        self.assertListEqual(controller.get_price_history(descriptor).data,
-                             [signals.trading_signal.TradingSignalPoint(
-                              value=0.015771, date=datetime.datetime(2017, 7, 3, 2, 0))])
+        self.assertAlmostEqual(controller.get_price_history(descriptor).data[0].value, 0.015771)
 
         handle.get_historical_klines.assert_called_once()
 
