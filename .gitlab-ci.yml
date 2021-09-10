@@ -74,3 +74,4 @@ measure_coverage:
 #     - docker image build -t mantre-api .
 #     - docker image tag mantre-api vargab95/mantre-api:$CI_COMMIT_TAG
 #     - docker image push vargab95/mantre-api:$CI_COMMIT_TAG
+#
