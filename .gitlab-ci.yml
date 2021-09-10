@@ -12,6 +12,7 @@ stages:
   - test
   - build
   - deploy
+  - cleanup
 
 
 before_script:
@@ -32,12 +33,12 @@ build_and_push_testing_branch_image:
 
   script:
     - docker image build -t tradingviewbot --build-arg include_testing_tools=true .
-    - docker image tag tradingviewbot $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
-    - docker image push $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
+    - docker image tag tradingviewbot $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
+    - docker image push $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
 
 source_linter:
   stage: lint
-  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
+  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
 
   script:
     - chmod +x ./run_linter.sh
@@ -45,7 +46,7 @@ source_linter:
 
 run_security_checks:
   stage: lint
-  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
+  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
 
   script:
     - chmod +x ./run_security_check.sh
@@ -53,7 +54,7 @@ run_security_checks:
 
 measure_coverage:
   stage: test
-  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_BRANCH}_testing
+  image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
 
   script:
     - chmod +x ./measure_coverage.sh
@@ -90,3 +91,13 @@ build_and_push_tag_image:
     - docker image build -t tradingviewbot .
     - docker image tag tradingviewbot $IMAGE_REGISTRY_CI_USER/tradingviewbot:$CI_COMMIT_TAG
     - docker image push $IMAGE_REGISTRY_CI_USER/tradingviewbot:$CI_COMMIT_TAG
+
+delete_testing_image:
+  stage: cleanup
+  when: always
+
+  image: curlimages/curl
+
+  script:
+    - curl -u $IMAGE_REGISTRY_CI_USER:$IMAGE_REGISTRY_CI_PASSWORD -X "DELETE" \
+      https://cloud.docker.com/v2/repositories/$IMAGE_REGISTRY_CI_USER/tradingviewbot/tags/$CI_COMMIT_SHA/
