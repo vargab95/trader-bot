@@ -43,41 +43,36 @@ measure_coverage:
     - chmod +x ./measure_coverage.sh
     - ./measure_coverage.sh
 
-# build_and_push_branch_image:
-#   stage: build
-#   image: docker:20.10.6
-#
-#   services:
-#     - docker:20.10.6-dind
-#
-#   only:
-#     refs:
-#       - branches
-#     changes:
-#       - mantre_api/**/*
-#       - .gitlab-ci.yml
-#       - Dockerfile
-#
-#   script:
-#     - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
-#     - docker image build -t mantre-api .
-#     - docker image tag mantre-api vargab95/mantre-api:$CI_COMMIT_BRANCH
-#     - docker image push vargab95/mantre-api:$CI_COMMIT_BRANCH
-#
-# build_and_push_tag_image:
-#   stage: build
-#   image: docker:20.10.6
-#
-#   services:
-#     - docker:20.10.6-dind
-#
-#   only:
-#     refs:
-#       - tags
-#
-#   script:
-#     - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
-#     - docker image build -t mantre-api .
-#     - docker image tag mantre-api vargab95/mantre-api:$CI_COMMIT_TAG
-#     - docker image push vargab95/mantre-api:$CI_COMMIT_TAG
-#
+build_and_push_branch_image:
+  stage: build
+  image: docker:20.10.6
+
+  services:
+    - docker:20.10.6-dind
+
+  only:
+    refs:
+      - branches
+
+  script:
+    - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
+    - docker image build -t tradingviewbot .
+    - docker image tag tradingviewbot vargab95/tradingviewbot:$CI_COMMIT_BRANCH
+    - docker image push vargab95/tradingviewbot:$CI_COMMIT_BRANCH
+
+build_and_push_tag_image:
+  stage: build
+  image: docker:20.10.6
+
+  services:
+    - docker:20.10.6-dind
+
+  only:
+    refs:
+      - tags
+
+  script:
+    - docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
+    - docker image build -t tradingviewbot .
+    - docker image tag tradingviewbot vargab95/tradingviewbot:$CI_COMMIT_TAG
+    - docker image push vargab95/tradingviewbot:$CI_COMMIT_TAG
