@@ -27,8 +27,7 @@ class DetectorFactory:
     def create(configuration: DetectorConfig, gatherer: fetcher.single.TradingViewFetcherSingle = None):
         if configuration.reset_on_falling_edge:
             logging.info("Reset on falling edge detector created")
-            return detector.reset_on_falling_edge.ResetOnFallingEdgeDetector(configuration.bearish_threshold,
-                                                                             configuration.bullish_threshold)
+            return ResetOnFallingEdgeDetector(configuration.bearish_threshold, configuration.bullish_threshold)
 
         if configuration.falling_edge:
             if configuration.stateless:

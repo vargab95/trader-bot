@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+import socket
+
 from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
@@ -61,6 +63,10 @@ class ServerApplication(applications.base.ApplicationBase):
         self.__api.add_resource(api.auth.signup.SignupApi, '/auth/signup')
 
     def _run_application_logic(self):
+        if self._configuration.testing.enabled:
+            host = "127.0.0.1"
+        else:
+            host = socket.gethostbyname(socket.gethostname())
         self.__app.run(debug=self._configuration.testing.enabled,
-                       host='0.0.0.0' if self._configuration.testing.enabled else '127.0.0.1',
+                       host=host,
                        port=self._configuration.server.port)

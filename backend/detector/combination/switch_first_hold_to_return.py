@@ -14,7 +14,6 @@ class SwitchFirstHoldToReturnCombination(DetectorCombinationLogic):
         self.__last_value: TradingAction = None
 
     def _calculate(self, signals: typing.Dict[str, TradingAction]) -> TradingAction:
-        assert len(signals) == 1
         signal = list(signals.values())[0]
 
         checked_signals = [TradingAction.BEARISH_SIGNAL, TradingAction.BULLISH_SIGNAL]

@@ -134,5 +134,5 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 backend/report.txt
-*.yml
+conf*.yml
 *.csv
