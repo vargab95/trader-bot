@@ -41,7 +41,6 @@ source_linter:
   image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
 
   script:
-    - chmod +x ./run_linter.sh
     - ./run_linter.sh
 
 run_security_checks:
@@ -49,7 +48,6 @@ run_security_checks:
   image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
 
   script:
-    - chmod +x ./run_security_check.sh
     - ./run_security_check.sh
 
 measure_coverage:
@@ -57,7 +55,6 @@ measure_coverage:
   image: $IMAGE_REGISTRY_CI_USER/tradingviewbot:${CI_COMMIT_SHA}
 
   script:
-    - chmod +x ./measure_coverage.sh
     - ./measure_coverage.sh
 
 build_and_push_branch_image:
