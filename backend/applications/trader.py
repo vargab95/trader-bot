@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -24,7 +24,7 @@ class TraderApplication(applications.base.ApplicationBase):
     def __add_trader_schedule(scheduler, config, trader, listener):
         scheduler.add_job(lambda: trader.perform(listener.read_and_clear()),
                           "interval", seconds=config.check_interval,
-                          next_run_time=datetime.now())
+                          next_run_time=datetime.now() + timedelta(seconds=60))
 
     def _run_application_logic(self):
         for fetcher_config in self._configuration.components.fetchers:
@@ -42,7 +42,7 @@ class TraderApplication(applications.base.ApplicationBase):
             logging.info("Configuring mailing")
             self.__scheduler.add_listener(self.__handle_missed_job, EVENT_JOB_MISSED | EVENT_JOB_MAX_INSTANCES)
             self.__scheduler.add_listener(self.__handle_failed_job, EVENT_JOB_ERROR)
-            self.__scheduler.add_job(self._postman.send_all, "interval", seconds=20)
+            self.__scheduler.add_job(self._postman.send_all, "interval", seconds=300)
 
         try:
             self.__scheduler.start()
