@@ -19,6 +19,7 @@ source_linter:
   script:
     - cd backend
     - pip3 install -r requirements.txt
+    - pip3 install -r requirements.test.txt
     - chmod +x ./run_linter.sh
     - ./run_linter.sh
 
@@ -28,6 +29,7 @@ run_security_checks:
   script:
     - cd backend
     - pip3 install -r requirements.txt
+    - pip3 install -r requirements.test.txt
     - chmod +x ./run_security_check.sh
     - ./run_security_check.sh
 
@@ -37,6 +39,7 @@ measure_coverage:
   script:
     - cd backend
     - pip3 install -r requirements.txt
+    - pip3 install -r requirements.test.txt
     - chmod +x ./measure_coverage.sh
     - ./measure_coverage.sh
 

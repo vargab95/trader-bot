@@ -1,0 +1,5 @@
+pylint
+coverage
+safety
+flake8
+bandit
