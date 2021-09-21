@@ -11,4 +11,4 @@ for i in range(1, len(input_data)):
             input_data[i]["AND-ALL-WITH-SWITCHED-RETURN"]
         ])
 
-print(json.dumps(filtered_data, indent=2))
+print(json.dumps(filtered_data))
