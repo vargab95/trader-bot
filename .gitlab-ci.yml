@@ -96,7 +96,7 @@ delete_testing_image:
   stage: cleanup
   when: always
 
-  image: curlimages/curl
+  image: vargab95/gitlab-docker-tag-deleter
 
   script:
-    - curl -f -L -u "$IMAGE_REGISTRY_CI_USER:$IMAGE_REGISTRY_CI_PASSWORD" -X "DELETE" https://cloud.docker.com/v2/repositories/$IMAGE_REGISTRY_CI_USER/tradingviewbot/tags/$CI_COMMIT_SHA/
+    - ./delete_tag.sh
