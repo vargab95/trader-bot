@@ -99,4 +99,4 @@ delete_testing_image:
   image: curlimages/curl
 
   script:
-    - curl -u "$IMAGE_REGISTRY_CI_USER:$IMAGE_REGISTRY_CI_PASSWORD" -X "DELETE" https://cloud.docker.com/v2/repositories/$IMAGE_REGISTRY_CI_USER/tradingviewbot/tags/$CI_COMMIT_SHA/
+    - curl -f -L -u "$IMAGE_REGISTRY_CI_USER:$IMAGE_REGISTRY_CI_PASSWORD" -X "DELETE" https://cloud.docker.com/v2/repositories/$IMAGE_REGISTRY_CI_USER/tradingviewbot/tags/$CI_COMMIT_SHA/
