@@ -1,5 +1,7 @@
 FROM python:3.9-slim
 
+RUN apt update && apt upgrade -y
+
 WORKDIR /app
 COPY ./requirements.txt ./requirements.txt
 COPY ./requirements.test.txt ./requirements.test.txt
