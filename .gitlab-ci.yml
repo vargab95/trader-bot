@@ -102,4 +102,5 @@ delete_testing_image:
   image: vargab95/gitlab-docker-tag-deleter
 
   script:
+    - cd ..
     - ./delete_tag.sh
