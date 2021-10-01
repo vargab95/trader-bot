@@ -103,4 +103,5 @@ delete_testing_image:
 
   script:
     - cd ..
+    - ls -la
     - ./delete_tag.sh
