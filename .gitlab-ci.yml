@@ -96,6 +96,9 @@ delete_testing_image:
   stage: cleanup
   when: always
 
+  variables:
+    GIT_STRATEGY: none
+
   image: vargab95/gitlab-docker-tag-deleter
 
   script:
