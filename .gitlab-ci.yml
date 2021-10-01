@@ -16,7 +16,7 @@ stages:
 
 
 before_script:
-   - cd backend
+   - [ -d backend ] && cd backend
    - which docker && docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_PASSWORD $IMAGE_REGISTRY_URL
 
 
