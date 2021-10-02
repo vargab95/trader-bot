@@ -100,7 +100,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         to_sell = 0
 
         if position < 0 if is_bullish else position > 0:
-            diff = abs(position) - amount
+            diff = self._floor(abs(position) - amount, self._precision)
             to_sell = diff if diff > 0 else amount
             self.__handle_future_sell(market, to_sell, not is_bullish)
             amount -= to_sell
@@ -156,6 +156,11 @@ class MockBase(exchange.interface.ExchangeInterface):
         logging.debug("Amount to buy: %f", amount)
         amount = self._floor(amount, self._precision)
         logging.debug("Amount was rounded to %f", amount)
+
+        if amount <= 0:
+            logging.error("Trying to sell 0 or less amount")
+            raise exchange.interface.ZeroOrNegativeAmountError("Cannot sell zero or negative amount")
+
         logging.info("Trying to buy %f of %s", amount, str(market))
         price = self.get_price(market)
         if self.get_balance(market.base) < amount * price:
