@@ -19,8 +19,5 @@ class WMA(filters.base.Filter):
     def put(self, value: float):
         self._data.append(value)
         if len(self._data) >= self._config.length:
-            self._value = sum([
-                self.__coefficients[i] * self._data[i]
-                for i in range(self._config.length)
-            ])
+            self._value = sum([c * d for c, d in zip(self.__coefficients, self._data)])
             self._data.pop(0)
