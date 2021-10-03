@@ -110,11 +110,15 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass  # pragma: no cover
 
     @abc.abstractmethod
-    def get_money(self, base: str) -> float:
+    def get_money(self, base: str = None) -> float:
         pass  # pragma: no cover
 
     @abc.abstractmethod
     def get_positions(self) -> Balances:
+        pass  # pragma: no cover
+
+    @abc.abstractmethod
+    def get_future_loans(self) -> Balances:
         pass  # pragma: no cover
 
     @property

@@ -57,8 +57,12 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         logging.debug("Corrected amount string: %s", corrected_amount_str)
         return corrected_amount
 
-    def get_money(self, base: str) -> float:
+    def get_money(self, base: str = None) -> float:
         all_money: float = 0.0
+
+        if base is None:
+            base = self._configuration.base_asset
+
         logging.debug("Calculating all money for %s", base)
         for _, balance in self._get_balances_in_different_base(base).items():
             all_money += balance
@@ -86,6 +90,9 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         raise NotImplementedError  # pragma: no cover
 
     def get_position(self, market: exchange.interface.Market) -> float:
+        raise NotImplementedError  # pragma: no cover
+
+    def get_future_loans(self) -> exchange.interface.Balances:
         raise NotImplementedError  # pragma: no cover
 
     def get_leverage_balance(self) -> float:

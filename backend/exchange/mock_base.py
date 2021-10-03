@@ -231,8 +231,15 @@ class MockBase(exchange.interface.ExchangeInterface):
             self._positions[market_key] = 0.0
         return self._positions[market_key]
 
-    def get_money(self, base: str) -> float:
+    def get_future_loans(self) -> exchange.interface.Balances:
+        return self._future_loans.copy()
+
+    def get_money(self, base: str = None) -> float:
         all_money: float = 0.0
+
+        if base is None:
+            base = self._configuration.base_asset
+
         for name, balance in self._balances.items():
             if base == name:
                 all_money += balance
@@ -240,4 +247,10 @@ class MockBase(exchange.interface.ExchangeInterface):
                 market = exchange.interface.Market(base, name)
                 price = self.get_price(market)
                 all_money += balance * price
+
+        for market_name, position in self._positions.items():
+            market = exchange.interface.Market.create_from_string(market_name)
+            price = self.get_price(market)
+            all_money += abs(position) * price - self._future_loans[market_name]
+
         return all_money
