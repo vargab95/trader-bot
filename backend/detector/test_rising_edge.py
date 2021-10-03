@@ -126,4 +126,6 @@ class RisingEdgeDetectorTest(unittest.TestCase):
             [0.0, detector.common.TradingAction.HOLD_SIGNAL],
         ]
         for line in test_data:
-            self.assertEqual(test_detector.check(line[0]), line[1], str(line))
+            result = test_detector.check(line[0])
+            self.assertEqual(result, line[1], str(line))
+            self.assertEqual(result, test_detector.read())

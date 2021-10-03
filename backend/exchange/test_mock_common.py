@@ -26,7 +26,7 @@ class CommonMockTest(unittest.TestCase):
         self.controller.price_mock["BTC-USDT"] = 100.0
         self.controller.price_mock["BEAR-USDT"] = 10.0
         self.controller.price_mock["BEAR-PERP"] = 10.0
-        self.controller.price_mock["BULL-PERP"] = 4.0
+        self.controller.price_mock["BULL-PERP"] = 5.0
         self.controller.price_mock["BULL-USDT"] = 5.0
         self.controller.leverage = 1.0
         self.controller.set_real_time(False)
@@ -143,6 +143,10 @@ class CommonMockTest(unittest.TestCase):
         self.controller.price_mock["BEAR-USDT"] = 1.0
 
         self.assertEqual(self.controller.get_money("USDT"), 55.0)
+
+    def test_get_money_with_position_without_change(self):
+        self.controller.bet_on_bearish(exchange.interface.Market.create_from_string("BEAR-PERP"), 5.0)
+        self.assertAlmostEqual(self.controller.get_money(), 100.0)
 
     def test_buy_too_much(self):
         with self.assertRaises(exchange.interface.InsufficientFundsError):

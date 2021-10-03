@@ -45,18 +45,18 @@ class DetectorCombinationConfig(ConfigComponentBase):
         self.output_signal_id = config.get("output_signal_id", None)
         self.combination_type = config.get("combination_type", None)
 
-    def __str__(self):
-        return "\n        Detector:" + \
-               "\n            Input signal ids:       " + str(self.input_signal_ids) + \
-               "\n            Output signal id:       " + str(self.output_signal_id) + \
-               "\n            Combination type:       " + str(self.combination_type)
-
     def validate(self):
         if self.input_signal_ids is None:
             raise InvalidConfigurationException("Input signal ids is mandatory in detector combination logic config")
 
+        if not isinstance(self.input_signal_ids, list):
+            raise InvalidConfigurationException("Input signal ids must be a list")
+
         if self.output_signal_id is None:
             raise InvalidConfigurationException("Output signal id is mandatory in detector combination logic config")
+
+        if not isinstance(self.output_signal_id, str):
+            raise InvalidConfigurationException("Output signal id must be a string")
 
         if self.combination_type is None:
             raise InvalidConfigurationException("Combination type is mandatory in detector combination logic config")

@@ -31,6 +31,9 @@ class ExchangeConfig(ConfigComponentBase):
         if self.name is None:
             raise InvalidConfigurationException("Name is a mandatory parameter for exchange config")
 
+        if self.name not in self.available_exchanges:
+            raise InvalidConfigurationException("Name is invalid")
+
         if self.public_key is None:
             raise InvalidConfigurationException("Public key is a mandatory parameter for exchange config")
 
