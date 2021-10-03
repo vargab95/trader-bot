@@ -3,7 +3,7 @@
 import abc
 import logging
 
-import config.application
+from config.trader import TraderConfig
 import exchange.interface
 import detector.interface
 import detector.factory
@@ -14,7 +14,7 @@ from trader.common import TraderState
 
 class TraderBase:
     def __init__(self,
-                 configuration: config.application.ApplicationConfig,
+                 configuration: TraderConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         self._exchange = used_exchange
         self._state: TraderState = configuration.start_state
