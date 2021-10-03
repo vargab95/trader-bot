@@ -5,7 +5,7 @@ import json
 import copy
 
 from builder.simulator import SimulatorComponentsBuilder
-from exchange.interface import ExchangeInterface
+from exchange.interface import ExchangeInterface, PositionLiquidatedError
 from observer.subscriber import Subscriber
 from observer.event import SignalUpdatedEvent
 from fetcher.common import CannotFetchDataException
@@ -35,7 +35,8 @@ class ExecutionLogSubscriber(Subscriber):
             signals_to_write[name + "-PRICE-MOCK"] = copy.deepcopy(exchange.price_mock)
             signals_to_write[name + "-BALANCES"] = exchange.get_balances()
             signals_to_write[name + "-POSITIONS"] = exchange.get_positions()
-            signals_to_write[name + "-FUTURE-LOANS"] = exchange._future_loans
+            signals_to_write[name + "-FUTURE-LOANS"] = exchange.get_future_loans()
+            signals_to_write[name + "-MONEY"] = exchange.get_money()
 
         for name, fetcher in self.__builder.fetchers.items():
             signals_to_write[name + "-TIMESTAMP"] = fetcher.get_timestamp()
@@ -60,6 +61,18 @@ class ExecutionLogSubscriber(Subscriber):
             json.dump(self.__execution_log, log_file, indent=2)
 
 
+class LiquidationWatcherSubscriber(Subscriber):
+    def __init__(self, builder: SimulatorComponentsBuilder):
+        self.__execution_log = list()
+        self.__builder: SimulatorComponentsBuilder = builder
+
+    def update(self, event: SignalUpdatedEvent):
+        for name, exchange in self.__builder.exchanges.items():
+            if exchange.get_money() <= 0:
+                logging.critical("%s exchange has liquidated", name)
+                raise PositionLiquidatedError()
+
+
 class SimulatorApplication(ApplicationBase):
     def __init__(self):
         super().__init__()
@@ -72,6 +85,10 @@ class SimulatorApplication(ApplicationBase):
             for exchange in self._builder.exchanges.values():
                 updater = PriceMockUpdater(signal_id, exchange)
                 self._builder.analogue_signal_publisher.subscribe(signal_id, updater, prepend=True)
+
+        liquidation_watcher = LiquidationWatcherSubscriber(self._builder)
+        for signal_id in self._builder.fetcher_publishers:
+            self._builder.analogue_signal_publisher.subscribe(signal_id, liquidation_watcher)
 
         if self._configuration.simulator.log_output_path:
             self.__execution_log_writer = ExecutionLogSubscriber(self._builder)
