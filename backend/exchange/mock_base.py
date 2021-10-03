@@ -96,11 +96,11 @@ class MockBase(exchange.interface.ExchangeInterface):
         self.__handle_future_bet(market, amount, True)
 
     def __handle_future_bet(self, market: Market, amount: float, is_bullish: bool):
-        position = self._floor(self.get_position(market), self._precision)
+        position = self.floor(self.get_position(market), self._precision)
         to_sell = 0
 
-        if position < 0 if is_bullish else position > 0:
-            diff = self._floor(abs(position) - amount, self._precision)
+        if (position < 0) if is_bullish else (position > 0):
+            diff = self.floor(abs(position) - amount, self._precision)
             to_sell = diff if diff > 0 else amount
             self.__handle_future_sell(market, to_sell, not is_bullish)
             amount -= to_sell
@@ -113,7 +113,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         if amount <= 0.0:
             raise exchange.interface.ZeroOrNegativeAmountError("Cannot buy zero or negative amount")
 
-        amount = self._floor(amount, self._precision)
+        amount = self.floor(amount, self._precision)
         price = self.get_price(market)
         leveraged_amount = amount * price
         amount_to_substract = leveraged_amount / self.leverage
@@ -132,7 +132,7 @@ class MockBase(exchange.interface.ExchangeInterface):
             self._bear_position_purchase_price[market_key] = price
 
     def __handle_future_sell(self, market: Market, amount: float, is_bullish: bool) -> None:
-        amount = self._floor(amount, self._precision)
+        amount = self.floor(amount, self._precision)
         price = self.get_price(market)
         market_key = self.get_market_key(market)
         self._positions[market_key] += -amount if is_bullish else amount
@@ -154,7 +154,7 @@ class MockBase(exchange.interface.ExchangeInterface):
 
     def buy(self, market: exchange.interface.Market, amount: float):
         logging.debug("Amount to buy: %f", amount)
-        amount = self._floor(amount, self._precision)
+        amount = self.floor(amount, self._precision)
         logging.debug("Amount was rounded to %f", amount)
 
         if amount <= 0:
@@ -184,7 +184,7 @@ class MockBase(exchange.interface.ExchangeInterface):
             raise exchange.interface.ZeroOrNegativeAmountError("Cannot sell zero or negative amount")
 
         logging.debug("Amount to sell: %f", amount)
-        amount = self._floor(amount, self._precision)
+        amount = self.floor(amount, self._precision)
         logging.debug("Amount was rounded to %f", amount)
         logging.info("Trying to sell %f of %s", amount, str(market))
         price = self.get_price(market)

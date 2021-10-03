@@ -126,12 +126,13 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass  # pragma: no cover
 
     @staticmethod
-    def _floor(value: float, precision: float) -> float:
+    def floor(value: float, precision: float) -> float:
         sign = -1 if value < 0 else 1
         exponent = -int(math.log10(precision))
-        remainder = value % precision
-        result = value
-        if remainder > (0.5 * precision) and round(remainder, 12) != precision:
+        result = abs(value)
+        remainder = result % precision
+        if abs(remainder) > (0.5 * precision) and round(remainder, 12) != precision:
             result -= precision
+        result = abs(result) * sign
         result = round(result, exponent)
-        return abs(result) * sign
+        return result

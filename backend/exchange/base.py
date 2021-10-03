@@ -43,7 +43,7 @@ class ExchangeBase(exchange.interface.ExchangeInterface):
         return balances
 
     def _check_and_log_corrected_amount(self, market, amount, operation):
-        corrected_amount = self._floor(amount, self._min_amount[self.get_market_key(market)])
+        corrected_amount = self.floor(amount, self._min_amount[self.get_market_key(market)])
         logging.info("Trying to %s %.10f %s", operation, corrected_amount,
                      self.get_market_key(market))
         logging.debug("%.10f was corrected to %.10f", amount, corrected_amount)
