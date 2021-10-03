@@ -15,11 +15,14 @@ class FetcherConfig(ConfigComponentBase):
         self.output_signal_id: str = config.get("output_signal_id", None)
         self.indicator_name: str = config.get("indicator_name", None)
         self.future: bool = config.get("future", False)
-        if isinstance(config.get("market"), list):
-            self.market: Market = [Market.create_from_string(market) for market in config.get("market", None)]
-        else:
-            self.market: Market = Market.create_from_string(config.get("market", None))
-        self.check_interval: int = int(config.get("check_interval", None))
+        market = config.get("market", None)
+        if market is not None:
+            if isinstance(market, list):
+                self.market: Market = [Market.create_from_string(m) for m in market]
+            else:
+                self.market: Market = Market.create_from_string(market)
+        check_interval = config.get("check_interval", None)
+        self.check_interval: int = int(check_interval) if check_interval is not None else None
         self.candle_size: str = config.get("candle_size", None)
         self.exchange_id: str = config.get("exchange_id", None)
         self.type: str = config.get("type", "exchange")
