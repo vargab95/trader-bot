@@ -251,6 +251,12 @@ class MockBase(exchange.interface.ExchangeInterface):
         for market_name, position in self._positions.items():
             market = exchange.interface.Market.create_from_string(market_name)
             price = self.get_price(market)
-            all_money += abs(position) * price - self._future_loans[market_name]
+            future_loan = self._future_loans[market_name]
+
+            if position > 0:
+                all_money += abs(position) * price - future_loan
+            else:
+                old_price = self._bear_position_purchase_price[market_name]
+                all_money += abs(position) * old_price * (old_price / price) - future_loan
 
         return all_money
