@@ -100,21 +100,27 @@ class SimulatorApplication(ApplicationBase):
                 self._builder.detector_signal_publisher.subscribe(signal_id, self.__execution_log_writer)
 
     def _run_application_logic(self):
+        should_close_trades = True
+
         try:
             while True:
                 for fetcher_publisher in self._builder.fetcher_publishers.values():
                     fetcher_publisher.publish()
         except CannotFetchDataException:
             logging.info("Data stream ended.")
+        except PositionLiquidatedError:
+            logging.critical("Liquidated during simulation")
+            should_close_trades = False
 
-        for name, trader in self._builder.traders.items():
-            trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+        if should_close_trades:
+            for name, trader in self._builder.traders.items():
+                trader.perform(TradingAction.RETURN_TO_BASE_SIGNAL)
+
+            for name, exchange in self._builder.exchanges.items():
+                print(f"Exchange {name}:")
+                print("    Balances:", exchange.get_balances())
+                print("    Positions:", exchange.get_positions())
+                print("    Prices:", exchange.price_mock)
 
         if self.__execution_log_writer:
             self.__execution_log_writer.write_to_file(self._configuration.simulator.log_output_path)
-
-        for name, exchange in self._builder.exchanges.items():
-            print(f"Exchange {name}:")
-            print("    Balances:", exchange.get_balances())
-            print("    Positions:", exchange.get_positions())
-            print("    Prices:", exchange.price_mock)
