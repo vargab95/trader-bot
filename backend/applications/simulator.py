@@ -71,7 +71,7 @@ class SimulatorApplication(ApplicationBase):
         for signal_id in self._builder.fetcher_publishers:
             for exchange in self._builder.exchanges.values():
                 updater = PriceMockUpdater(signal_id, exchange)
-                self._builder.analogue_signal_publisher.subscribe(signal_id, updater)
+                self._builder.analogue_signal_publisher.subscribe(signal_id, updater, prepend=True)
 
         if self._configuration.simulator.log_output_path:
             self.__execution_log_writer = ExecutionLogSubscriber(self._builder)

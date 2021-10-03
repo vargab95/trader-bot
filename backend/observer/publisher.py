@@ -13,10 +13,13 @@ class Publisher:
         self.name: str = name
         self.__subscribers: typing.Dict[str, Subscriber] = dict()
 
-    def subscribe(self, signal_id: str, subscriber: Subscriber) -> None:
+    def subscribe(self, signal_id: str, subscriber: Subscriber, prepend: bool = False) -> None:
         logging.info("%s subscribed for %s", str(subscriber), signal_id)
         try:
-            self.__subscribers[signal_id].append(subscriber)
+            if prepend:
+                self.__subscribers[signal_id].insert(0, subscriber)
+            else:
+                self.__subscribers[signal_id].append(subscriber)
         except KeyError as exc:
             raise SignalDoesNotExists(f"There is no signal published with id {signal_id}") from exc
 
