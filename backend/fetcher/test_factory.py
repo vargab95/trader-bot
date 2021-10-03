@@ -1,12 +1,14 @@
 #!/usr/bin/python3
 
 import unittest
+import tempfile
 
 from config.fetcher import FetcherConfig
 from fetcher.factory import FetcherFactory, InvalidFetcherFactoryParameter
 from fetcher.single import TradingViewFetcherSingle
 from fetcher.multi import TradingViewFetcherMulti
 from fetcher.exchange import ExchangeFetcher
+from fetcher.csv import CSVFetcher
 
 
 class TestFetcherFactory(unittest.TestCase):
@@ -39,6 +41,20 @@ class TestFetcherFactory(unittest.TestCase):
         })
 
         self.assertIsInstance(FetcherFactory.create(config), ExchangeFetcher)
+
+    def test_create_csv_fetcher(self):
+        with tempfile.NamedTemporaryFile() as tmp:
+            tmp.write("0,0,0".encode("utf-8"))
+            tmp.flush()
+            config = FetcherConfig({
+                "type": "csv_file",
+                "path": tmp.name,
+                "candle_size": "1m",
+                "market": "BTC-USD",
+                "check_interval": 60
+            })
+
+            self.assertIsInstance(FetcherFactory.create(config), CSVFetcher)
 
     def test_create_invalid(self):
         config = FetcherConfig({

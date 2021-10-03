@@ -6,6 +6,7 @@ from detector.combination.factory import DetectorCombinationFactory, InvalidDete
 from detector.combination.and_combination import DetectorAndCombination
 from detector.combination.or_combination import DetectorOrCombination
 from detector.combination.not_combination import DetectorNotCombination
+from detector.combination.switch_first_hold_to_return import SwitchFirstHoldToReturnCombination
 from config.detector import DetectorCombinationConfig
 
 
@@ -21,6 +22,10 @@ class TestDetectorCombinationFactory(unittest.TestCase):
     def test_create_not_combination(self):
         instance = DetectorCombinationFactory.create(DetectorCombinationConfig({"combination_type": "not"}))
         self.assertIsInstance(instance, DetectorNotCombination)
+
+    def test_create_switch_return_combination(self):
+        instance = DetectorCombinationFactory.create(DetectorCombinationConfig({"combination_type": "switch_return"}))
+        self.assertIsInstance(instance, SwitchFirstHoldToReturnCombination)
 
     def test_create_invalid(self):
         with self.assertRaises(InvalidDetectorCombinationType):
