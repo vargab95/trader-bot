@@ -3,7 +3,6 @@
 import unittest
 import unittest.mock
 
-import config.detector
 from config.trader import TraderConfig
 from config.exchange import ExchangeConfig
 import trader.leverage.simple
