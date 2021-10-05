@@ -205,6 +205,9 @@ class MockBase(exchange.interface.ExchangeInterface):
             self._balances[market] = 0.0
         return self._balances[market]
 
+    def set_balance(self, market: str, value: float):
+        self._balances[market] = value
+
     def get_leverage_balance(self) -> float:
         balances: exchange.interface.Balances = self.get_balances()
         return balances[self.base_coin] * self.leverage
@@ -230,6 +233,10 @@ class MockBase(exchange.interface.ExchangeInterface):
         if market_key not in self._positions.keys():
             self._positions[market_key] = 0.0
         return self._positions[market_key]
+
+    def set_position(self, market: exchange.interface.Market, value: float):
+        market_key = self.get_market_key(market)
+        self._positions[market_key] = value
 
     def get_future_loans(self) -> exchange.interface.Balances:
         return self._future_loans.copy()

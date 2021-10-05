@@ -19,6 +19,8 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         cls.config: config.application.ApplicationConfig = config.application.ApplicationConfig({})
         cls.config.testing.enabled = True
         cls.trader_config = TraderConfig({"max_steps": 10})
+        cls.trader_config.auto_detect_start_state = False
+        cls.trader_config.start_state = 0
 
         exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
         cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
@@ -27,6 +29,7 @@ class SteppedLeverageTraderTest(unittest.TestCase):
         cls.exchange.price_mock["BULL-USDT"] = 5.0
 
     def setUp(self):
+        self.trader_config.auto_detect_start_state = False
         self.trader = trader.leverage.stepped.SteppedLeverageTrader(self.trader_config, self.exchange)
 
     def tearDown(self):
@@ -160,3 +163,9 @@ class SteppedLeverageTraderTest(unittest.TestCase):
             self.trader.perform(detector_signal)
 
         self.assertAlmostEqual(self.exchange.get_balance("BEAR"), 10.0)
+
+    def test_auto_detect_start_state(self):
+        self.trader_config.auto_detect_start_state = True
+        self.trader = trader.leverage.stepped.SteppedLeverageTrader(self.trader_config, self.exchange)
+        with self.assertRaises(NotImplementedError):
+            self.trader.perform(TradingAction.HOLD_SIGNAL)

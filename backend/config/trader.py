@@ -18,15 +18,17 @@ class TraderConfig(ConfigComponentBase):
         self.method = config.get("method", "simple")
         self.leverage = config.get("leverage", False)
 
-        state_str = config.get("start_state", "base")
+        state_str = config.get("start_state", "auto")
+        self.start_state = None
+        self.auto_detect_start_state = False
         if state_str == "base":
             self.start_state = TraderState.BASE
         elif state_str == "bull":
             self.start_state = TraderState.BULLISH
         elif state_str == "bear":
             self.start_state = TraderState.BEARISH
-        else:
-            self.start_state = None
+        elif state_str == "auto":
+            self.auto_detect_start_state = True
 
         self.max_steps = config.get("max_steps", 5)
         self.future = bool(config.get("future", False))

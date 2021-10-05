@@ -34,3 +34,9 @@ class SimpleSingleMarketTrader(TraderBase):
     def _bearish_condition(self, action: detector.common.TradingAction):
         return self._state == TraderState.SELLING_BULLISH or \
             (detector.common.TradingAction.BEARISH_SIGNAL == action and self._state != TraderState.BASE)
+
+    def _detect_and_set_start_state(self):
+        if self._exchange.get_balance(self._configuration.market.target) > 0:
+            self._state = TraderState.BULLISH
+        else:
+            self._state = TraderState.BASE

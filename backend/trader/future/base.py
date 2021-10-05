@@ -55,3 +55,12 @@ class FutureTraderBase(trader.base.TraderBase):
                 last_exception = exc
             amount *= 0.99
         raise last_exception
+
+    def _detect_and_set_start_state(self):
+        position = self._exchange.get_position(self._configuration.market)
+        if position > 0:
+            self._state = TraderState.BULLISH
+        elif position < 0:
+            self._state = TraderState.BEARISH
+        else:
+            self._state = TraderState.BASE

@@ -63,3 +63,6 @@ class SteppedLeverageTrader(trader.leverage.base.LeverageTraderBase):
                 self._sell(self._configuration.bullish_market)
             self._state = 0
             self._pack_ratio = 1.0 / self._configuration.max_steps
+
+    def _detect_and_set_start_state(self):
+        raise NotImplementedError("Auto detecting start state is currently not implemented for stepped variant")

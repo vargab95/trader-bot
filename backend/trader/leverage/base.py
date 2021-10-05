@@ -5,6 +5,7 @@ import abc
 import detector.common
 
 import trader.base
+from trader.common import TraderState
 
 
 class LeverageTraderBase(trader.base.TraderBase):
@@ -21,3 +22,11 @@ class LeverageTraderBase(trader.base.TraderBase):
 
     def _bearish_condition(self, action: detector.common.TradingAction):
         return detector.common.TradingAction.BEARISH_SIGNAL == action
+
+    def _detect_and_set_start_state(self):
+        if self._exchange.get_balance(self._configuration.bullish_market.target) > 0:
+            self._state = TraderState.BULLISH
+        elif self._exchange.get_balance(self._configuration.bearish_market.target) > 0:
+            self._state = TraderState.BEARISH
+        else:
+            self._state = TraderState.BASE

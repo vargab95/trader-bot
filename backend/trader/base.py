@@ -17,9 +17,10 @@ class TraderBase:
                  configuration: TraderConfig,
                  used_exchange: exchange.interface.ExchangeInterface):
         self._exchange = used_exchange
-        self._state: TraderState = configuration.start_state
+        self._state: TraderState = configuration.start_state if not configuration.auto_detect_start_state else None
         self._configuration = configuration
         self._use_stateless_detector = False
+        self.__first_run = True
 
     @property
     def state(self):  # pragma: no cover
@@ -27,6 +28,11 @@ class TraderBase:
 
     def perform(self, action: TradingAction):
         logging.debug("Detector(s) has returned %s", str(action))
+
+        if self.__first_run and self._configuration.auto_detect_start_state:
+            self._detect_and_set_start_state()
+            self.__first_run = False
+
         logging.debug("Current state is %s", str(self._state))
 
         if self._bullish_condition(action):
@@ -39,6 +45,10 @@ class TraderBase:
             self._do_pending_transaction()
 
         logging.debug("New state is %s", str(self._state))
+
+    @abc.abstractmethod
+    def _detect_and_set_start_state(self):
+        pass  # pragma: no cover
 
     def _sell(self,
               market: exchange.interface.Market,
