@@ -54,5 +54,8 @@ class TraderConfig(ConfigComponentBase):
         if self.output_signal_id is None:
             raise InvalidConfigurationException("Output signal id is a mandatory parameter for traders")
 
-        if self.start_state is None:
+        if not self.auto_detect_start_state and self.start_state is None:
+            raise InvalidConfigurationException("Invalid start state in trader config")
+
+        if self.auto_detect_start_state and self.start_state is not None:
             raise InvalidConfigurationException("Invalid start state in trader config")
