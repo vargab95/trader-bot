@@ -33,6 +33,8 @@ class TraderBase:
             self._detect_and_set_start_state()
             self.__first_run = False
 
+            logging.info("Auto detected starting state: %s", str(self.state))
+
         logging.debug("Current state is %s", str(self._state))
 
         if self._bullish_condition(action):
