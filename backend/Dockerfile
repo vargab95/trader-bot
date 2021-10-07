@@ -5,6 +5,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y gcc libffi-dev
 RUN groupadd -g 1000 appgroup && useradd -u 1000 -g appgroup -s /bin/sh -m appuser
 USER appuser
 
+ENV PATH="${PATH}:/home/appuser/.local/bin"
+
 WORKDIR /app
 COPY ./requirements.txt ./requirements.txt
 COPY ./requirements.test.txt ./requirements.test.txt
