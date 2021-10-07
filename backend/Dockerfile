@@ -1,6 +1,9 @@
 FROM python:3.10-slim
 
-RUN apt update && apt upgrade -y
+RUN apt-get update && apt-get upgrade -y && apt-get install -y gcc libffi-dev
+
+RUN groupadd -g 1000 appgroup && useradd -u 1000 -g appgroup -s /bin/sh -m appuser
+USER appuser
 
 WORKDIR /app
 COPY ./requirements.txt ./requirements.txt
@@ -16,4 +19,8 @@ ENV TRADER_APPLICATION_TYPE=
 ENV TRADER_CONFIG_FILE=
 
 COPY . .
+
+USER root
 RUN chmod +x *.sh
+
+USER appuser
