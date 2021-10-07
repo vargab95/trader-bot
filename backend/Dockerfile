@@ -24,5 +24,6 @@ COPY . .
 
 USER root
 RUN chmod +x *.sh
+RUN chown -R appuser /app
 
 USER appuser
