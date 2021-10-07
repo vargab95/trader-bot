@@ -40,24 +40,30 @@ source_linter:
   stage: lint
   image: $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
+  variables:
+    GIT_STRATEGY: none
+
   script:
-    - chmod +x ./run_linter.sh
     - ./run_linter.sh
 
 run_security_checks:
   stage: lint
   image: $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
+  variables:
+    GIT_STRATEGY: none
+
   script:
-    - chmod +x ./run_security_check.sh
     - ./run_security_check.sh
 
 measure_coverage:
   stage: test
   image: $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
+  variables:
+    GIT_STRATEGY: none
+
   script:
-    - chmod +x ./measure_coverage.sh
     - ./measure_coverage.sh
 
 build_and_push_branch_image:
