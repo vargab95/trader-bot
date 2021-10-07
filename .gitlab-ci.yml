@@ -16,7 +16,7 @@ stages:
 
 
 before_script:
-   - '[ -d backend ] && cd backend'
+   - cd /app
    - which docker && docker login --username=$IMAGE_REGISTRY_CI_USER --password=$IMAGE_REGISTRY_CI_TOKEN $IMAGE_REGISTRY_URL
 
 
@@ -32,6 +32,7 @@ build_and_push_testing_branch_image:
       - branches
 
   script:
+    - cd backend
     - docker image build -t $CI_PROJECT_NAME --build-arg include_testing_tools=true .
     - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
     - docker image push $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
@@ -78,6 +79,7 @@ build_and_push_branch_image:
       - branches
 
   script:
+    - cd backend
     - docker image build -t $CI_PROJECT_NAME .
     - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_BRANCH
     - docker image push $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_BRANCH
@@ -94,6 +96,7 @@ build_and_push_tag_image:
       - tags
 
   script:
+    - cd backend
     - docker image build -t $CI_PROJECT_NAME .
     - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_TAG
     - docker image push $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_TAG
