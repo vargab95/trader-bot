@@ -33,12 +33,12 @@ build_and_push_testing_branch_image:
   script:
     - cd backend
     - docker image build -t $CI_PROJECT_NAME --build-arg include_testing_tools=true .
-    - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
-    - docker image push $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
+    - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
+    - docker image push $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
 source_linter:
   stage: lint
-  image: $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
+  image: $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
   variables:
     GIT_STRATEGY: none
@@ -49,7 +49,7 @@ source_linter:
 
 run_security_checks:
   stage: lint
-  image: $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
+  image: $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
   variables:
     GIT_STRATEGY: none
@@ -60,7 +60,7 @@ run_security_checks:
 
 measure_coverage:
   stage: test
-  image: $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
+  image: $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
   variables:
     GIT_STRATEGY: none
@@ -83,8 +83,8 @@ build_and_push_branch_image:
   script:
     - cd backend
     - docker image build -t $CI_PROJECT_NAME .
-    - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_BRANCH
-    - docker image push $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_BRANCH
+    - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_BRANCH
+    - docker image push $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_BRANCH
 
 build_and_push_tag_image:
   stage: build
@@ -100,8 +100,8 @@ build_and_push_tag_image:
   script:
     - cd backend
     - docker image build -t $CI_PROJECT_NAME .
-    - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_TAG
-    - docker image push $IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_TAG
+    - docker image tag $CI_PROJECT_NAME $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_TAG
+    - docker image push $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:$CI_COMMIT_TAG
 
 delete_testing_image:
   stage: cleanup
