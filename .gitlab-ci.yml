@@ -110,7 +110,7 @@ delete_testing_image:
   variables:
     GIT_STRATEGY: none
 
-  image: vargab95/gitlab-docker-tag-deleter
+  image: $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/gitlab-docker-tag-deleter
 
   script:
     - /delete_tag.sh
