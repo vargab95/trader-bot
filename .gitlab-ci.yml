@@ -8,7 +8,7 @@ variables:
 
 stages:
   - testing-build
-  - lint
+  - scan
   - test
   - build
   - deploy
@@ -37,7 +37,7 @@ build_and_push_testing_branch_image:
     - docker image push $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
 source_linter:
-  stage: lint
+  stage: scan
   image: $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
   variables:
@@ -47,8 +47,13 @@ source_linter:
     - cd /app
     - ./run_linter.sh
 
+git_guardian:
+  image: gitguardian/ggshield:latest
+  stage: scan
+  script: ggshield scan ci
+
 run_security_checks:
-  stage: lint
+  stage: scan
   image: $IMAGE_REGISTRY_URL/$IMAGE_REGISTRY_CI_USER/$CI_PROJECT_NAME:${CI_COMMIT_SHA}
 
   variables:
