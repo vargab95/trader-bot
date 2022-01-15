@@ -1,49 +1,49 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Subscription } from "rxjs";
 import {
   SignalRegistryService,
   SignalType,
   SignalResponse
-} from 'src/app/signals/signal-registry.service';
+} from "src/app/signals/signal-registry.service";
 
 @Component({
-  selector: 'app-chart',
-  templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.css']
+  selector: "app-chart",
+  templateUrl: "./chart.component.html",
+  styleUrls: ["./chart.component.css"]
 })
 export class ChartComponent implements OnInit, OnDestroy {
   chartOptions = {
     responsive: true,
-    hoverMode: 'index',
+    hoverMode: "index",
     stacked: false,
     elements: { point: { radius: 0 } },
     title: {
       display: true,
-      text: 'Trading view bot test data'
+      text: "Trader bot test data"
     },
     scales: {
       xAxes: [
         {
-          type: 'time',
+          type: "time",
           time: {
             displayFormats: {
-              quarter: 'MMM YYYY'
+              quarter: "MMM YYYY"
             }
           }
         }
       ],
       yAxes: [
         {
-          type: 'linear',
+          type: "linear",
           display: true,
-          position: 'left',
-          id: 'indicator'
+          position: "left",
+          id: "indicator"
         },
         {
-          type: 'linear',
+          type: "linear",
           display: true,
-          position: 'right',
-          id: 'ticker',
+          position: "right",
+          id: "ticker",
 
           gridLines: {
             drawOnChartArea: false
@@ -55,7 +55,7 @@ export class ChartComponent implements OnInit, OnDestroy {
       zoom: {
         pan: {
           enabled: true,
-          mode: 'xy',
+          mode: "xy",
 
           rangeMin: {
             x: null,
@@ -74,7 +74,7 @@ export class ChartComponent implements OnInit, OnDestroy {
         zoom: {
           enabled: true,
           drag: false,
-          mode: 'xy',
+          mode: "xy",
 
           rangeMin: {
             x: null,
@@ -105,14 +105,14 @@ export class ChartComponent implements OnInit, OnDestroy {
 
         for (const signal of signals) {
           this.chartData.push({
-            label: '(' + signal.id.toString() + ') ',
+            label: "(" + signal.id.toString() + ") ",
             data: this.convertToChartPoints(signal.data),
             fill: false,
             yAxisID:
               signal.properties.type === SignalType.Indicator
-                ? 'indicator'
-                : 'ticker',
-            borderColor: 'rgba(' + signal.properties.color + ',1)'
+                ? "indicator"
+                : "ticker",
+            borderColor: "rgba(" + signal.properties.color + ",1)"
           });
         }
 
@@ -127,7 +127,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     for (const row of data) {
       chart.push({
         x: new Date(row.date),
-        y: 'price' in row ? row.price : row.value
+        y: "price" in row ? row.price : row.value
       } as ChartDataPoint);
     }
 

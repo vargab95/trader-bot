@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "trading-view-bot-ui": {
+    "trader-bot-ui": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/trading-view-bot-ui",
+            "outputPath": "dist/trader-bot-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -62,18 +62,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "trading-view-bot-ui:build"
+            "browserTarget": "trader-bot-ui:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "trading-view-bot-ui:build:production"
+              "browserTarget": "trader-bot-ui:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "trading-view-bot-ui:build"
+            "browserTarget": "trader-bot-ui:build"
           }
         },
         "test": {
@@ -110,18 +110,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "trading-view-bot-ui:serve"
+            "devServerTarget": "trader-bot-ui:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "trading-view-bot-ui:serve:production"
+              "devServerTarget": "trader-bot-ui:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "trading-view-bot-ui",
+  "defaultProject": "trader-bot-ui",
   "cli": {
     "analytics": false
   }

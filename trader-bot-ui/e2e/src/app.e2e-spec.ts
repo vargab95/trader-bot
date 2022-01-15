@@ -10,7 +10,7 @@ describe('workspace-project App', () => {
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('trading-view-bot-ui app is running!');
+    expect(page.getTitleText()).toEqual('trader-bot-ui app is running!');
   });
 
   afterEach(async () => {
