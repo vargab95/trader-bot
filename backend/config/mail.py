@@ -8,13 +8,20 @@ from config.common import InvalidConfigurationException
 
 class MailConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
+        # Enables or disables mailing
         self.enabled = config.get("enabled", False)
-        self.name = config.get("name", "TradingViewBot")
+
+        # Name of the bot. Used in some templates
+        self.name = config.get("name", "Trader bot")
+
+        # SMTP config
         self.port = config.get("port", 25)
         self.smtp_server = config.get("smtp_server", None)
         self.sender = config.get("sender", None)
-        self.receiver = config.get("receiver", None)
         self.password = config.get("password", None)
+
+        # List of receivers
+        self.receiver = config.get("receiver", None)
 
     def validate(self):
         if self.enabled:

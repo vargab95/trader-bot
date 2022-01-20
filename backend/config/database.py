@@ -8,9 +8,16 @@ from config.common import InvalidConfigurationException
 
 class DatabaseConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
+        # URL of the mongodb instance
         self.url = config.get("url", None)
+
+        # User of the mongodb instance
         self.user = config.get("user", None)
+
+        # Password of mongodb user
         self.password = config.get("password", None)
+
+        # Limit for number of requested data points
         self.limit = config.get("limit", -1)
 
     def validate(self):

@@ -15,7 +15,11 @@ from config.gatherer import GathererConfig
 
 class ApplicationConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict = None):
+        # Reserved for later use if configuration migration feature
+        # would be necessary
         self.configuration_version = "1.0.0"
+
+        # Sections for subcomponents
         self.logging = LoggingConfig(config.get("logging", {}))
         self.testing = TestingConfig(config.get("testing", {}))
         self.mail = MailConfig(config.get("mail", {}))

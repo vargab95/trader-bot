@@ -13,6 +13,7 @@ from config.common import InvalidConfigurationException
 
 class ComponentsConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict = None):
+        # Sections for subcomponents
         self.exchanges = [ExchangeConfig(exchange_config) for exchange_config in config.get("exchanges", [])]
         self.fetchers = [FetcherConfig(fetcher_config) for fetcher_config in config.get("fetchers", [])]
         self.detectors = [DetectorConfig(detector_config) for detector_config in config.get("detectors", [])]

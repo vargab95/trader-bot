@@ -8,15 +8,27 @@ from config.common import InvalidConfigurationException
 
 class DetectorConfig(ConfigComponentBase):
     def __init__(self, config: typing.Dict):
+        # Signal id of input analogue signal. It can be a filter or a fetcher output
         self.input_signal_id = config.get("input_signal_id", None)
+
+        # Signal id of detector signal written by the detector
         self.output_signal_id = config.get("output_signal_id", None)
+
         self.follower = config.get("follower", False)
         self.follower_candle_size = config.get("follower_candle_size", None)
+
+        # Detector fires on a falling edge passthrough. For example, if 0.0 bullish threshold
+        # is set and the analogue signal provides data like 0.1 0.0 -0.1, then the detector
+        # will fire a bullish signal
         self.falling_edge = config.get("falling_edge", False)
         self.stateless = config.get("stateless", False)
         self.latched = config.get("latched", False)
         self.simple = config.get("simple", False)
+
+        # Threshold for the BULLISH signal
         self.bullish_threshold = config.get("bullish_threshold", None)
+
+        # Threshold for the BEARISH signal
         self.bearish_threshold = config.get("bearish_threshold", None)
         self.reset_on_falling_edge = config.get("reset_on_falling_edge", False)
 

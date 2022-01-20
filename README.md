@@ -8,15 +8,16 @@ The current implementation supports the following main features
     - Trading with different type of pairs on different exchanges
     - Simulation of trading strategies
     - Sending email notifications (nice when executing on a VPS)
-    - Composition of complex filters and detection logic
+    - Composition of complex filters and detection logic (multiple filters applied to the same signal and
+      complex logic between detection logics with AND, OR and NOT relationship)
     - Scraping Tradingview to be able to trade based on trading view "gauges"
+    - Cross exchange detection (for example trading on FTX based on prices on Binance)
+    - Cross pair detection (for example trading ETH-USDT based on BTC-USDT price)
 
 Some features were discontinued due to the lack of time, like
     - UI for trading simulation
     - (Storing and serving indicators with timestamps in mongodb
     - Some features are only working with FTX exchange as it was recently used by me
-
-PRs are welcomed for any new features, making current ones better or updating discontinued ones.
 
 # Configuration
 
@@ -30,7 +31,7 @@ python3 tools/generate_config.py conf.yml
 ```
 
 For details on configuration options in general, please check the comments
-in the comments module.
+in the config module.
 
 ## Components
 
@@ -57,3 +58,16 @@ docker container run \
 	--name traderbotinstance \
 	traderbot:master ./run.sh trader conf.yml
 ```
+
+# Contribution
+
+PRs are welcomed in any topics. This bot was implemented and used by me for several years
+and now I've decided to make it public. However, due to this fact it does not have an extensive
+documentation yet and there are several discontinued features due to the lack of spare time.
+I'll try to add some documentation and make the project more complete. If you're interested
+please create a PR and let's create a great bot together.
+
+# Disclaimer
+
+As it's described by the licence as well, there is no warranty on using this bot. It's only a
+hobby project, there can be bugs in the trading algorithm and even in the simulation logic.
