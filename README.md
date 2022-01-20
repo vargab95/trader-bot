@@ -62,14 +62,17 @@ docker container run \
 
 # Contribution
 
-PRs are welcomed in any topics. This bot was implemented and used by only me for several years
-and now I've just made it public. Due to this fact it does not have an extensive
-documentation yet and there are several discontinued features due to the lack of spare time.
-I'll try to add some documentation and make the project more complete. If you're interested
-please create a PR or contact me and let's create a great bot together.
+PRs are welcomed in any topics. This bot was implemented and used only by me for several years
+and I've just made it public. Due to this fact it does not have an extensive documentation yet
+and there are several discontinued features due to the lack of spare time. I'll try to add some
+documentation and make the project more complete. If you're interested in the project check it
+out, then if you would like to contribute, please create a PR, an issue or contact me and let's
+create a great bot together.
+
+Project is only mirrored to github, so if it's possible, please do contributions on https://gitlab.com/vargab95/trader-bot
 
 # Disclaimer
 
 As it's described by the licence as well, there is no warranty on using this bot. It's only a
-hobby project, there can be bugs in the trading algorithm and even in the simulation logic.
-It can only be used at your own risk.
+hobby project, there can be bugs in the trading algorithm, simulation logic or any part. It can
+only be used at your own risk.
