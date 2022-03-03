@@ -5,6 +5,8 @@ import unittest.mock
 
 from config.trader import TraderConfig
 from config.exchange import ExchangeConfig
+from exchange.ftx_mock import FtxMock
+from exchange.mock_base import MockBase
 import trader.future.simple
 import exchange.interface
 from exchange.interface import Market
@@ -22,7 +24,7 @@ class SimpleFutureTraderTest(unittest.TestCase):
         cls.config: TraderConfig = TraderConfig({"market": "BTC-PERP"})
 
         exchange_config = ExchangeConfig({"name": "ftx", "real_time": False})
-        cls.exchange = exchange.factory.ExchangeControllerFactory.create(exchange_config, testing=True)
+        cls.exchange = FtxMock(exchange_config)
 
     def setUp(self):
         self.trader = trader.future.simple.SimpleFutureTrader(self.config, self.exchange)
@@ -46,20 +48,6 @@ class SimpleFutureTraderTest(unittest.TestCase):
 
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
 
-    def test_startup_bearish(self):
-        detector_signals = [
-            TradingAction.BEARISH_SIGNAL,
-            TradingAction.HOLD_SIGNAL,
-            TradingAction.HOLD_SIGNAL
-        ]
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
-
-        for detector_signal in detector_signals:
-            self.trader.perform(detector_signal)
-
-        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
-        self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), -3.0)
-
     def test_startup_bullish(self):
         detector_signals = [
             TradingAction.BULLISH_SIGNAL,
@@ -73,6 +61,40 @@ class SimpleFutureTraderTest(unittest.TestCase):
 
         self.assertAlmostEqual(self.exchange.get_balance("USDT"), 0.0)
         self.assertAlmostEqual(self.exchange.get_position(Market("PERP", "BTC")), 3.0)
+
+    def test_startup_bearish_with_open_position(self):
+        market = Market("PERP", "BTC")
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        self.exchange.bet_on_bearish(market, 1.0)
+        self.assertAlmostEqual(self.exchange.get_position(market), -1.0)
+
+        self.trader.perform(TradingAction.BEARISH_SIGNAL)
+
+        # TODO Change mock base class to use integers, because floats can lead
+        #      to inaccurate calculation...
+        self.assertGreaterEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertLessEqual(self.exchange.get_balance("USDT"), 1.0)
+        self.assertGreaterEqual(self.exchange.get_position(market), -3.0)
+        self.assertLessEqual(self.exchange.get_position(market), -2.95)
+
+    def test_startup_bullish_with_open_position(self):
+        market = Market("PERP", "BTC")
+        self.assertAlmostEqual(self.exchange.get_balance("USDT"), 100.0)
+
+        self.trader.perform(TradingAction.HOLD_SIGNAL)
+        self.exchange.bet_on_bullish(market, 1.0)
+        self.assertAlmostEqual(self.exchange.get_position(market), 1.0)
+
+        self.trader.perform(TradingAction.BULLISH_SIGNAL)
+
+        # TODO Change mock base class to use integers, because floats can lead
+        #      to inaccurate calculation...
+        self.assertGreaterEqual(self.exchange.get_balance("USDT"), 0.0)
+        self.assertLessEqual(self.exchange.get_balance("USDT"), 1.0)
+        self.assertLessEqual(self.exchange.get_position(market), 3.0)
+        self.assertGreaterEqual(self.exchange.get_position(market), 2.95)
 
     def test_hold(self):
         detector_signals = [

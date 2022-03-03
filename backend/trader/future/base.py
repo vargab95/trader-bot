@@ -7,7 +7,7 @@ import logging
 import detector.common
 
 import trader.base
-from trader.common import TraderState
+from trader.common import TraderState, BEARISH_STATES, BULLISH_STATES
 import exchange.interface
 
 
@@ -26,13 +26,22 @@ class FutureTraderBase(trader.base.TraderBase):
     def _bearish_condition(self, action: detector.common.TradingAction):
         return detector.common.TradingAction.BEARISH_SIGNAL == action
 
-    def _sell(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
+    def _sell(self, market: exchange.interface.Market, _: float = 1.0) -> None:
         try:
-            self._exchange.close_position(market)
+            position = self._exchange.get_position(market)
+            should_close = False
+
+            if self.state in BULLISH_STATES and position > 0:
+                should_close = True
+            elif self.state in BEARISH_STATES and position < 0:
+                should_close = True
+
+            if should_close:
+                self._exchange.close_position(market)
         except exchange.interface.ZeroOrNegativeAmountError:
             pass
 
-    def _buy(self, market: exchange.interface.Market, ratio: float = 1.0) -> bool:
+    def _buy(self, market: exchange.interface.Market, ratio: float = 1.0) -> None:
         base_asset = self._configuration.future_base_asset
         balance = self._exchange.get_leverage_balance()
         price = self._exchange.get_price(market,
@@ -54,7 +63,9 @@ class FutureTraderBase(trader.base.TraderBase):
             except exchange.interface.ExchangeError as exc:
                 last_exception = exc
             amount *= 0.99
-        raise last_exception
+
+        if last_exception:
+            raise last_exception
 
     def _detect_and_set_start_state(self):
         position = self._exchange.get_position(self._configuration.market)

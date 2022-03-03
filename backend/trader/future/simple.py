@@ -5,7 +5,7 @@ from exchange.interface import ExchangeError
 import trader.future.base
 import trader.common
 
-from trader.common import TraderState
+from trader.common import BEARISH_STATES, BULLISH_STATES, TraderState
 
 
 class SimpleFutureTrader(trader.future.base.FutureTraderBase):
@@ -41,14 +41,14 @@ class SimpleFutureTrader(trader.future.base.FutureTraderBase):
                 self._state = TraderState.BEARISH
 
     def _return_to_base_logic(self):
-        if self._state in [TraderState.BULLISH, TraderState.SELLING_BULLISH, TraderState.BUYING_BULLISH]:
+        if self._state in BULLISH_STATES:
             try:
                 self._sell(self._configuration.market)
                 self._state = TraderState.BASE
             except ExchangeError:
                 self._state = TraderState.SELLING_BULLISH
                 raise
-        elif self._state in [TraderState.BEARISH, TraderState.SELLING_BEARISH, TraderState.BUYING_BEARISH]:
+        elif self._state in BEARISH_STATES:
             try:
                 self._sell(self._configuration.market)
                 self._state = TraderState.BASE

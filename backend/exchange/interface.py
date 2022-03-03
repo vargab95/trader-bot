@@ -38,6 +38,9 @@ class Balances(dict):
                    in self.items()
                ])
 
+    def copy(self) -> "Balances":
+        return Balances(super().copy())
+
 
 class ExchangeError(Exception):
     pass
@@ -110,7 +113,7 @@ class ExchangeInterface(metaclass=abc.ABCMeta):
         pass  # pragma: no cover
 
     @abc.abstractmethod
-    def get_money(self, base: str = None) -> float:
+    def get_money(self, base: str | None = None) -> float:
         pass  # pragma: no cover
 
     @abc.abstractmethod

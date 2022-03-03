@@ -54,13 +54,13 @@ class TraderBase:
 
     def _sell(self,
               market: exchange.interface.Market,
-              ratio: float = 1.0):
+              ratio: float = 1.0) -> None:
         amount = self._exchange.get_balance(market.target) * ratio
         self._exchange.sell(market, amount)
 
     def _buy(self,
              market: exchange.interface.Market,
-             ratio: float = 1.0):
+             ratio: float = 1.0) -> None:
         last_exception = None
         for _ in range(5):
             balance = self._exchange.get_balance(market.base)

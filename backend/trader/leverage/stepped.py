@@ -17,7 +17,7 @@ class SteppedLeverageTrader(trader.leverage.base.LeverageTraderBase):
         # 0 is the NONE
         # 1 is one pack of bull
         # -1 is one pack of bear
-        self._state = 0
+        self._state: int = 0
 
         self._pack_ratio = 1.0 / configuration.max_steps
         self._max_steps = configuration.max_steps

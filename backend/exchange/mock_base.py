@@ -26,9 +26,9 @@ class InvalidTradeResultRequestException(Exception):
 class Trade:
     def __init__(self, market: exchange.interface.Market):
         self.market: exchange.interface.Market = market
-        self.entry_price: float = None
-        self.final_price: float = None
-        self.amount: float = None
+        self.entry_price: float | None = None
+        self.final_price: float | None = None
+        self.amount: float | None = None
         self.state: TradeState = TradeState.NOT_STARTED
 
     def enter(self, price: float, amount: float):
@@ -44,11 +44,15 @@ class Trade:
     def profit(self):
         if self.state != TradeState.FINISHED:
             raise InvalidTradeResultRequestException
+        
+        if not self.entry_price or not self.final_price:
+            raise ValueError("Profit calculation cannot be done without prices")
+
         return (self.final_price - self.entry_price) / self.entry_price * 100.0
 
 
 class MockBase(exchange.interface.ExchangeInterface):
-    base_coin: str = None
+    base_coin: str | None = None
 
     def __init__(self, exchange_config: config.exchange.ExchangeConfig):
         self.__start_money = exchange_config.start_money
@@ -64,7 +68,7 @@ class MockBase(exchange.interface.ExchangeInterface):
         self._fee: float = exchange_config.fee
         self._client = None
         self._precision = exchange_config.balance_precision
-        self._real_exchange: exchange.interface.ExchangeInterface = None
+        self._real_exchange: exchange.interface.ExchangeInterface | None = None
 
         self._is_real_time: bool = False
         self.set_real_time(self._configuration.real_time)
@@ -217,11 +221,15 @@ class MockBase(exchange.interface.ExchangeInterface):
 
     def get_price(self, market: exchange.interface.Market, keyword: str = "price", future: bool = False) -> float:
         if self._is_real_time:
+            if not self._real_exchange:
+                raise ValueError("Systematic software failure")
             return self._real_exchange.get_price(market, keyword, future)
         return self.price_mock[self.get_market_key(market)]
 
     def get_price_history(self, descriptor: TickerSignalDescriptor) -> TradingSignal:
         if self._is_real_time:
+            if not self._real_exchange:
+                raise ValueError("Systematic software failure")
             return self._real_exchange.get_price_history(descriptor)
         raise NotImplementedError("Mocked price history has not been implemented yet")
 
@@ -241,7 +249,7 @@ class MockBase(exchange.interface.ExchangeInterface):
     def get_future_loans(self) -> exchange.interface.Balances:
         return self._future_loans.copy()
 
-    def get_money(self, base: str = None) -> float:
+    def get_money(self, base: str | None = None) -> float:
         all_money: float = 0.0
 
         if base is None:
@@ -251,7 +259,9 @@ class MockBase(exchange.interface.ExchangeInterface):
             if base == name:
                 all_money += balance
             else:
-                market = exchange.interface.Market(base, name)
+                # Ignore type error, as base is overwritten by a configuration
+                # string if it was None
+                market = exchange.interface.Market(base, name)  # type: ignore
                 price = self.get_price(market)
                 all_money += balance * price
 

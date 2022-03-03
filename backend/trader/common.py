@@ -11,3 +11,11 @@ class TraderState(enum.Enum):
     SELLING_BEARISH = 5
     BULLISH = 6
     BEARISH = 7
+
+
+BULLISH_STATES = [TraderState.BULLISH,
+                  TraderState.SELLING_BULLISH,
+                  TraderState.BUYING_BULLISH]
+BEARISH_STATES = [TraderState.BEARISH,
+                  TraderState.SELLING_BEARISH,
+                  TraderState.BUYING_BEARISH]
