@@ -6,7 +6,6 @@ import unittest.mock
 from config.trader import TraderConfig
 from config.exchange import ExchangeConfig
 from exchange.ftx_mock import FtxMock
-from exchange.mock_base import MockBase
 import trader.future.simple
 import exchange.interface
 from exchange.interface import Market

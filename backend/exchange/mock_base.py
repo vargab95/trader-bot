@@ -44,7 +44,7 @@ class Trade:
     def profit(self):
         if self.state != TradeState.FINISHED:
             raise InvalidTradeResultRequestException
-        
+
         if not self.entry_price or not self.final_price:
             raise ValueError("Profit calculation cannot be done without prices")
 

@@ -9,7 +9,7 @@ class TestDatabaseConfig(unittest.TestCase):
         self.conf = DatabaseConfig({})
         self.conf.url = "test_url"
         self.conf.user = "test_user"
-        self.conf.password = "test_password"
+        self.conf.password = "test_password"  # nosec
         self.conf.limit = 1
 
     def test_no_url_specified(self):
